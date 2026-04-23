@@ -179,25 +179,25 @@
 
 > plan: L1275–L1283, L899–L987
 
-- [ ] `docs/.vitepress/config.ts` (plan: L948–L987)
-- [ ] `docs/.vitepress/theme/index.ts` (plan: L921)
-- [ ] `docs/.vitepress/components/LiveDemo.vue` — WebUSB, text input, bitmap preview, Chrome/Edge note, NFC note (plan: L938–L942)
-- [ ] `docs/index.md` — hero, features, ecosystem links, NFC callout (plan: L914, L929–L930)
-- [ ] `docs/getting-started.md` — Node.js + CLI + Web quickstart, Linux udev, NFC lock subsection (plan: L915, L931–L932)
-- [ ] `docs/node.md` — USB, TCP, printText, printImage, status, recover, API table (plan: L916)
-- [ ] `docs/cli.md` — all commands with flag tables and examples (plan: L917)
-- [ ] `docs/web.md` — browser support, install, quick start, API table, demo link (plan: L918)
-- [ ] `docs/hardware.md` — device table, 450 vs 550, NFC lock detail, print head geometry (plan: L919, L933)
-- [ ] `docs/core.md` — protocol reference, 450 vs 550 sequences, byte tables, RLE, error recovery; note job header does not disable NFC (plan: L920, L934)
-- [ ] `docs/demo.md` — renders `<LiveDemo />` (plan: L921)
-- [ ] NFC lock documented in all required places (plan: L929–L935)
-  - [ ] `index.md`: callout card
-  - [ ] `getting-started.md`: dedicated subsection
-  - [ ] `hardware.md`: NFC column + explanation
-  - [ ] `core.md`: note that job header does not disable NFC checking
-- [ ] **Gate:** `pnpm docs:api` — typedoc generates without errors (plan: L269, L1282)
-- [ ] **Gate:** `pnpm docs:build` — VitePress build completes without errors (plan: L1283)
-- [ ] **Commit:** `docs: add VitePress documentation site`
+- [x] `docs/.vitepress/config.ts` (plan: L948–L987)
+- [x] `docs/.vitepress/theme/index.ts` (plan: L921)
+- [x] `docs/.vitepress/components/LiveDemo.vue` — WebUSB, text input, bitmap preview, Chrome/Edge note, NFC note (plan: L938–L942)
+- [x] `docs/index.md` — hero, features, ecosystem links, NFC callout (plan: L914, L929–L930)
+- [x] `docs/getting-started.md` — Node.js + CLI + Web quickstart, Linux udev, NFC lock subsection (plan: L915, L931–L932)
+- [x] `docs/node.md` — USB, TCP, printText, printImage, status, recover, API table (plan: L916)
+- [x] `docs/cli.md` — all commands with flag tables and examples (plan: L917)
+- [x] `docs/web.md` — browser support, install, quick start, API table, demo link (plan: L918)
+- [x] `docs/hardware.md` — device table, 450 vs 550, NFC lock detail, print head geometry (plan: L919, L933)
+- [x] `docs/core.md` — protocol reference, 450 vs 550 sequences, byte tables, RLE, error recovery; note job header does not disable NFC (plan: L920, L934)
+- [x] `docs/demo.md` — renders `<LiveDemo />` (plan: L921)
+- [x] NFC lock documented in all required places (plan: L929–L935)
+  - [x] `index.md`: callout card
+  - [x] `getting-started.md`: dedicated subsection
+  - [x] `hardware.md`: NFC column + explanation
+  - [x] `core.md`: note that job header does not disable NFC checking
+- [x] **Gate:** `pnpm docs:api` — typedoc generates without errors (plan: L269, L1282)
+- [x] **Gate:** `pnpm docs:build` — VitePress build completes without errors (plan: L1283)
+- [x] **Commit:** `docs: add VitePress documentation site`
 
 ---
 
