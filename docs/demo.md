@@ -1,10 +1,15 @@
-# Live Demo
+---
+layout: page
+title: Live demo
+---
 
-Print directly from your browser using WebUSB.
-
-::: warning Chrome / Edge only
-WebUSB is only supported in Chrome and Edge. Firefox and Safari do not support this API.
-This page must be opened over HTTPS or localhost.
-:::
-
-<LiveDemo />
+<div class="demo-page">
+  <div class="demo-page-header">
+    <h1>Live demo</h1>
+    <p>
+      Type a label, preview it instantly, then connect a Dymo LabelWriter via WebUSB to print.
+      Requires <strong>Chrome</strong> or <strong>Edge</strong>. The preview works in any browser.
+    </p>
+  </div>
+  <LiveDemo />
+</div>

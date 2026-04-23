@@ -2,45 +2,75 @@
 layout: home
 
 hero:
-  name: labelwriter
+  name: '@thermal-label/labelwriter'
   text: TypeScript driver for Dymo LabelWriter
-  tagline: USB, TCP, and WebUSB support for Node.js, CLI, and the browser.
+  tagline: No vendor software. No proprietary drivers. Just USB, TCP, and WebUSB — from Node.js, the CLI, or the browser.
   actions:
     - theme: brand
       text: Get started
       link: /getting-started
+    - theme: brand
+      text: Try it now →
+      link: /demo
     - theme: alt
-      text: View on GitHub
+      text: GitHub
       link: https://github.com/thermal-label/labelwriter
 
 features:
-  - icon: 🖨
-    title: Full protocol coverage
-    details: Supports all LabelWriter models from the 400 to the 5XL — both the 450-series and the 550-series protocol, including job headers and error recovery.
+  - icon: 🟢
+    title: Node.js
+    details: Direct USB bulk-transfer printing from Node.js servers and desktop apps. Wi-Fi TCP printing for wireless models. Zero native dependencies beyond the usb package.
+    link: /node
+    linkText: Node.js guide
+  - icon: ⌨️
+    title: CLI
+    details: One-line label printing from the terminal. Print text, images, check status, and recover from errors — great for scripting and automation.
+    link: /cli
+    linkText: CLI guide
   - icon: 🌐
-    title: WebUSB in the browser
-    details: Print directly from Chrome and Edge using the WebUSB API — no drivers, no backend, no plugins needed.
-  - icon: 🖥
-    title: Node.js USB and TCP
-    details: Connect over USB bulk transfer or TCP (Wireless models) with the same high-level API.
-  - icon: ⌨
-    title: CLI included
-    details: The labelwriter CLI lets you print text and images, check status, and recover from errors — all from the terminal.
+    title: Browser
+    details: WebUSB printing directly from Chrome or Edge — no server, no install, no driver swap required.
+    link: /web
+    linkText: Web guide
 ---
 
-## Ecosystem
+<div class="home-extra">
 
-| Package | Environment | Description |
-|---------|-------------|-------------|
-| [`@thermal-label/labelwriter-core`](/core) | Universal | Protocol encoder, device registry, bitmap utilities |
-| [`@thermal-label/labelwriter-node`](/node) | Node.js | USB and TCP transport, `LabelWriterPrinter` |
-| [`@thermal-label/labelwriter-cli`](/cli) | Terminal | `labelwriter` command |
-| [`@thermal-label/labelwriter-web`](/web) | Browser | WebUSB printer driver |
+<div class="ref-links">
+  <a href="./hardware.html" class="ref-link">
+    <span class="ref-icon">🖨️</span>
+    <span class="ref-body">
+      <strong>Supported hardware</strong>
+      <span>Device list, USB PIDs, protocol variants, NFC lock</span>
+    </span>
+    <span class="ref-arrow">→</span>
+  </a>
+  <a href="./core.html" class="ref-link">
+    <span class="ref-icon">📡</span>
+    <span class="ref-body">
+      <strong>Protocol & Core API</strong>
+      <span>450 and 550 ESC sequences, RLE encoding, job headers</span>
+    </span>
+    <span class="ref-arrow">→</span>
+  </a>
+</div>
 
-## 550 series NFC label lock
-
-::: warning 550 series requires genuine Dymo labels
-The LabelWriter 550, 550 Turbo, 5XL, and related models enforce NFC chip validation on every print job. The hardware reads the NFC chip embedded in Dymo-branded label rolls. **Non-certified labels are rejected at the hardware level** — you will see a paper-out error regardless of which software you use. This behaviour cannot be bypassed in software, including by this library.
-
-See [Hardware](/hardware) for a full model list and [Getting started](/getting-started#nfc-label-lock) for guidance.
+::: warning 550 series NFC label lock
+The LabelWriter 550, 550 Turbo, and 5XL enforce NFC chip validation on every print job. **Non-certified labels are rejected at the hardware level** — there is no software workaround. See [Hardware](/hardware#nfc-label-lock-550-series) for the full model list.
 :::
+
+<div class="ecosystem">
+  <p class="ecosystem-label">Also in this ecosystem</p>
+  <div class="ecosystem-links">
+    <a href="https://thermal-label.github.io/labelmanager/" class="ecosystem-link" target="_blank" rel="noopener">
+      <span class="eco-name">labelmanager</span>
+      <span class="eco-desc">DYMO LabelManager D1 tape printers</span>
+    </a>
+    <a href="https://thermal-label.github.io/brother-ql/" class="ecosystem-link" target="_blank" rel="noopener">
+      <span class="eco-name">brother-ql</span>
+      <span class="eco-desc">Brother QL label printers</span>
+    </a>
+  </div>
+</div>
+
+</div>

@@ -19,6 +19,29 @@
 
 All devices use vendor ID `0x0922` (Dymo).
 
+<div class="hw-cta">
+  <div class="hw-cta-header">
+    <span class="hw-cta-icon">🔌</span>
+    <div class="hw-cta-text">
+      <strong>Got one of the untested devices?</strong>
+      <span>A two-minute test helps everyone who owns one of these printers.</span>
+    </div>
+  </div>
+  <div class="hw-cta-steps">
+    <span>Run these two commands and report what happens:</span>
+    <div class="hw-cta-cmds">
+      <code>labelwriter list</code>
+      <span class="hw-cta-arrow">→</span>
+      <code>labelwriter print text "test"</code>
+    </div>
+  </div>
+  <div class="hw-cta-actions">
+    <a class="hw-chip hw-chip-works" href="https://github.com/thermal-label/labelwriter/issues/new?template=hardware_verification.md&title=Verified%3A+%5BDevice+name%5D&labels=hardware%2Cverified" target="_blank" rel="noopener">✅ It works</a>
+    <a class="hw-chip hw-chip-partial" href="https://github.com/thermal-label/labelwriter/issues/new?template=hardware_verification.md&title=Partial%3A+%5BDevice+name%5D&labels=hardware%2Cpartial" target="_blank" rel="noopener">⚠️ Partially works</a>
+    <a class="hw-chip hw-chip-broken" href="https://github.com/thermal-label/labelwriter/issues/new?template=hardware_verification.md&title=Broken%3A+%5BDevice+name%5D&labels=hardware%2Cbroken" target="_blank" rel="noopener">❌ Doesn't work</a>
+  </div>
+</div>
+
 ## 450 vs 550 protocol
 
 ### 450-series protocol
