@@ -152,26 +152,26 @@
 
 > plan: L1271–L1273, L833–L896
 
-- [ ] `packages/web/package.json` (plan: L840–L861)
-- [ ] `packages/web/README.md` (plan: L385–L390)
-- [ ] `packages/web/tsconfig.json` — extends `@mbtech-nl/tsconfig/browser`, no `@types/node` (plan: L860, L891)
-- [ ] `packages/web/src/transport.ts` — WebUSB `transferOut`/`transferIn` (plan: L886–L890)
-- [ ] `packages/web/src/printer.ts` — `WebLabelWriterPrinter` class (plan: L870–L882)
-  - [ ] `requestPrinter()` — `navigator.usb.requestDevice` with all known PIDs (plan: L887)
-  - [ ] `fromUSBDevice(device)` (plan: L868)
-  - [ ] `getStatus()` — 1 byte (450) or 32 bytes (550) via `transferIn` (plan: L889)
-  - [ ] `print`, `printText`, `printImage`, `printImageURL` (plan: L873–L878)
-  - [ ] `recover()` (plan: L879)
-  - [ ] `isConnected()`, `disconnect()` (plan: L880–L881)
-- [ ] `packages/web/src/index.ts` — public API exports (plan: L867–L882)
-- [ ] `packages/web/src/__tests__/` — Vitest + jsdom, fake `USBDevice` with transfer spies (plan: L893–L896)
-  - [ ] Correct byte streams for 450 and 550 protocol devices
-  - [ ] Status parsed correctly per protocol generation
-- [ ] **Gate:** `pnpm --filter @thermal-label/labelwriter-web typecheck` (plan: L1273)
-- [ ] **Gate:** `pnpm lint` (plan: L1273)
-- [ ] **Gate:** `pnpm --filter @thermal-label/labelwriter-web test` (plan: L1273)
-- [ ] **Gate:** `pnpm --filter @thermal-label/labelwriter-web build` (plan: L1273)
-- [ ] **Commit:** `feat: add labelwriter-web`
+- [x] `packages/web/package.json` (plan: L840–L861)
+- [x] `packages/web/README.md` (plan: L385–L390)
+- [x] `packages/web/tsconfig.json` — extends `@mbtech-nl/tsconfig/browser`, no `@types/node` (plan: L860, L891)
+- [x] `packages/web/src/transport.ts` — WebUSB `transferOut`/`transferIn` (plan: L886–L890)
+- [x] `packages/web/src/printer.ts` — `WebLabelWriterPrinter` class (plan: L870–L882)
+  - [x] `requestPrinter()` — `navigator.usb.requestDevice` with all known PIDs (plan: L887)
+  - [x] `fromUSBDevice(device)` (plan: L868)
+  - [x] `getStatus()` — 1 byte (450) or 32 bytes (550) via `transferIn` (plan: L889)
+  - [x] `print`, `printText`, `printImage`, `printImageURL` (plan: L873–L878)
+  - [x] `recover()` (plan: L879)
+  - [x] `isConnected()`, `disconnect()` (plan: L880–L881)
+- [x] `packages/web/src/index.ts` — public API exports (plan: L867–L882)
+- [x] `packages/web/src/__tests__/` — Vitest + jsdom, fake `USBDevice` with transfer spies (plan: L893–L896)
+  - [x] Correct byte streams for 450 and 550 protocol devices
+  - [x] Status parsed correctly per protocol generation
+- [x] **Gate:** `pnpm --filter @thermal-label/labelwriter-web typecheck` (plan: L1273)
+- [x] **Gate:** `pnpm lint` (plan: L1273)
+- [x] **Gate:** `pnpm --filter @thermal-label/labelwriter-web test` (plan: L1273)
+- [x] **Gate:** `pnpm --filter @thermal-label/labelwriter-web build` (plan: L1273)
+- [x] **Commit:** `feat: add labelwriter-web`
 
 ---
 
