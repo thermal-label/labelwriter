@@ -1,0 +1,52 @@
+{
+  "name": "@thermal-label/labelwriter-node",
+  "version": "0.0.0",
+  "description": "Node.js USB and TCP driver for Dymo LabelWriter printers",
+  "keywords": ["dymo", "labelwriter", "label-printer", "thermal-label", "usb", "tcp"],
+  "type": "module",
+  "author": "Mannes Brak",
+  "license": "MIT",
+  "homepage": "https://thermal-label.github.io/labelwriter/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thermal-label/labelwriter.git",
+    "directory": "packages/node"
+  },
+  "bugs": {
+    "url": "https://github.com/thermal-label/labelwriter/issues"
+  },
+  "funding": [
+    { "type": "github", "url": "https://github.com/sponsors/mannes" },
+    { "type": "ko-fi", "url": "https://ko-fi.com/mannes" }
+  ],
+  "files": ["dist", "README.md"],
+  "engines": { "node": ">=24.0.0" },
+  "publishConfig": { "access": "public" },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@thermal-label/labelwriter-core": "workspace:*",
+    "usb": "^2.0.0"
+  },
+  "optionalDependencies": {
+    "@napi-rs/canvas": "^0.1.0"
+  },
+  "devDependencies": {
+    "@mbtech-nl/tsconfig": "^1.0.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^2.0.0",
+    "typescript": "~5.5.0",
+    "vitest": "^2.0.0"
+  }
+}
