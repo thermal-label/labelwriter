@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm lint)",
+      "Bash(pnpm --filter * typecheck)",
+      "Bash(pnpm typecheck)",
+      "Bash(lsusb *)",
+      "Bash(npm info *)",
+      "Bash(pnpm *)",
+      "Bash(npx *)",
+      "Bash(git *)",
+      "Bash(node *)",
+      "Bash(nvm *)"
+    ]
+  }
+}
