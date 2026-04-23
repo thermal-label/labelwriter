@@ -205,7 +205,7 @@
 
 > plan: L1284–L1288
 
-- [ ] `pnpm test:coverage` passes with 90% threshold across all packages (plan: L1285, L400–L402)
-- [ ] All checkboxes in this file are ticked (plan: L1286)
-- [ ] `ci.yml` passes locally (plan: L1287)
-- [ ] **Commit:** `chore: verified all gates pass, ready for release`
+- [x] `pnpm test:coverage` passes with 90% threshold across all packages (plan: L1285, L400–L402)
+- [x] All checkboxes in this file are ticked (plan: L1286)
+- [x] `ci.yml` passes locally (plan: L1287)
+- [x] **Commit:** `chore: verified all gates pass, ready for release`

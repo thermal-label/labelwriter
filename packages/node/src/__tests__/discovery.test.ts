@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('usb', async () => await import('./__mocks__/usb.js'));
 
 import { __setDevices, makeDevice } from './__mocks__/usb.js';
-import { listPrinters } from '../discovery.js';
+import { listPrinters, openPrinter } from '../discovery.js';
 
 describe('listPrinters', () => {
   beforeEach(() => {
@@ -42,5 +42,49 @@ describe('listPrinters', () => {
       makeDevice(0x0922, 0x0052),
     ]);
     expect(listPrinters()).toHaveLength(2);
+  });
+});
+
+describe('openPrinter', () => {
+  beforeEach(() => {
+    __setDevices([]);
+  });
+
+  it('throws when no device found', async () => {
+    __setDevices([]);
+    await expect(openPrinter()).rejects.toThrow();
+  });
+
+  it('returns LabelWriterPrinter for first known device', async () => {
+    __setDevices([makeDevice(0x0922, 0x0029)]);
+    const printer = await openPrinter();
+    expect(printer.device.pid).toBe(0x0029);
+    await printer.close();
+  });
+
+  it('skips unknown devices', async () => {
+    __setDevices([makeDevice(0x9999, 0x9999), makeDevice(0x0922, 0x0029)]);
+    const printer = await openPrinter();
+    expect(printer.device.pid).toBe(0x0029);
+    await printer.close();
+  });
+
+  it('filters by pid', async () => {
+    __setDevices([makeDevice(0x0922, 0x0029), makeDevice(0x0922, 0x002A)]);
+    const printer = await openPrinter({ pid: 0x002A });
+    expect(printer.device.pid).toBe(0x002A);
+    await printer.close();
+  });
+
+  it('matches device by serial number', async () => {
+    __setDevices([makeDevice(0x0922, 0x0029, 'SN-TARGET')]);
+    const printer = await openPrinter({ serialNumber: 'SN-TARGET' });
+    expect(printer.device.pid).toBe(0x0029);
+    await printer.close();
+  });
+
+  it('skips device when serial does not match', async () => {
+    __setDevices([makeDevice(0x0922, 0x0029, 'OTHER-SN')]);
+    await expect(openPrinter({ serialNumber: 'NOT-FOUND' })).rejects.toThrow();
   });
 });

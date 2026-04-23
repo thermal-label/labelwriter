@@ -5,9 +5,14 @@ import {
   buildSetBytesPerLine,
   buildSetLabelLength,
   buildFormFeed,
+  buildShortFormFeed,
   buildJobHeader,
   buildRasterRow,
   buildErrorRecovery,
+  buildDensity,
+  buildMode,
+  buildSelectRoll,
+  buildStatusRequest,
   encodeLabel,
 } from '../protocol.js';
 import { DEVICES } from '../devices.js';
@@ -83,6 +88,39 @@ describe('buildRasterRow', () => {
   });
 });
 
+describe('buildShortFormFeed', () => {
+  it('produces [0x1B, 0x47]', () => {
+    expect(Array.from(buildShortFormFeed())).toEqual([0x1b, 0x47]);
+  });
+});
+
+describe('buildStatusRequest', () => {
+  it('produces [0x1B, 0x41]', () => {
+    expect(Array.from(buildStatusRequest())).toEqual([0x1b, 0x41]);
+  });
+});
+
+describe('buildDensity', () => {
+  it('light → 0x63', () => { expect(buildDensity('light')[1]).toBe(0x63); });
+  it('medium → 0x64', () => { expect(buildDensity('medium')[1]).toBe(0x64); });
+  it('normal → 0x65', () => { expect(buildDensity('normal')[1]).toBe(0x65); });
+  it('high → 0x67', () => { expect(buildDensity('high')[1]).toBe(0x67); });
+});
+
+describe('buildMode', () => {
+  it('text → 0x68', () => { expect(buildMode('text')[1]).toBe(0x68); });
+  it('graphics → 0x69', () => { expect(buildMode('graphics')[1]).toBe(0x69); });
+});
+
+describe('buildSelectRoll', () => {
+  it('roll 0 → [0x1B, 0x71, 0]', () => {
+    expect(Array.from(buildSelectRoll(0))).toEqual([0x1b, 0x71, 0]);
+  });
+  it('roll 1 → [0x1B, 0x71, 1]', () => {
+    expect(Array.from(buildSelectRoll(1))).toEqual([0x1b, 0x71, 1]);
+  });
+});
+
 describe('buildErrorRecovery', () => {
   it('starts with exactly 85 0x1B bytes followed by [0x1B, 0x41]', () => {
     const result = buildErrorRecovery();
@@ -145,6 +183,55 @@ describe('encodeLabel', () => {
       if (result[i] === 0x1b && result[i + 1] === 0x45) formFeeds++;
     }
     expect(formFeeds).toBe(2);
+  });
+
+  it('bitmap narrower than head: pads to head width', () => {
+    const bm = makeBitmap(100, 10);
+    const result = encodeLabel(device450, bm);
+    let rowCount = 0;
+    let i = 0;
+    while (i < result.length) {
+      if (result[i] === 0x16) {
+        rowCount++;
+        i += 1 + device450.bytesPerRow;
+      } else {
+        i++;
+      }
+    }
+    expect(rowCount).toBe(10);
+  });
+
+  it('bitmap wider than head: crops to head width', () => {
+    const bm = makeBitmap(800, 10);
+    const result = encodeLabel(device450, bm);
+    let rowCount = 0;
+    let i = 0;
+    while (i < result.length) {
+      if (result[i] === 0x16) {
+        rowCount++;
+        i += 1 + device450.bytesPerRow;
+      } else {
+        i++;
+      }
+    }
+    expect(rowCount).toBe(10);
+  });
+
+  it('density and mode options are encoded', () => {
+    const bm = makeBitmap(672, 5);
+    const result = encodeLabel(device450, bm, { density: 'high', mode: 'graphics' });
+    const bytes = Array.from(result);
+    const densityIdx = bytes.findIndex((_b, i) => bytes[i] === 0x1b && bytes[i + 1] === 0x67);
+    const modeIdx = bytes.findIndex((_b, i) => bytes[i] === 0x1b && bytes[i + 1] === 0x69);
+    expect(densityIdx).toBeGreaterThan(-1);
+    expect(modeIdx).toBeGreaterThan(-1);
+  });
+
+  it('compressed raster rows when compress=true', () => {
+    const bm = makeBitmap(672, 5);
+    const result = encodeLabel(device450, bm, { compress: true });
+    const hasCompressed = Array.from(result).includes(0x17);
+    expect(hasCompressed).toBe(true);
   });
 
   it('Twin Turbo: roll select command present when roll option given', () => {

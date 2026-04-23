@@ -2,7 +2,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { DEVICES } from '@thermal-label/labelwriter-core';
 import type { DeviceDescriptor } from '@thermal-label/labelwriter-core';
-import { WebLabelWriterPrinter } from '../printer.js';
+import { WebLabelWriterPrinter, fromUSBDevice } from '../printer.js';
 
 function makeUSBDevice(descriptor: DeviceDescriptor): USBDevice {
   const statusResponse = new DataView(new ArrayBuffer(32));
@@ -94,6 +94,19 @@ describe('WebLabelWriterPrinter — 450 protocol', () => {
   });
 });
 
+describe('fromUSBDevice', () => {
+  it('wraps a known device in WebLabelWriterPrinter', () => {
+    const usbDevice = makeUSBDevice(DEVICES.LW_450);
+    const printer = fromUSBDevice(usbDevice);
+    expect(printer.descriptor.pid).toBe(DEVICES.LW_450.pid);
+  });
+
+  it('throws for unknown device', () => {
+    const unknownDevice = makeUSBDevice({ ...DEVICES.LW_450, vid: 0x9999, pid: 0x9999 });
+    expect(() => fromUSBDevice(unknownDevice)).toThrow();
+  });
+});
+
 describe('WebLabelWriterPrinter — 550 protocol', () => {
   const device550 = DEVICES.LW_550;
 
@@ -121,5 +134,100 @@ describe('WebLabelWriterPrinter — 550 protocol', () => {
     const printer = new WebLabelWriterPrinter(usbDevice, device550);
     await printer.printText('Hello');
     expect(vi.mocked(usbDevice.transferOut)).toHaveBeenCalled();
+  });
+
+  it('recover reads 32 bytes for 550', async () => {
+    const usbDevice = makeUSBDevice(device550);
+    const printer = new WebLabelWriterPrinter(usbDevice, device550);
+    await printer.recover();
+    expect(vi.mocked(usbDevice.transferIn)).toHaveBeenCalledWith(2, 32);
+  });
+});
+
+describe('WebLabelWriterPrinter — printImage', () => {
+  const device450 = DEVICES.LW_450;
+
+  it('printImage calls transferOut with image data', async () => {
+    const usbDevice = makeUSBDevice(device450);
+    const printer = new WebLabelWriterPrinter(usbDevice, device450);
+    const imageData = { width: 8, height: 8, data: new Uint8ClampedArray(8 * 8 * 4), colorSpace: 'srgb' as const } as unknown as ImageData;
+    await printer.printImage(imageData);
+    expect(vi.mocked(usbDevice.transferOut)).toHaveBeenCalled();
+  });
+
+  it('printImage passes threshold option', async () => {
+    const usbDevice = makeUSBDevice(device450);
+    const printer = new WebLabelWriterPrinter(usbDevice, device450);
+    const imageData = { width: 8, height: 8, data: new Uint8ClampedArray(8 * 8 * 4), colorSpace: 'srgb' as const } as unknown as ImageData;
+    await printer.printImage(imageData, { threshold: 64, invert: true, dither: true, rotate: 90 });
+    expect(vi.mocked(usbDevice.transferOut)).toHaveBeenCalled();
+  });
+});
+
+describe('WebLabelWriterPrinter — printImageURL', () => {
+  const device450 = DEVICES.LW_450;
+
+  it('throws when canvas context is unavailable (jsdom has no canvas)', async () => {
+    const usbDevice = makeUSBDevice(device450);
+    const printer = new WebLabelWriterPrinter(usbDevice, device450);
+
+    // jsdom does not load images; mock Image to call onload immediately
+    const origImage = globalThis.Image;
+    globalThis.Image = class MockImg {
+      naturalWidth = 8;
+      naturalHeight = 8;
+      set src(_: string) {
+        requestAnimationFrame(() => { this.onload?.(); });
+      }
+      onload: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+    } as unknown as typeof Image;
+
+    // jsdom canvas getContext('2d') returns null → should throw
+    await expect(printer.printImageURL('data:image/png;base64,abc')).rejects.toThrow();
+    globalThis.Image = origImage;
+  });
+});
+
+describe('requestPrinter', () => {
+  it('calls navigator.usb.requestDevice and wraps result', async () => {
+    const { requestPrinter: req } = await import('../printer.js');
+    const fakeDevice = makeUSBDevice(DEVICES.LW_450);
+    Object.defineProperty(navigator, 'usb', {
+      value: { requestDevice: vi.fn(() => Promise.resolve(fakeDevice)) },
+      writable: true,
+      configurable: true,
+    });
+    const printer = await req();
+    expect(printer.descriptor.pid).toBe(DEVICES.LW_450.pid);
+  });
+});
+
+describe('WebLabelWriterPrinter — status parsing', () => {
+  it('reports cover-open when bit 0x08 set', async () => {
+    const device450 = DEVICES.LW_450;
+    const statusData = new DataView(new ArrayBuffer(1));
+    statusData.setUint8(0, 0x08);
+    const usbDevice = makeUSBDevice(device450);
+    vi.mocked(usbDevice.transferIn).mockReturnValue(
+      Promise.resolve({ data: statusData, status: 'ok' }),
+    );
+    const printer = new WebLabelWriterPrinter(usbDevice, device450);
+    const status = await printer.getStatus();
+    expect(status.errors).toContain('Cover open');
+    expect(status.ready).toBe(false);
+  });
+
+  it('paper-out when bit 0x01 set', async () => {
+    const device450 = DEVICES.LW_450;
+    const statusData = new DataView(new ArrayBuffer(1));
+    statusData.setUint8(0, 0x01);
+    const usbDevice = makeUSBDevice(device450);
+    vi.mocked(usbDevice.transferIn).mockReturnValue(
+      Promise.resolve({ data: statusData, status: 'ok' }),
+    );
+    const printer = new WebLabelWriterPrinter(usbDevice, device450);
+    const status = await printer.getStatus();
+    expect(status.paperOut).toBe(true);
   });
 });

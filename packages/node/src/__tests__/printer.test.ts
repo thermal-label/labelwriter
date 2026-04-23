@@ -1,5 +1,5 @@
 /* eslint-disable import-x/consistent-type-specifier-style */
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { DEVICES, buildErrorRecovery } from '@thermal-label/labelwriter-core';
 import type { LabelBitmap } from '@thermal-label/labelwriter-core';
 import { LabelWriterPrinter } from '../printer.js';
@@ -33,6 +33,20 @@ function makeTransport(statusBytes: Uint8Array = new Uint8Array([0x00])): {
 
   return { transport, written };
 }
+
+vi.mock('@napi-rs/canvas', () => ({
+  loadImage: vi.fn(() => Promise.resolve({ width: 10, height: 10 })),
+  createCanvas: vi.fn(() => ({
+    getContext: vi.fn(() => ({
+      drawImage: vi.fn(),
+      getImageData: vi.fn(() => ({ data: new Uint8Array(10 * 10 * 4) })),
+    })),
+  })),
+}));
+
+vi.mock('node:fs/promises', () => ({
+  readFile: vi.fn(() => Promise.resolve(Buffer.from([0]))),
+}));
 
 describe('LabelWriterPrinter', () => {
   const device450 = DEVICES.LW_450;
@@ -125,6 +139,49 @@ describe('LabelWriterPrinter', () => {
       const printer = new LabelWriterPrinter(device450, transport, 'usb');
       await printer.printText('Hello');
       expect(vi.mocked(transport.write)).toHaveBeenCalled();
+      await printer.close();
+    });
+
+    it('passes invert option to renderText', async () => {
+      const { transport } = makeTransport();
+      const printer = new LabelWriterPrinter(device450, transport, 'usb');
+      await printer.printText('Hi', { invert: true, scaleX: 2, scaleY: 2 });
+      expect(vi.mocked(transport.write)).toHaveBeenCalled();
+      await printer.close();
+    });
+  });
+
+  describe('printImage', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    it('loads file and sends bytes to transport', async () => {
+      const { transport } = makeTransport();
+      const printer = new LabelWriterPrinter(device450, transport, 'usb');
+      await printer.printImage('/tmp/label.png');
+      expect(vi.mocked(transport.write)).toHaveBeenCalled();
+      await printer.close();
+    });
+
+    it('accepts a Buffer directly', async () => {
+      const { transport } = makeTransport();
+      const printer = new LabelWriterPrinter(device450, transport, 'usb');
+      await printer.printImage(Buffer.from([0]));
+      expect(vi.mocked(transport.write)).toHaveBeenCalled();
+      await printer.close();
+    });
+  });
+
+  describe('getStatus — 550 error flags', () => {
+    it('reports paper-out when err1 bit 0 set (550)', async () => {
+      const status550 = new Uint8Array(32);
+      status550[1] = 0x01;
+      const { transport } = makeTransport(status550);
+      const printer = new LabelWriterPrinter(device550, transport, 'usb');
+      const status = await printer.getStatus();
+      expect(status.paperOut).toBe(true);
+      expect(status.ready).toBe(false);
       await printer.close();
     });
   });

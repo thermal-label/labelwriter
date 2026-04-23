@@ -8,6 +8,6 @@ export default [
     },
   },
   {
-    ignores: ['**/dist/**', '**/coverage/**', '**/*.d.ts'],
+    ignores: ['**/dist/**', '**/coverage/**', '**/*.d.ts', '**/vitest.config.ts'],
   },
 ];
