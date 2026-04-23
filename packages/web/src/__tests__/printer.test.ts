@@ -28,7 +28,26 @@ function makeUSBDevice(descriptor: DeviceDescriptor): USBDevice {
     isochronousTransferIn: vi.fn(),
     isochronousTransferOut: vi.fn(),
     configurations: [],
-    configuration: undefined,
+    configuration: {
+      configurationValue: 1,
+      configurationName: undefined,
+      interfaces: [{
+        interfaceNumber: 0,
+        alternate: {
+          alternateSetting: 0,
+          interfaceClass: 7,
+          interfaceSubclass: 1,
+          interfaceProtocol: 2,
+          interfaceName: undefined,
+          endpoints: [
+            { endpointNumber: 1, direction: 'out' as const, type: 'bulk' as const, packetSize: 64 },
+            { endpointNumber: 2, direction: 'in' as const, type: 'bulk' as const, packetSize: 64 },
+          ],
+        },
+        alternates: [],
+        claimed: false,
+      }],
+    } as unknown as USBConfiguration,
     deviceClass: 0,
     deviceSubclass: 0,
     deviceProtocol: 0,
