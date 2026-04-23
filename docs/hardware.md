@@ -6,7 +6,7 @@
 | -------------------------- | -------- | -------- | --------- | -------- | -------- | ----------- |
 | LabelWriter 400            | `0x0021` | 450      | 672       | —        | No       | ✅ Verified |
 | LabelWriter 400 Turbo      | `0x0023` | 450      | 672       | —        | No       | 🔲 Expected |
-| LabelWriter 450            | `0x0020` | 450      | 672       | —        | No       | 🔲 Expected |
+| LabelWriter 450            | `0x0020` | 450      | 672       | —        | No       | ✅ Verified |
 | LabelWriter 450 Turbo      | `0x002A` | 450      | 672       | —        | No       | 🔲 Expected |
 | LabelWriter 450 Twin Turbo | `0x002B` | 450      | 672       | —        | No       | 🔲 Expected |
 | LabelWriter 450 Duo        | `0x002C` | 450      | 672       | —        | No       | 🔲 Expected |
