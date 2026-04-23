@@ -101,15 +101,27 @@ describe('buildStatusRequest', () => {
 });
 
 describe('buildDensity', () => {
-  it('light → 0x63', () => { expect(buildDensity('light')[1]).toBe(0x63); });
-  it('medium → 0x64', () => { expect(buildDensity('medium')[1]).toBe(0x64); });
-  it('normal → 0x65', () => { expect(buildDensity('normal')[1]).toBe(0x65); });
-  it('high → 0x67', () => { expect(buildDensity('high')[1]).toBe(0x67); });
+  it('light → 0x63', () => {
+    expect(buildDensity('light')[1]).toBe(0x63);
+  });
+  it('medium → 0x64', () => {
+    expect(buildDensity('medium')[1]).toBe(0x64);
+  });
+  it('normal → 0x65', () => {
+    expect(buildDensity('normal')[1]).toBe(0x65);
+  });
+  it('high → 0x67', () => {
+    expect(buildDensity('high')[1]).toBe(0x67);
+  });
 });
 
 describe('buildMode', () => {
-  it('text → 0x68', () => { expect(buildMode('text')[1]).toBe(0x68); });
-  it('graphics → 0x69', () => { expect(buildMode('graphics')[1]).toBe(0x69); });
+  it('text → 0x68', () => {
+    expect(buildMode('text')[1]).toBe(0x68);
+  });
+  it('graphics → 0x69', () => {
+    expect(buildMode('graphics')[1]).toBe(0x69);
+  });
 });
 
 describe('buildSelectRoll', () => {

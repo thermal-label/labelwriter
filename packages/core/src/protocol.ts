@@ -15,7 +15,8 @@ export function buildSetLabelLength(dots: number): Uint8Array {
 }
 
 export function buildDensity(density: Density): Uint8Array {
-  const byte = density === 'light' ? 0x63 : density === 'medium' ? 0x64 : density === 'high' ? 0x67 : 0x65;
+  const byte =
+    density === 'light' ? 0x63 : density === 'medium' ? 0x64 : density === 'high' ? 0x67 : 0x65;
   return new Uint8Array([0x1b, byte]);
 }
 
@@ -36,7 +37,14 @@ export function buildSelectRoll(roll: 0 | 1): Uint8Array {
 }
 
 export function buildJobHeader(jobId: number): Uint8Array {
-  return new Uint8Array([0x1b, 0x73, jobId & 0xff, (jobId >> 8) & 0xff, (jobId >> 16) & 0xff, (jobId >> 24) & 0xff]);
+  return new Uint8Array([
+    0x1b,
+    0x73,
+    jobId & 0xff,
+    (jobId >> 8) & 0xff,
+    (jobId >> 16) & 0xff,
+    (jobId >> 24) & 0xff,
+  ]);
 }
 
 export function buildStatusRequest(): Uint8Array {
@@ -100,7 +108,11 @@ function concat(...arrays: Uint8Array[]): Uint8Array {
   return out;
 }
 
-export function encodeLabel(device: DeviceDescriptor, bitmap: LabelBitmap, options: PrintOptions = {}): Uint8Array {
+export function encodeLabel(
+  device: DeviceDescriptor,
+  bitmap: LabelBitmap,
+  options: PrintOptions = {},
+): Uint8Array {
   const { density = 'normal', mode = 'text', compress = false, copies = 1, roll, jobId } = options;
 
   const fitted = fitBitmapWidth(bitmap, device.headDots);
@@ -108,7 +120,7 @@ export function encodeLabel(device: DeviceDescriptor, bitmap: LabelBitmap, optio
   const parts: Uint8Array[] = [];
 
   if (device.protocol === '550') {
-    const id = jobId ?? (Date.now() & 0xffffffff);
+    const id = jobId ?? Date.now() & 0xffffffff;
     parts.push(buildJobHeader(id));
   }
 

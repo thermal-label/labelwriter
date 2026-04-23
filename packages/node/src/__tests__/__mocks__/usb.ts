@@ -47,7 +47,9 @@ export function getDeviceList(): MockDevice[] {
 }
 
 export function findByIds(vid: number, pid: number): MockDevice | undefined {
-  return devices.find(d => d.deviceDescriptor.idVendor === vid && d.deviceDescriptor.idProduct === pid);
+  return devices.find(
+    d => d.deviceDescriptor.idVendor === vid && d.deviceDescriptor.idProduct === pid,
+  );
 }
 
 export function makeDevice(
@@ -80,7 +82,9 @@ export function makeDevice(
     deviceAddress,
     open: vi.fn(),
     close: vi.fn(),
-    getStringDescriptor: vi.fn((_idx: number, cb: (err: null, val?: string) => void) => { cb(null, serialNumber); }),
+    getStringDescriptor: vi.fn((_idx: number, cb: (err: null, val?: string) => void) => {
+      cb(null, serialNumber);
+    }),
     interface: vi.fn(() => mockInterface),
   };
 }

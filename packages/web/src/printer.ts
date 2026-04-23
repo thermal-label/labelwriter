@@ -100,8 +100,12 @@ export class WebLabelWriterPrinter {
 async function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.onload = () => { resolve(img); };
-    img.onerror = () => { reject(new Error(`Failed to load image: ${url}`)); };
+    img.onload = () => {
+      resolve(img);
+    };
+    img.onerror = () => {
+      reject(new Error(`Failed to load image: ${url}`));
+    };
     img.src = url;
   });
 }
@@ -115,7 +119,9 @@ export async function requestPrinter(): Promise<WebLabelWriterPrinter> {
 export function fromUSBDevice(usbDevice: USBDevice): WebLabelWriterPrinter {
   const descriptor = findDevice(usbDevice.vendorId, usbDevice.productId);
   if (!descriptor) {
-    throw new Error(`Unknown device: VID=0x${usbDevice.vendorId.toString(16)} PID=0x${usbDevice.productId.toString(16)}`);
+    throw new Error(
+      `Unknown device: VID=0x${usbDevice.vendorId.toString(16)} PID=0x${usbDevice.productId.toString(16)}`,
+    );
   }
   return new WebLabelWriterPrinter(usbDevice, descriptor);
 }

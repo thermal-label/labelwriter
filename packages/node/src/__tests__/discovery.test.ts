@@ -15,10 +15,7 @@ describe('listPrinters', () => {
   });
 
   it('filters out non-LabelWriter devices', () => {
-    __setDevices([
-      makeDevice(0x0922, 0x9999),
-      makeDevice(0x1234, 0x0029),
-    ]);
+    __setDevices([makeDevice(0x0922, 0x9999), makeDevice(0x1234, 0x0029)]);
     expect(listPrinters()).toHaveLength(0);
   });
 
@@ -37,10 +34,7 @@ describe('listPrinters', () => {
   });
 
   it('returns multiple devices', () => {
-    __setDevices([
-      makeDevice(0x0922, 0x0029),
-      makeDevice(0x0922, 0x0052),
-    ]);
+    __setDevices([makeDevice(0x0922, 0x0029), makeDevice(0x0922, 0x0052)]);
     expect(listPrinters()).toHaveLength(2);
   });
 });
@@ -70,9 +64,9 @@ describe('openPrinter', () => {
   });
 
   it('filters by pid', async () => {
-    __setDevices([makeDevice(0x0922, 0x0029), makeDevice(0x0922, 0x002A)]);
-    const printer = await openPrinter({ pid: 0x002A });
-    expect(printer.device.pid).toBe(0x002A);
+    __setDevices([makeDevice(0x0922, 0x0029), makeDevice(0x0922, 0x002a)]);
+    const printer = await openPrinter({ pid: 0x002a });
+    expect(printer.device.pid).toBe(0x002a);
     await printer.close();
   });
 

@@ -5,17 +5,27 @@ const dataListeners: ((chunk: Buffer) => void)[] = [];
 
 const mockSocket = {
   connect: vi.fn((port: number, host: string) => {
-    setImmediate(() => { connectCallback?.(); });
+    setImmediate(() => {
+      connectCallback?.();
+    });
     return { port, host };
   }),
-  write: vi.fn((data: Buffer, cb: (err?: Error) => void) => { cb(); return data; }),
-  end: vi.fn((cb: () => void) => { cb(); }),
+  write: vi.fn((data: Buffer, cb: (err?: Error) => void) => {
+    cb();
+    return data;
+  }),
+  end: vi.fn((cb: () => void) => {
+    cb();
+  }),
   on: vi.fn((event: string, cb: (arg: Buffer) => void) => {
     if (event === 'data') dataListeners.push(cb);
     return mockSocket;
   }),
   once: vi.fn((event: string, cb: (arg?: Error) => void) => {
-    if (event === 'connect') connectCallback = () => { cb(); };
+    if (event === 'connect')
+      connectCallback = () => {
+        cb();
+      };
     return mockSocket;
   }),
   removeListener: vi.fn(() => mockSocket),

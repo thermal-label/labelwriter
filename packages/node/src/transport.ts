@@ -70,7 +70,9 @@ export class TcpTransport implements Transport {
   static async connect(host: string, port = 9100): Promise<TcpTransport> {
     return new Promise((resolve, reject) => {
       const socket = new net.Socket();
-      socket.once('connect', () => { resolve(new TcpTransport(socket)); });
+      socket.once('connect', () => {
+        resolve(new TcpTransport(socket));
+      });
       socket.once('error', reject);
       socket.connect(port, host);
     });
@@ -112,7 +114,9 @@ export class TcpTransport implements Transport {
 
   async close(): Promise<void> {
     return new Promise(resolve => {
-      this.socket.end(() => { resolve(); });
+      this.socket.end(() => {
+        resolve();
+      });
     });
   }
 }

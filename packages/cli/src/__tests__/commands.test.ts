@@ -30,7 +30,12 @@ import { runRecover } from '../commands/recover.js';
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockPrinter.getStatus.mockResolvedValue({ ready: true, paperOut: false, errors: [], rawBytes: new Uint8Array(1) });
+  mockPrinter.getStatus.mockResolvedValue({
+    ready: true,
+    paperOut: false,
+    errors: [],
+    rawBytes: new Uint8Array(1),
+  });
   mockPrinter.printText.mockReturnValue(Promise.resolve());
   mockPrinter.printImage.mockReturnValue(Promise.resolve());
   mockPrinter.recover.mockReturnValue(Promise.resolve());
@@ -42,7 +47,9 @@ beforeEach(() => {
 describe('runList', () => {
   it('prints message when no printers found', () => {
     mocks.listPrinters.mockReturnValue([]);
-    const log = vi.spyOn(console, 'log').mockImplementation(() => { /**/ });
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {
+      /**/
+    });
     runList();
     expect(log).toHaveBeenCalled();
     log.mockRestore();
@@ -57,7 +64,9 @@ describe('runList', () => {
         transport: 'usb' as const,
       },
     ]);
-    const log = vi.spyOn(console, 'log').mockImplementation(() => { /**/ });
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {
+      /**/
+    });
     runList();
     expect(log).toHaveBeenCalled();
     log.mockRestore();
@@ -93,17 +102,26 @@ describe('runPrintText', () => {
 
   it('passes invert option', async () => {
     await runPrintText('Hi', { invert: true });
-    expect(mockPrinter.printText).toHaveBeenCalledWith('Hi', expect.objectContaining({ invert: true }));
+    expect(mockPrinter.printText).toHaveBeenCalledWith(
+      'Hi',
+      expect.objectContaining({ invert: true }),
+    );
   });
 
   it('passes density option', async () => {
     await runPrintText('Hi', { density: 'high' });
-    expect(mockPrinter.printText).toHaveBeenCalledWith('Hi', expect.objectContaining({ density: 'high' }));
+    expect(mockPrinter.printText).toHaveBeenCalledWith(
+      'Hi',
+      expect.objectContaining({ density: 'high' }),
+    );
   });
 
   it('passes copies option', async () => {
     await runPrintText('Hi', { copies: '3' });
-    expect(mockPrinter.printText).toHaveBeenCalledWith('Hi', expect.objectContaining({ copies: 3 }));
+    expect(mockPrinter.printText).toHaveBeenCalledWith(
+      'Hi',
+      expect.objectContaining({ copies: 3 }),
+    );
   });
 
   it('uses TCP transport when host provided', async () => {
@@ -121,12 +139,18 @@ describe('runPrintImage', () => {
 
   it('passes threshold option', async () => {
     await runPrintImage('/tmp/label.png', { threshold: '128' });
-    expect(mockPrinter.printImage).toHaveBeenCalledWith('/tmp/label.png', expect.objectContaining({ threshold: 128 }));
+    expect(mockPrinter.printImage).toHaveBeenCalledWith(
+      '/tmp/label.png',
+      expect.objectContaining({ threshold: 128 }),
+    );
   });
 
   it('passes rotate option', async () => {
     await runPrintImage('/tmp/label.png', { rotate: '90' });
-    expect(mockPrinter.printImage).toHaveBeenCalledWith('/tmp/label.png', expect.objectContaining({ rotate: 90 }));
+    expect(mockPrinter.printImage).toHaveBeenCalledWith(
+      '/tmp/label.png',
+      expect.objectContaining({ rotate: 90 }),
+    );
   });
 
   it('uses TCP transport when host provided', async () => {

@@ -51,7 +51,12 @@ function parseStatus550(bytes: Uint8Array): PrinterStatus {
   const err2 = bytes[2] ?? 0;
   const errors: string[] = [];
   if (err1 || err2) errors.push(`error-flags: ${err1.toString(16)} ${err2.toString(16)}`);
-  return { ready: status === 0 && !err1 && !err2, paperOut: !!(err1 & 0x01), errors, rawBytes: bytes };
+  return {
+    ready: status === 0 && !err1 && !err2,
+    paperOut: !!(err1 & 0x01),
+    errors,
+    rawBytes: bytes,
+  };
 }
 
 export class LabelWriterPrinter {

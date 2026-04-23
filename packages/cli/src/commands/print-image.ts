@@ -28,7 +28,9 @@ export async function runPrintImage(file: string, opts: PrintImageCliOptions): P
         ...(opts.threshold !== undefined && { threshold: parseInt(opts.threshold, 10) }),
         ...(opts.dither === true && { dither: true }),
         ...(opts.invert === true && { invert: true }),
-        ...(opts.rotate !== undefined && { rotate: parseInt(opts.rotate, 10) as 0 | 90 | 180 | 270 }),
+        ...(opts.rotate !== undefined && {
+          rotate: parseInt(opts.rotate, 10) as 0 | 90 | 180 | 270,
+        }),
         ...(opts.density !== undefined && { density: opts.density as Density }),
         ...(opts.mode !== undefined && { mode: opts.mode as 'text' | 'graphics' }),
         ...(opts.copies !== undefined && { copies: parseInt(opts.copies, 10) }),

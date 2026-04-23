@@ -12,9 +12,7 @@ function makeUSBDevice(descriptor: DeviceDescriptor): USBDevice {
     productId: descriptor.pid,
     opened: true,
     transferOut: vi.fn(() => Promise.resolve({ bytesWritten: 0, status: 'ok' })),
-    transferIn: vi.fn(() =>
-      Promise.resolve({ data: statusResponse, status: 'ok' }),
-    ),
+    transferIn: vi.fn(() => Promise.resolve({ data: statusResponse, status: 'ok' })),
     open: vi.fn(() => Promise.resolve()),
     close: vi.fn(() => Promise.resolve()),
     claimInterface: vi.fn(() => Promise.resolve()),
@@ -22,7 +20,9 @@ function makeUSBDevice(descriptor: DeviceDescriptor): USBDevice {
     selectConfiguration: vi.fn(() => Promise.resolve()),
     selectAlternateInterface: vi.fn(() => Promise.resolve()),
     controlTransferOut: vi.fn(() => Promise.resolve({ bytesWritten: 0, status: 'ok' })),
-    controlTransferIn: vi.fn(() => Promise.resolve({ data: new DataView(new ArrayBuffer(0)), status: 'ok' })),
+    controlTransferIn: vi.fn(() =>
+      Promise.resolve({ data: new DataView(new ArrayBuffer(0)), status: 'ok' }),
+    ),
     clearHalt: vi.fn(() => Promise.resolve()),
     reset: vi.fn(() => Promise.resolve()),
     isochronousTransferIn: vi.fn(),
@@ -150,7 +150,12 @@ describe('WebLabelWriterPrinter — printImage', () => {
   it('printImage calls transferOut with image data', async () => {
     const usbDevice = makeUSBDevice(device450);
     const printer = new WebLabelWriterPrinter(usbDevice, device450);
-    const imageData = { width: 8, height: 8, data: new Uint8ClampedArray(8 * 8 * 4), colorSpace: 'srgb' as const } as unknown as ImageData;
+    const imageData = {
+      width: 8,
+      height: 8,
+      data: new Uint8ClampedArray(8 * 8 * 4),
+      colorSpace: 'srgb' as const,
+    } as unknown as ImageData;
     await printer.printImage(imageData);
     expect(vi.mocked(usbDevice.transferOut)).toHaveBeenCalled();
   });
@@ -158,7 +163,12 @@ describe('WebLabelWriterPrinter — printImage', () => {
   it('printImage passes threshold option', async () => {
     const usbDevice = makeUSBDevice(device450);
     const printer = new WebLabelWriterPrinter(usbDevice, device450);
-    const imageData = { width: 8, height: 8, data: new Uint8ClampedArray(8 * 8 * 4), colorSpace: 'srgb' as const } as unknown as ImageData;
+    const imageData = {
+      width: 8,
+      height: 8,
+      data: new Uint8ClampedArray(8 * 8 * 4),
+      colorSpace: 'srgb' as const,
+    } as unknown as ImageData;
     await printer.printImage(imageData, { threshold: 64, invert: true, dither: true, rotate: 90 });
     expect(vi.mocked(usbDevice.transferOut)).toHaveBeenCalled();
   });
@@ -177,7 +187,9 @@ describe('WebLabelWriterPrinter — printImageURL', () => {
       naturalWidth = 8;
       naturalHeight = 8;
       set src(_: string) {
-        requestAnimationFrame(() => { this.onload?.(); });
+        requestAnimationFrame(() => {
+          this.onload?.();
+        });
       }
       onload: (() => void) | null = null;
       onerror: (() => void) | null = null;

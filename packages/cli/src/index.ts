@@ -8,10 +8,7 @@ import { runRecover } from './commands/recover.js';
 export async function run(): Promise<void> {
   const program = new Command();
 
-  program
-    .name('labelwriter')
-    .description('CLI for Dymo LabelWriter printers')
-    .version('0.1.0');
+  program.name('labelwriter').description('CLI for Dymo LabelWriter printers').version('0.1.0');
 
   program
     .command('list')
