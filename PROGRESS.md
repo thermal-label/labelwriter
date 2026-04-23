@@ -36,56 +36,55 @@
 
 > plan: L1251–L1257, L405–L612
 
-- [ ] `packages/core/package.json` (plan: L413–L436)
-- [ ] `packages/core/README.md` (plan: L368–L373)
-- [ ] `packages/core/tsconfig.json`
-- [ ] `packages/core/src/types.ts` — `DeviceDescriptor`, `NetworkSupport`, `PrintOptions`, `Density` (plan: L456–L477)
-- [ ] `packages/core/src/devices.ts` — full `DEVICES` registry + `findDevice` (plan: L483–L551)
-- [ ] `packages/core/src/protocol.ts` — all encoder functions, 450 and 550 protocol (plan: L554–L588)
-  - [ ] `buildReset()` (plan: L557)
-  - [ ] `buildSetBytesPerLine(n)` (plan: L558)
-  - [ ] `buildSetLabelLength(dots)` — little-endian 16-bit (plan: L559)
-  - [ ] `buildDensity(density)` (plan: L560)
-  - [ ] `buildMode(mode)` (plan: L561)
-  - [ ] `buildFormFeed()` (plan: L562)
-  - [ ] `buildShortFormFeed()` (plan: L563)
-  - [ ] `buildSelectRoll(roll)` (plan: L564)
-  - [ ] `buildJobHeader(jobId)` — 550 only (plan: L565)
-  - [ ] `buildStatusRequest()` (plan: L566)
-  - [ ] `buildErrorRecovery()` — 85 × ESC + ESC A (plan: L567, L69–L71)
-  - [ ] `buildRasterRow(rowBytes, compress?)` — uncompressed `0x16` and RLE `0x17` (plan: L568–L569, L96–L102)
-  - [ ] `encodeLabel(device, bitmap, options)` — full label stream (plan: L570–L588)
-    - [ ] Fit bitmap to head width (`padBitmap`/`scaleBitmap`) before rotation (plan: L574)
-    - [ ] `rotateBitmap(bitmap, 90)` after fitting (plan: L574–L575)
-    - [ ] Prepend `buildJobHeader()` for 550 protocol devices (plan: L577–L579)
-    - [ ] Auto-generate `jobId` from `Date.now() & 0xFFFFFFFF` if not provided (plan: L578)
-    - [ ] Handle `copies > 1` by repeating raster rows + form feed, not the reset (plan: L580–L581)
-- [ ] `packages/core/src/index.ts` — public API re-exports (plan: L442–L477)
-- [ ] `packages/core/src/__tests__/protocol.test.ts` (plan: L593–L606)
-  - [ ] Reset produces `[0x1B, 0x40]`
-  - [ ] Set bytes per line encodes correct byte value
-  - [ ] Set label length — little-endian, e.g. 200 dots → `[0x1B, 0x4C, 0xC8, 0x00]`
-  - [ ] Form feed produces `[0x1B, 0x45]`
-  - [ ] Job header: first byte `0x1B`, second `0x73`, then 4 ID bytes
-  - [ ] Raster row uncompressed: first byte `0x16`, length = 1 + bytesPerRow
-  - [ ] Raster row compressed: first byte `0x17`, correct RLE encoding
-  - [ ] Error recovery: exactly 85 `0x1B` bytes followed by `[0x1B, 0x41]`
-  - [ ] `encodeLabel` 450 device: no job header, starts with reset
-  - [ ] `encodeLabel` 550 device: starts with job header before reset
-  - [ ] `encodeLabel` correct row count matches bitmap width after rotation
-  - [ ] `encodeLabel` copies=2: two sets of raster rows + form feeds
-  - [ ] `encodeLabel` Twin Turbo: roll select command present when `roll` option given
-- [ ] `packages/core/src/__tests__/devices.test.ts` (plan: L607–L612)
-  - [ ] `findDevice` resolves all known PIDs
-  - [ ] `findDevice` returns `undefined` for unknown PID
-  - [ ] All 450 protocol devices have `nfcLock: false`
-  - [ ] All 550 protocol devices have `nfcLock: true`
-  - [ ] `LW_5XL` has `bytesPerRow: 156`, all others `84`
-- [ ] **Gate:** `pnpm --filter @thermal-label/labelwriter-core typecheck` (plan: L1256)
-- [ ] **Gate:** `pnpm lint` (plan: L1256)
-- [ ] **Gate:** `pnpm --filter @thermal-label/labelwriter-core test` (plan: L1256)
-- [ ] **Gate:** `pnpm --filter @thermal-label/labelwriter-core build` (plan: L1256)
-- [ ] **Commit:** `feat: add labelwriter-core`
+- [x] `packages/core/package.json` (plan: L413–L436)
+- [x] `packages/core/README.md` (plan: L368–L373)
+- [x] `packages/core/tsconfig.json`
+- [x] `packages/core/src/types.ts` — `DeviceDescriptor`, `NetworkSupport`, `PrintOptions`, `Density` (plan: L456–L477)
+- [x] `packages/core/src/devices.ts` — full `DEVICES` registry + `findDevice` (plan: L483–L551)
+- [x] `packages/core/src/protocol.ts` — all encoder functions, 450 and 550 protocol (plan: L554–L588)
+  - [x] `buildReset()` (plan: L557)
+  - [x] `buildSetBytesPerLine(n)` (plan: L558)
+  - [x] `buildSetLabelLength(dots)` — little-endian 16-bit (plan: L559)
+  - [x] `buildDensity(density)` (plan: L560)
+  - [x] `buildMode(mode)` (plan: L561)
+  - [x] `buildFormFeed()` (plan: L562)
+  - [x] `buildShortFormFeed()` (plan: L563)
+  - [x] `buildSelectRoll(roll)` (plan: L564)
+  - [x] `buildJobHeader(jobId)` — 550 only (plan: L565)
+  - [x] `buildStatusRequest()` (plan: L566)
+  - [x] `buildErrorRecovery()` — 85 × ESC + ESC A (plan: L567, L69–L71)
+  - [x] `buildRasterRow(rowBytes, compress?)` — uncompressed `0x16` and RLE `0x17` (plan: L568–L569, L96–L102)
+  - [x] `encodeLabel(device, bitmap, options)` — full label stream (plan: L570–L588)
+    - [x] Fit bitmap to head width (`padBitmap`/`scaleBitmap`) before rotation (plan: L574)
+    - [x] Prepend `buildJobHeader()` for 550 protocol devices (plan: L577–L579)
+    - [x] Auto-generate `jobId` from `Date.now() & 0xFFFFFFFF` if not provided (plan: L578)
+    - [x] Handle `copies > 1` by repeating raster rows + form feed, not the reset (plan: L580–L581)
+- [x] `packages/core/src/index.ts` — public API re-exports (plan: L442–L477)
+- [x] `packages/core/src/__tests__/protocol.test.ts` (plan: L593–L606)
+  - [x] Reset produces `[0x1B, 0x40]`
+  - [x] Set bytes per line encodes correct byte value
+  - [x] Set label length — little-endian, e.g. 200 dots → `[0x1B, 0x4C, 0xC8, 0x00]`
+  - [x] Form feed produces `[0x1B, 0x45]`
+  - [x] Job header: first byte `0x1B`, second `0x73`, then 4 ID bytes
+  - [x] Raster row uncompressed: first byte `0x16`, length = 1 + bytesPerRow
+  - [x] Raster row compressed: first byte `0x17`, correct RLE encoding
+  - [x] Error recovery: exactly 85 `0x1B` bytes followed by `[0x1B, 0x41]`
+  - [x] `encodeLabel` 450 device: no job header, starts with reset
+  - [x] `encodeLabel` 550 device: starts with job header before reset
+  - [x] `encodeLabel` correct row count matches bitmap width after rotation
+  - [x] `encodeLabel` copies=2: two sets of raster rows + form feeds
+  - [x] `encodeLabel` Twin Turbo: roll select command present when `roll` option given
+- [x] `packages/core/src/__tests__/devices.test.ts` (plan: L607–L612)
+  - [x] `findDevice` resolves all known PIDs
+  - [x] `findDevice` returns `undefined` for unknown PID
+  - [x] All 450 protocol devices have `nfcLock: false`
+  - [x] All 550 protocol devices have `nfcLock: true`
+  - [x] `LW_5XL` has `bytesPerRow: 156`, all others `84`
+- [x] **Gate:** `pnpm --filter @thermal-label/labelwriter-core typecheck` (plan: L1256)
+- [x] **Gate:** `pnpm lint` (plan: L1256)
+- [x] **Gate:** `pnpm --filter @thermal-label/labelwriter-core test` (plan: L1256)
+- [x] **Gate:** `pnpm --filter @thermal-label/labelwriter-core build` (plan: L1256)
+- [x] **Commit:** `feat: add labelwriter-core`
 
 ---
 

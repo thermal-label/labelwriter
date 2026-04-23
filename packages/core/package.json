@@ -1,0 +1,49 @@
+{
+  "name": "@thermal-label/labelwriter-core",
+  "version": "0.0.0",
+  "description": "Protocol encoding and device registry for Dymo LabelWriter printers",
+  "keywords": ["dymo", "labelwriter", "label-printer", "thermal-label", "usb"],
+  "type": "module",
+  "author": "Mannes Brak",
+  "license": "MIT",
+  "homepage": "https://thermal-label.github.io/labelwriter/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thermal-label/labelwriter.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/thermal-label/labelwriter/issues"
+  },
+  "funding": [
+    { "type": "github", "url": "https://github.com/sponsors/mannes" },
+    { "type": "ko-fi", "url": "https://ko-fi.com/mannes" }
+  ],
+  "files": ["dist", "src", "README.md"],
+  "engines": { "node": ">=24.0.0" },
+  "publishConfig": { "access": "public" },
+  "sideEffects": false,
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@mbtech-nl/bitmap": "^0.1.0"
+  },
+  "devDependencies": {
+    "@mbtech-nl/tsconfig": "^1.0.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^2.0.0",
+    "typescript": "~5.5.0",
+    "vitest": "^2.0.0"
+  }
+}
