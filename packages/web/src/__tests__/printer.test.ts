@@ -214,8 +214,16 @@ describe('WebLabelWriterPrinter — printImageURL', () => {
       onerror: (() => void) | null = null;
     } as unknown as typeof Image;
 
-    // jsdom canvas getContext('2d') returns null → should throw
+    // Stub getContext to return null directly, avoiding jsdom's "not implemented"
+    // warning for HTMLCanvasElement.getContext. The printer must reject when 2d
+    // context is unavailable.
+    const getContextSpy = vi
+      .spyOn(HTMLCanvasElement.prototype, 'getContext')
+      .mockReturnValue(null);
+
     await expect(printer.printImageURL('data:image/png;base64,abc')).rejects.toThrow();
+
+    getContextSpy.mockRestore();
     globalThis.Image = origImage;
   });
 });
