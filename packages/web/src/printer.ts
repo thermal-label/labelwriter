@@ -110,10 +110,25 @@ async function loadImage(url: string): Promise<HTMLImageElement> {
   });
 }
 
+async function setupUSBDevice(device: USBDevice): Promise<void> {
+  await device.open();
+  if (device.configuration === null) {
+    await device.selectConfiguration(1);
+  }
+  await device.claimInterface(0);
+}
+
 export async function requestPrinter(): Promise<WebLabelWriterPrinter> {
   const filters = Object.values(DEVICES).map(d => ({ vendorId: d.vid, productId: d.pid }));
   const usbDevice = await navigator.usb.requestDevice({ filters });
-  return fromUSBDevice(usbDevice);
+  await setupUSBDevice(usbDevice);
+  const descriptor = findDevice(usbDevice.vendorId, usbDevice.productId);
+  if (!descriptor) {
+    throw new Error(
+      `Unknown device: VID=0x${usbDevice.vendorId.toString(16)} PID=0x${usbDevice.productId.toString(16)}`,
+    );
+  }
+  return new WebLabelWriterPrinter(usbDevice, descriptor);
 }
 
 export function fromUSBDevice(usbDevice: USBDevice): WebLabelWriterPrinter {

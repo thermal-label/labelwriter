@@ -18,6 +18,7 @@ export class WebUsbTransport {
   }
 
   async close(): Promise<void> {
+    await this.device.releaseInterface(0);
     await this.device.close();
   }
 }
