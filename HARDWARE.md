@@ -4,19 +4,19 @@
 
 All devices share Vendor ID `0x0922` (Dymo-CoStar Corp.) and use USB Printer Class (bulk transfer).
 
-| Device | USB PID | Head dots | Network | NFC lock | Status | Notes |
-|---|---|---|---|---|---|---|
-| LabelWriter 400 | `0x0021` | 672 | ❌ | ❌ | 🟡 Expected | Predecessor to 450 series, same protocol |
-| LabelWriter 400 Turbo | `0x0023` | 672 | ❌ | ❌ | 🟡 Expected | Same protocol as 450 |
-| LabelWriter 450 | `0x0029` | 672 | ❌ | ❌ | 🟡 Expected | Reference 450 protocol |
-| LabelWriter 450 Turbo | `0x002A` | 672 | ❌ | ❌ | 🟡 Expected | |
-| LabelWriter 450 Twin Turbo | `0x002B` | 672 | ❌ | ❌ | 🟡 Expected | Dual roll — `ESC q` roll select |
-| LabelWriter 450 Duo | `0x002C` | 672 | ❌ | ❌ | 🟡 Expected | Also has D1 tape head (128 dots, 180 dpi) — tape out of scope |
-| LabelWriter 4XL | `0x0025` | 672 | ❌ | ❌ | 🟡 Expected | Wide format labels |
-| LabelWriter Wireless | `0x0031` | 672 | WiFi | ❌ | 🟡 Expected | TCP supported |
-| LabelWriter 550 | `0x0052` | 672 | ❌ | ✅ | 🟡 Expected | NFC lock — genuine labels only |
-| LabelWriter 550 Turbo | `0x0053` | 672 | LAN | ✅ | 🟡 Expected | NFC lock + TCP |
-| LabelWriter 5XL | `0x0054` | 1248 | LAN | ✅ | 🟡 Expected | Wide head (101mm) + NFC lock + TCP |
+| Device                     | USB PID  | Head dots | Network | NFC lock | Status      | Notes                                                         |
+| -------------------------- | -------- | --------- | ------- | -------- | ----------- | ------------------------------------------------------------- |
+| LabelWriter 400            | `0x0021` | 672       | ❌      | ❌       | 🟡 Expected | Predecessor to 450 series, same protocol                      |
+| LabelWriter 400 Turbo      | `0x0023` | 672       | ❌      | ❌       | 🟡 Expected | Same protocol as 450                                          |
+| LabelWriter 450            | `0x0020` | 672       | ❌      | ❌       | 🟡 Expected | Reference 450 protocol                                        |
+| LabelWriter 450 Turbo      | `0x002A` | 672       | ❌      | ❌       | 🟡 Expected |                                                               |
+| LabelWriter 450 Twin Turbo | `0x002B` | 672       | ❌      | ❌       | 🟡 Expected | Dual roll — `ESC q` roll select                               |
+| LabelWriter 450 Duo        | `0x002C` | 672       | ❌      | ❌       | 🟡 Expected | Also has D1 tape head (128 dots, 180 dpi) — tape out of scope |
+| LabelWriter 4XL            | `0x0025` | 672       | ❌      | ❌       | 🟡 Expected | Wide format labels                                            |
+| LabelWriter Wireless       | `0x0031` | 672       | WiFi    | ❌       | 🟡 Expected | TCP supported                                                 |
+| LabelWriter 550            | `0x0052` | 672       | ❌      | ✅       | 🟡 Expected | NFC lock — genuine labels only                                |
+| LabelWriter 550 Turbo      | `0x0053` | 672       | LAN     | ✅       | 🟡 Expected | NFC lock + TCP                                                |
+| LabelWriter 5XL            | `0x0054` | 1248      | LAN     | ✅       | 🟡 Expected | Wide head (101mm) + NFC lock + TCP                            |
 
 > Have a device marked 🟡 Expected? Run `LABELWRITER_INTEGRATION=1 pnpm test` and open a
 > [hardware verification issue](/.github/ISSUE_TEMPLATE/hardware_verification.md).
@@ -74,10 +74,10 @@ the job stream format.
 
 ## Print Head Geometry
 
-| Model family | Head dots | Bytes per raster row | Paper path |
-|---|---|---|---|
-| 450 series, Wireless, 550, 550 Turbo | 672 | 84 | 63 mm |
-| 5XL | 1248 | 156 | ~110 mm |
+| Model family                         | Head dots | Bytes per raster row | Paper path |
+| ------------------------------------ | --------- | -------------------- | ---------- |
+| 450 series, Wireless, 550, 550 Turbo | 672       | 84                   | 63 mm      |
+| 5XL                                  | 1248      | 156                  | ~110 mm    |
 
 A `1` bit = black dot (printed). A `0` bit = white dot (unprinted).  
 MSB = leftmost dot on the label. No built-in fonts — the host renders everything to a bitmap.

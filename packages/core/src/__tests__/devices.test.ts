@@ -13,7 +13,7 @@ describe('findDevice', () => {
   });
 
   it('returns undefined for unknown VID', () => {
-    expect(findDevice(0xffff, 0x0029)).toBeUndefined();
+    expect(findDevice(0xffff, 0x0020)).toBeUndefined();
   });
 });
 

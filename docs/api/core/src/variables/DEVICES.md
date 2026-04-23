@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [core/src](../README.md) / DEVICES
 
@@ -12,398 +12,398 @@ Defined in: core/src/devices.ts:4
 
 ## Type Declaration
 
-### LW\_400
+### LW_400
 
-> `readonly` **LW\_400**: `object`
+> `readonly` **LW_400**: `object`
 
-#### LW\_400.bytesPerRow
+#### LW_400.bytesPerRow
 
 > `readonly` **bytesPerRow**: `84` = `84`
 
-#### LW\_400.headDots
+#### LW_400.headDots
 
 > `readonly` **headDots**: `672` = `672`
 
-#### LW\_400.name
+#### LW_400.name
 
 > `readonly` **name**: `"LabelWriter 400"` = `'LabelWriter 400'`
 
-#### LW\_400.network
+#### LW_400.network
 
 > `readonly` **network**: `"none"` = `'none'`
 
-#### LW\_400.nfcLock
+#### LW_400.nfcLock
 
 > `readonly` **nfcLock**: `false` = `false`
 
-#### LW\_400.pid
+#### LW_400.pid
 
 > `readonly` **pid**: `33` = `0x0021`
 
-#### LW\_400.protocol
+#### LW_400.protocol
 
 > `readonly` **protocol**: `"450"` = `'450'`
 
-#### LW\_400.vid
+#### LW_400.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
-### LW\_400\_TURBO
+### LW_400_TURBO
 
-> `readonly` **LW\_400\_TURBO**: `object`
+> `readonly` **LW_400_TURBO**: `object`
 
-#### LW\_400\_TURBO.bytesPerRow
+#### LW_400_TURBO.bytesPerRow
 
 > `readonly` **bytesPerRow**: `84` = `84`
 
-#### LW\_400\_TURBO.headDots
+#### LW_400_TURBO.headDots
 
 > `readonly` **headDots**: `672` = `672`
 
-#### LW\_400\_TURBO.name
+#### LW_400_TURBO.name
 
 > `readonly` **name**: `"LabelWriter 400 Turbo"` = `'LabelWriter 400 Turbo'`
 
-#### LW\_400\_TURBO.network
+#### LW_400_TURBO.network
 
 > `readonly` **network**: `"none"` = `'none'`
 
-#### LW\_400\_TURBO.nfcLock
+#### LW_400_TURBO.nfcLock
 
 > `readonly` **nfcLock**: `false` = `false`
 
-#### LW\_400\_TURBO.pid
+#### LW_400_TURBO.pid
 
 > `readonly` **pid**: `35` = `0x0023`
 
-#### LW\_400\_TURBO.protocol
+#### LW_400_TURBO.protocol
 
 > `readonly` **protocol**: `"450"` = `'450'`
 
-#### LW\_400\_TURBO.vid
+#### LW_400_TURBO.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
-### LW\_450
+### LW_450
 
-> `readonly` **LW\_450**: `object`
+> `readonly` **LW_450**: `object`
 
-#### LW\_450.bytesPerRow
+#### LW_450.bytesPerRow
 
 > `readonly` **bytesPerRow**: `84` = `84`
 
-#### LW\_450.headDots
+#### LW_450.headDots
 
 > `readonly` **headDots**: `672` = `672`
 
-#### LW\_450.name
+#### LW_450.name
 
 > `readonly` **name**: `"LabelWriter 450"` = `'LabelWriter 450'`
 
-#### LW\_450.network
+#### LW_450.network
 
 > `readonly` **network**: `"none"` = `'none'`
 
-#### LW\_450.nfcLock
+#### LW_450.nfcLock
 
 > `readonly` **nfcLock**: `false` = `false`
 
-#### LW\_450.pid
+#### LW_450.pid
 
-> `readonly` **pid**: `41` = `0x0029`
+> `readonly` **pid**: `41` = `0x0020`
 
-#### LW\_450.protocol
+#### LW_450.protocol
 
 > `readonly` **protocol**: `"450"` = `'450'`
 
-#### LW\_450.vid
+#### LW_450.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
-### LW\_450\_DUO
+### LW_450_DUO
 
-> `readonly` **LW\_450\_DUO**: `object`
+> `readonly` **LW_450_DUO**: `object`
 
-#### LW\_450\_DUO.bytesPerRow
+#### LW_450_DUO.bytesPerRow
 
 > `readonly` **bytesPerRow**: `84` = `84`
 
-#### LW\_450\_DUO.headDots
+#### LW_450_DUO.headDots
 
 > `readonly` **headDots**: `672` = `672`
 
-#### LW\_450\_DUO.name
+#### LW_450_DUO.name
 
 > `readonly` **name**: `"LabelWriter 450 Duo"` = `'LabelWriter 450 Duo'`
 
-#### LW\_450\_DUO.network
+#### LW_450_DUO.network
 
 > `readonly` **network**: `"none"` = `'none'`
 
-#### LW\_450\_DUO.nfcLock
+#### LW_450_DUO.nfcLock
 
 > `readonly` **nfcLock**: `false` = `false`
 
-#### LW\_450\_DUO.pid
+#### LW_450_DUO.pid
 
 > `readonly` **pid**: `44` = `0x002c`
 
-#### LW\_450\_DUO.protocol
+#### LW_450_DUO.protocol
 
 > `readonly` **protocol**: `"450"` = `'450'`
 
-#### LW\_450\_DUO.vid
+#### LW_450_DUO.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
-### LW\_450\_TURBO
+### LW_450_TURBO
 
-> `readonly` **LW\_450\_TURBO**: `object`
+> `readonly` **LW_450_TURBO**: `object`
 
-#### LW\_450\_TURBO.bytesPerRow
+#### LW_450_TURBO.bytesPerRow
 
 > `readonly` **bytesPerRow**: `84` = `84`
 
-#### LW\_450\_TURBO.headDots
+#### LW_450_TURBO.headDots
 
 > `readonly` **headDots**: `672` = `672`
 
-#### LW\_450\_TURBO.name
+#### LW_450_TURBO.name
 
 > `readonly` **name**: `"LabelWriter 450 Turbo"` = `'LabelWriter 450 Turbo'`
 
-#### LW\_450\_TURBO.network
+#### LW_450_TURBO.network
 
 > `readonly` **network**: `"none"` = `'none'`
 
-#### LW\_450\_TURBO.nfcLock
+#### LW_450_TURBO.nfcLock
 
 > `readonly` **nfcLock**: `false` = `false`
 
-#### LW\_450\_TURBO.pid
+#### LW_450_TURBO.pid
 
 > `readonly` **pid**: `42` = `0x002a`
 
-#### LW\_450\_TURBO.protocol
+#### LW_450_TURBO.protocol
 
 > `readonly` **protocol**: `"450"` = `'450'`
 
-#### LW\_450\_TURBO.vid
+#### LW_450_TURBO.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
-### LW\_450\_TWIN\_TURBO
+### LW_450_TWIN_TURBO
 
-> `readonly` **LW\_450\_TWIN\_TURBO**: `object`
+> `readonly` **LW_450_TWIN_TURBO**: `object`
 
-#### LW\_450\_TWIN\_TURBO.bytesPerRow
+#### LW_450_TWIN_TURBO.bytesPerRow
 
 > `readonly` **bytesPerRow**: `84` = `84`
 
-#### LW\_450\_TWIN\_TURBO.headDots
+#### LW_450_TWIN_TURBO.headDots
 
 > `readonly` **headDots**: `672` = `672`
 
-#### LW\_450\_TWIN\_TURBO.name
+#### LW_450_TWIN_TURBO.name
 
 > `readonly` **name**: `"LabelWriter 450 Twin Turbo"` = `'LabelWriter 450 Twin Turbo'`
 
-#### LW\_450\_TWIN\_TURBO.network
+#### LW_450_TWIN_TURBO.network
 
 > `readonly` **network**: `"none"` = `'none'`
 
-#### LW\_450\_TWIN\_TURBO.nfcLock
+#### LW_450_TWIN_TURBO.nfcLock
 
 > `readonly` **nfcLock**: `false` = `false`
 
-#### LW\_450\_TWIN\_TURBO.pid
+#### LW_450_TWIN_TURBO.pid
 
 > `readonly` **pid**: `43` = `0x002b`
 
-#### LW\_450\_TWIN\_TURBO.protocol
+#### LW_450_TWIN_TURBO.protocol
 
 > `readonly` **protocol**: `"450"` = `'450'`
 
-#### LW\_450\_TWIN\_TURBO.vid
+#### LW_450_TWIN_TURBO.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
-### LW\_4XL
+### LW_4XL
 
-> `readonly` **LW\_4XL**: `object`
+> `readonly` **LW_4XL**: `object`
 
-#### LW\_4XL.bytesPerRow
+#### LW_4XL.bytesPerRow
 
 > `readonly` **bytesPerRow**: `84` = `84`
 
-#### LW\_4XL.headDots
+#### LW_4XL.headDots
 
 > `readonly` **headDots**: `672` = `672`
 
-#### LW\_4XL.name
+#### LW_4XL.name
 
 > `readonly` **name**: `"LabelWriter 4XL"` = `'LabelWriter 4XL'`
 
-#### LW\_4XL.network
+#### LW_4XL.network
 
 > `readonly` **network**: `"none"` = `'none'`
 
-#### LW\_4XL.nfcLock
+#### LW_4XL.nfcLock
 
 > `readonly` **nfcLock**: `false` = `false`
 
-#### LW\_4XL.pid
+#### LW_4XL.pid
 
 > `readonly` **pid**: `37` = `0x0025`
 
-#### LW\_4XL.protocol
+#### LW_4XL.protocol
 
 > `readonly` **protocol**: `"450"` = `'450'`
 
-#### LW\_4XL.vid
+#### LW_4XL.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
-### LW\_550
+### LW_550
 
-> `readonly` **LW\_550**: `object`
+> `readonly` **LW_550**: `object`
 
-#### LW\_550.bytesPerRow
+#### LW_550.bytesPerRow
 
 > `readonly` **bytesPerRow**: `84` = `84`
 
-#### LW\_550.headDots
+#### LW_550.headDots
 
 > `readonly` **headDots**: `672` = `672`
 
-#### LW\_550.name
+#### LW_550.name
 
 > `readonly` **name**: `"LabelWriter 550"` = `'LabelWriter 550'`
 
-#### LW\_550.network
+#### LW_550.network
 
 > `readonly` **network**: `"none"` = `'none'`
 
-#### LW\_550.nfcLock
+#### LW_550.nfcLock
 
 > `readonly` **nfcLock**: `true` = `true`
 
-#### LW\_550.pid
+#### LW_550.pid
 
 > `readonly` **pid**: `82` = `0x0052`
 
-#### LW\_550.protocol
+#### LW_550.protocol
 
 > `readonly` **protocol**: `"550"` = `'550'`
 
-#### LW\_550.vid
+#### LW_550.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
-### LW\_550\_TURBO
+### LW_550_TURBO
 
-> `readonly` **LW\_550\_TURBO**: `object`
+> `readonly` **LW_550_TURBO**: `object`
 
-#### LW\_550\_TURBO.bytesPerRow
+#### LW_550_TURBO.bytesPerRow
 
 > `readonly` **bytesPerRow**: `84` = `84`
 
-#### LW\_550\_TURBO.headDots
+#### LW_550_TURBO.headDots
 
 > `readonly` **headDots**: `672` = `672`
 
-#### LW\_550\_TURBO.name
+#### LW_550_TURBO.name
 
 > `readonly` **name**: `"LabelWriter 550 Turbo"` = `'LabelWriter 550 Turbo'`
 
-#### LW\_550\_TURBO.network
+#### LW_550_TURBO.network
 
 > `readonly` **network**: `"wired"` = `'wired'`
 
-#### LW\_550\_TURBO.nfcLock
+#### LW_550_TURBO.nfcLock
 
 > `readonly` **nfcLock**: `true` = `true`
 
-#### LW\_550\_TURBO.pid
+#### LW_550_TURBO.pid
 
 > `readonly` **pid**: `83` = `0x0053`
 
-#### LW\_550\_TURBO.protocol
+#### LW_550_TURBO.protocol
 
 > `readonly` **protocol**: `"550"` = `'550'`
 
-#### LW\_550\_TURBO.vid
+#### LW_550_TURBO.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
-### LW\_5XL
+### LW_5XL
 
-> `readonly` **LW\_5XL**: `object`
+> `readonly` **LW_5XL**: `object`
 
-#### LW\_5XL.bytesPerRow
+#### LW_5XL.bytesPerRow
 
 > `readonly` **bytesPerRow**: `156` = `156`
 
-#### LW\_5XL.headDots
+#### LW_5XL.headDots
 
 > `readonly` **headDots**: `1248` = `1248`
 
-#### LW\_5XL.name
+#### LW_5XL.name
 
 > `readonly` **name**: `"LabelWriter 5XL"` = `'LabelWriter 5XL'`
 
-#### LW\_5XL.network
+#### LW_5XL.network
 
 > `readonly` **network**: `"wired"` = `'wired'`
 
-#### LW\_5XL.nfcLock
+#### LW_5XL.nfcLock
 
 > `readonly` **nfcLock**: `true` = `true`
 
-#### LW\_5XL.pid
+#### LW_5XL.pid
 
 > `readonly` **pid**: `84` = `0x0054`
 
-#### LW\_5XL.protocol
+#### LW_5XL.protocol
 
 > `readonly` **protocol**: `"550"` = `'550'`
 
-#### LW\_5XL.vid
+#### LW_5XL.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
-### LW\_WIRELESS
+### LW_WIRELESS
 
-> `readonly` **LW\_WIRELESS**: `object`
+> `readonly` **LW_WIRELESS**: `object`
 
-#### LW\_WIRELESS.bytesPerRow
+#### LW_WIRELESS.bytesPerRow
 
 > `readonly` **bytesPerRow**: `84` = `84`
 
-#### LW\_WIRELESS.headDots
+#### LW_WIRELESS.headDots
 
 > `readonly` **headDots**: `672` = `672`
 
-#### LW\_WIRELESS.name
+#### LW_WIRELESS.name
 
 > `readonly` **name**: `"LabelWriter Wireless"` = `'LabelWriter Wireless'`
 
-#### LW\_WIRELESS.network
+#### LW_WIRELESS.network
 
 > `readonly` **network**: `"wifi"` = `'wifi'`
 
-#### LW\_WIRELESS.nfcLock
+#### LW_WIRELESS.nfcLock
 
 > `readonly` **nfcLock**: `false` = `false`
 
-#### LW\_WIRELESS.pid
+#### LW_WIRELESS.pid
 
 > `readonly` **pid**: `49` = `0x0031`
 
-#### LW\_WIRELESS.protocol
+#### LW_WIRELESS.protocol
 
 > `readonly` **protocol**: `"450"` = `'450'`
 
-#### LW\_WIRELESS.vid
+#### LW_WIRELESS.vid
 
 > `readonly` **vid**: `2338` = `0x0922`

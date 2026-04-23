@@ -25,7 +25,7 @@ export const DEVICES = {
   LW_450: {
     name: 'LabelWriter 450',
     vid: 0x0922,
-    pid: 0x0029,
+    pid: 0x0020,
     headDots: 672,
     bytesPerRow: 84,
     protocol: '450',

@@ -58,7 +58,7 @@ describe('runList', () => {
   it('lists printers when found', () => {
     mocks.listPrinters.mockReturnValue([
       {
-        device: { name: 'LabelWriter 450', vid: 0x0922, pid: 0x0029 },
+        device: { name: 'LabelWriter 450', vid: 0x0922, pid: 0x0020 },
         serialNumber: 'ABC123',
         path: 'usb:1:2',
         transport: 'usb' as const,

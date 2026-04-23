@@ -12,24 +12,24 @@ describe('UsbTransport', () => {
 
   it('throws when device not found', () => {
     __setDevices([]);
-    expect(() => UsbTransport.open(0x0922, 0x0029)).toThrow();
+    expect(() => UsbTransport.open(0x0922, 0x0020)).toThrow();
   });
 
   it('opens device and claims interface', async () => {
-    const device = makeDevice(0x0922, 0x0029);
+    const device = makeDevice(0x0922, 0x0020);
     __setDevices([device]);
 
-    const transport = UsbTransport.open(0x0922, 0x0029);
+    const transport = UsbTransport.open(0x0922, 0x0020);
     expect(device.open).toHaveBeenCalled();
 
     await transport.close();
   });
 
   it('write sends data to bulk OUT endpoint', async () => {
-    const device = makeDevice(0x0922, 0x0029);
+    const device = makeDevice(0x0922, 0x0020);
     __setDevices([device]);
 
-    const transport = UsbTransport.open(0x0922, 0x0029);
+    const transport = UsbTransport.open(0x0922, 0x0020);
     const data = new Uint8Array([0x1b, 0x40]);
     await transport.write(data);
 
@@ -41,10 +41,10 @@ describe('UsbTransport', () => {
   });
 
   it('read returns Uint8Array from bulk IN endpoint', async () => {
-    const device = makeDevice(0x0922, 0x0029);
+    const device = makeDevice(0x0922, 0x0020);
     __setDevices([device]);
 
-    const transport = UsbTransport.open(0x0922, 0x0029);
+    const transport = UsbTransport.open(0x0922, 0x0020);
     const result = await transport.read(1);
 
     expect(result).toBeInstanceOf(Uint8Array);
@@ -54,10 +54,10 @@ describe('UsbTransport', () => {
   });
 
   it('close releases interface and closes device', async () => {
-    const device = makeDevice(0x0922, 0x0029);
+    const device = makeDevice(0x0922, 0x0020);
     __setDevices([device]);
 
-    const transport = UsbTransport.open(0x0922, 0x0029);
+    const transport = UsbTransport.open(0x0922, 0x0020);
     await transport.close();
 
     const iface = device.interface(0);

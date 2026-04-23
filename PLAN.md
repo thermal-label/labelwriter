@@ -5,6 +5,7 @@
 > (Printer Class bulk transfer) and TCP network transport (550 Turbo and 5XL).
 >
 > Two protocol generations are covered:
+>
 > - **LabelWriter 450 series** — ESC/raster, officially documented, no NFC lock
 > - **LabelWriter 550 series + 5XL** — ESC/raster with job header, NFC label lock
 >
@@ -21,19 +22,19 @@
 All devices share Vendor ID `0x0922` (Dymo-CoStar Corp.) and use USB Printer
 Class (bulk transfer). The byte stream is identical over USB and TCP.
 
-| Device | USB PID | Head dots | Network | NFC lock | Status | Notes |
-|---|---|---|---|---|---|---|
-| LabelWriter 400 | `0x0021` | 672 | ❌ | ❌ | 🟡 Expected | Predecessor to 450 series, same protocol |
-| LabelWriter 400 Turbo | `0x0023` | 672 | ❌ | ❌ | 🟡 Expected | Same protocol as 450 |
-| LabelWriter 450 | `0x0029` | 672 | ❌ | ❌ | 🟡 Expected | Reference 450 protocol |
-| LabelWriter 450 Turbo | `0x002A` | 672 | ❌ | ❌ | 🟡 Expected | |
-| LabelWriter 450 Twin Turbo | `0x002B` | 672 | ❌ | ❌ | 🟡 Expected | Dual roll — `ESC q` roll select |
-| LabelWriter 450 Duo | `0x002C` | 672 | ❌ | ❌ | 🟡 Expected | Also has D1 tape head (128 dots, 180 dpi) — tape out of scope |
-| LabelWriter 4XL | `0x0025` | 672 | ❌ | ❌ | 🟡 Expected | Wide format labels |
-| LabelWriter Wireless | `0x0031` | 672 | WiFi | ❌ | 🟡 Expected | TCP supported |
-| LabelWriter 550 | `0x0052` | 672 | ❌ | ✅ | 🟡 Expected | NFC lock — genuine labels only |
-| LabelWriter 550 Turbo | `0x0053` | 672 | LAN | ✅ | 🟡 Expected | NFC lock + TCP |
-| LabelWriter 5XL | `0x0054` | 1248 | LAN | ✅ | 🟡 Expected | Wide head (101mm) + NFC lock + TCP |
+| Device                     | USB PID  | Head dots | Network | NFC lock | Status      | Notes                                                         |
+| -------------------------- | -------- | --------- | ------- | -------- | ----------- | ------------------------------------------------------------- |
+| LabelWriter 400            | `0x0021` | 672       | ❌      | ❌       | 🟡 Expected | Predecessor to 450 series, same protocol                      |
+| LabelWriter 400 Turbo      | `0x0023` | 672       | ❌      | ❌       | 🟡 Expected | Same protocol as 450                                          |
+| LabelWriter 450            | `0x0020` | 672       | ❌      | ❌       | 🟡 Expected | Reference 450 protocol                                        |
+| LabelWriter 450 Turbo      | `0x002A` | 672       | ❌      | ❌       | 🟡 Expected |                                                               |
+| LabelWriter 450 Twin Turbo | `0x002B` | 672       | ❌      | ❌       | 🟡 Expected | Dual roll — `ESC q` roll select                               |
+| LabelWriter 450 Duo        | `0x002C` | 672       | ❌      | ❌       | 🟡 Expected | Also has D1 tape head (128 dots, 180 dpi) — tape out of scope |
+| LabelWriter 4XL            | `0x0025` | 672       | ❌      | ❌       | 🟡 Expected | Wide format labels                                            |
+| LabelWriter Wireless       | `0x0031` | 672       | WiFi    | ❌       | 🟡 Expected | TCP supported                                                 |
+| LabelWriter 550            | `0x0052` | 672       | ❌      | ✅       | 🟡 Expected | NFC lock — genuine labels only                                |
+| LabelWriter 550 Turbo      | `0x0053` | 672       | LAN     | ✅       | 🟡 Expected | NFC lock + TCP                                                |
+| LabelWriter 5XL            | `0x0054` | 1248      | LAN     | ✅       | 🟡 Expected | Wide head (101mm) + NFC lock + TCP                            |
 
 > Have a device marked 🟡 Expected? Run `LABELWRITER_INTEGRATION=1 pnpm test`
 > and open a [hardware verification issue](/.github/ISSUE_TEMPLATE/hardware_verification.md).
@@ -51,9 +52,10 @@ See `HARDWARE.md` for full details.
 ## 2. Protocol Reference
 
 > Sources:
-> - *LabelWriter 450 Series Printers Technical Reference Manual* (Sanford L.P., official)
-> - *LabelWriter 550 Series Printers Technical Reference Manual* (Dymo, official)
-> Both are publicly available from Dymo's developer resources.
+>
+> - _LabelWriter 450 Series Printers Technical Reference Manual_ (Sanford L.P., official)
+> - _LabelWriter 550 Series Printers Technical Reference Manual_ (Dymo, official)
+>   Both are publicly available from Dymo's developer resources.
 
 ### 2.1 Transport
 
@@ -72,10 +74,10 @@ forces command mode.
 
 ### 2.2 Print Head Geometry
 
-| Model family | Head dots | Bytes per raster row | Paper path |
-|---|---|---|---|
-| 450 series, Wireless, 550, 550 Turbo | 672 | 84 | 63mm |
-| 5XL | 1248 | 156 | ~110mm |
+| Model family                         | Head dots | Bytes per raster row | Paper path |
+| ------------------------------------ | --------- | -------------------- | ---------- |
+| 450 series, Wireless, 550, 550 Turbo | 672       | 84                   | 63mm       |
+| 5XL                                  | 1248      | 156                  | ~110mm     |
 
 A `1` bit = black dot (printed). A `0` bit = white dot (unprinted).
 MSB = leftmost dot on the label. No fonts — host renders everything.
@@ -87,20 +89,25 @@ MSB = leftmost dot on the label. No fonts — host renders everything.
 Data commands consist of raster rows and ESC commands. No job header required.
 
 **Raster row (uncompressed):**
+
 ```
 0x16 [n bytes of pixel data]
 ```
+
 Where n is set by `ESC D` (default 84 for 450 series, 156 for 4XL).
 
 **Raster row (compressed — run-length encoding):**
+
 ```
 0x17 [compressed bytes]
 ```
+
 Bit 7 of each compressed byte = pixel value (0=white, 1=black).
 Bits 6-0 = repeat count minus 1 (0 = 1 repetition, 127 = 128 repetitions).
 Compression is optional — uncompressed is always safe.
 
 **Typical 450 print sequence:**
+
 ```
 1B 40               ESC @ — software reset
 1B 68               ESC h — text speed mode (300×300 dpi)
@@ -117,12 +124,15 @@ The 550 series adds a mandatory **job header** (`ESC s`) and a **label header**
 (`ESC L` + additional fields). The core raster data format is identical to 450.
 
 **Job header (mandatory for 550, absent in 450):**
+
 ```
 1B 73 [n1] [n2] [n3] [n4]    ESC s — print job start
 ```
+
 n1–n4 = 4-byte unique job ID (any value, e.g. incrementing counter).
 
 **550 print sequence:**
+
 ```
 1B 73 n1 n2 n3 n4   ESC s — job start with unique job ID
 1B 68               ESC h — text mode (or 1B 69 for graphics)
@@ -139,40 +149,40 @@ to 550 protocol including job header requirement.
 
 All commands supported across the 450 and 550 series:
 
-| Command | Bytes | Description |
-|---|---|---|
-| Software Reset | `1B 40` | Reset all parameters to power-on defaults |
-| Get Status | `1B 41` | Request 1-byte status response (see 2.6) |
-| Set Dot Tab | `1B 42 n` | Left margin offset in bytes (0–83 for 450) |
-| Set Print Temp Low | `1B 63` | Light print density |
-| Set Bytes per Line | `1B 44 n` | Bytes per raster row (default 84 / 156) |
-| Set Print Temp Med | `1B 64` | Medium print density |
-| Form Feed | `1B 45` | Advance to tear bar position |
-| Skip N Lines | `1B 46 01 n` | Feed n blank lines |
-| Short Form Feed | `1B 47` | Feed to print head position (no reverse on next label) |
-| Set Print Temp Normal | `1B 65` | Normal print density (default) |
-| Set Print Temp High | `1B 67` | Dark print density |
-| Text Speed Mode | `1B 68` | 300×300 dpi — for text labels |
-| Graphics Mode | `1B 69` | 300×600 dpi — for images/barcodes |
-| Set Label Length | `1B 4C n1 n2` | Label height in dots, little-endian 16-bit |
-| Set Continuous Mode | `1B 4C FF FF` | Continuous feed mode (negative value) |
-| Select Roll | `1B 71 n` | Twin Turbo only: `n=0` left roll, `n=1` right roll |
-| Return Revision | `1B 56` | Firmware version string response |
-| Print Job Start | `1B 73 n1 n2 n3 n4` | **550 series only** — mandatory job header |
-| Restore Defaults | `1B 2A` | Restore factory defaults |
-| SYN raster row | `16 [n bytes]` | Uncompressed raster line |
-| ETB raster row | `17 [bytes]` | Compressed raster line (RLE) |
+| Command               | Bytes               | Description                                            |
+| --------------------- | ------------------- | ------------------------------------------------------ |
+| Software Reset        | `1B 40`             | Reset all parameters to power-on defaults              |
+| Get Status            | `1B 41`             | Request 1-byte status response (see 2.6)               |
+| Set Dot Tab           | `1B 42 n`           | Left margin offset in bytes (0–83 for 450)             |
+| Set Print Temp Low    | `1B 63`             | Light print density                                    |
+| Set Bytes per Line    | `1B 44 n`           | Bytes per raster row (default 84 / 156)                |
+| Set Print Temp Med    | `1B 64`             | Medium print density                                   |
+| Form Feed             | `1B 45`             | Advance to tear bar position                           |
+| Skip N Lines          | `1B 46 01 n`        | Feed n blank lines                                     |
+| Short Form Feed       | `1B 47`             | Feed to print head position (no reverse on next label) |
+| Set Print Temp Normal | `1B 65`             | Normal print density (default)                         |
+| Set Print Temp High   | `1B 67`             | Dark print density                                     |
+| Text Speed Mode       | `1B 68`             | 300×300 dpi — for text labels                          |
+| Graphics Mode         | `1B 69`             | 300×600 dpi — for images/barcodes                      |
+| Set Label Length      | `1B 4C n1 n2`       | Label height in dots, little-endian 16-bit             |
+| Set Continuous Mode   | `1B 4C FF FF`       | Continuous feed mode (negative value)                  |
+| Select Roll           | `1B 71 n`           | Twin Turbo only: `n=0` left roll, `n=1` right roll     |
+| Return Revision       | `1B 56`             | Firmware version string response                       |
+| Print Job Start       | `1B 73 n1 n2 n3 n4` | **550 series only** — mandatory job header             |
+| Restore Defaults      | `1B 2A`             | Restore factory defaults                               |
+| SYN raster row        | `16 [n bytes]`      | Uncompressed raster line                               |
+| ETB raster row        | `17 [bytes]`        | Compressed raster line (RLE)                           |
 
 ### 2.5 Status Response (1 byte — 450 series)
 
 Sent by printer in response to `ESC A` (`1B 41`).
 
-| Bit | Meaning |
-|---|---|
-| 0 | Paper out |
-| 1 | Pause |
-| 2 | Label too long |
-| 3–7 | Reserved |
+| Bit | Meaning        |
+| --- | -------------- |
+| 0   | Paper out      |
+| 1   | Pause          |
+| 2   | Label too long |
+| 3–7 | Reserved       |
 
 `0x00` = ready, no errors.
 
@@ -180,23 +190,25 @@ Sent by printer in response to `ESC A` (`1B 41`).
 
 The 550 series returns a 32-byte status packet.
 
-| Offset | Meaning |
-|---|---|
-| 0 | Status flags |
-| 1 | Error flags 1 |
-| 2 | Error flags 2 |
-| 3 | Label type |
-| 4–5 | Label width (dots) |
-| 6–7 | Label length (dots) |
-| 8–31 | Reserved |
+| Offset | Meaning             |
+| ------ | ------------------- |
+| 0      | Status flags        |
+| 1      | Error flags 1       |
+| 2      | Error flags 2       |
+| 3      | Label type          |
+| 4–5    | Label width (dots)  |
+| 6–7    | Label length (dots) |
+| 8–31   | Reserved            |
 
 ### 2.7 Error Recovery
 
 To recover from an unknown state or synchronisation error:
+
 ```
 85 × 0x1B   (85 ESC bytes — exceeds max raster line of 84 bytes)
 1B 41       ESC A — status request
 ```
+
 Wait for status response before sending further commands.
 
 ---
@@ -325,7 +337,7 @@ export default [...mbtech];
   },
   "funding": [
     { "type": "github", "url": "https://github.com/sponsors/mannes" },
-    { "type": "ko-fi",  "url": "https://ko-fi.com/mannes" }
+    { "type": "ko-fi", "url": "https://ko-fi.com/mannes" }
   ],
   "files": ["dist", "README.md"],
   "engines": { "node": ">=24.0.0" },
@@ -347,6 +359,7 @@ export default [...mbtech];
 ```
 
 Notes:
+
 - `core` package sets `"types": "./src/index.ts"` so workspace consumers get
   types without a build step.
 - `cli` package adds `"bin": { "labelwriter": "./bin/labelwriter.js" }` and
@@ -358,6 +371,7 @@ Every package must ship a complete, publish-ready `README.md`. An agent must
 not consider a package done until its README covers all of the following:
 
 **All packages:**
+
 - Package name as `h1` heading
 - One-line description matching the `package.json` description field
 - npm install snippet (`pnpm add <package-name>`)
@@ -366,6 +380,7 @@ not consider a package done until its README covers all of the following:
 - License badge and MIT license statement
 
 **`@thermal-label/labelwriter-core`:**
+
 - Note that consumers rarely import core directly — use node or web package
 - Key exports listed: `encodeLabel`, `buildErrorRecovery`, `DEVICES`, `findDevice`,
   re-exported bitmap helpers
@@ -373,6 +388,7 @@ not consider a package done until its README covers all of the following:
 - Protocol generation note (450 vs 550, auto-detected from device)
 
 **`@thermal-label/labelwriter-node`:**
+
 - Quick start: `openPrinter()` + `printText()` + `close()` in 5 lines
 - Discovery: `listPrinters()` example
 - TCP/network: `openPrinterTcp()` example
@@ -383,12 +399,14 @@ not consider a package done until its README covers all of the following:
 - Optional `@napi-rs/canvas` for image decoding
 
 **`@thermal-label/labelwriter-web`:**
+
 - Browser support table (Chrome/Edge ✅, Firefox/Safari ❌)
 - Quick start: `requestPrinter()` + `printText()`
 - NFC lock callout for 550 series users
 - Secure context requirement (https or localhost)
 
 **`@thermal-label/labelwriter-cli`:**
+
 - Global install snippet (`npm install -g`)
 - All commands listed with one-line descriptions
 - One usage example per command
@@ -447,7 +465,11 @@ export const DEVICES: Record<string, DeviceDescriptor>;
 export function findDevice(vid: number, pid: number): DeviceDescriptor | undefined;
 
 // Protocol encoding
-export function encodeLabel(device: DeviceDescriptor, bitmap: LabelBitmap, options?: PrintOptions): Uint8Array;
+export function encodeLabel(
+  device: DeviceDescriptor,
+  bitmap: LabelBitmap,
+  options?: PrintOptions,
+): Uint8Array;
 // Returns complete byte stream for one label (including reset, raster rows, form feed)
 
 export function buildErrorRecovery(): Uint8Array;
@@ -458,22 +480,22 @@ export interface DeviceDescriptor {
   name: string;
   vid: number;
   pid: number;
-  headDots: number;         // 672 or 1248
-  bytesPerRow: number;      // headDots / 8 = 84 or 156
-  protocol: '450' | '550';  // determines whether job header is required
+  headDots: number; // 672 or 1248
+  bytesPerRow: number; // headDots / 8 = 84 or 156
+  protocol: '450' | '550'; // determines whether job header is required
   network: NetworkSupport;
-  nfcLock: boolean;         // 550 series — genuine labels only
+  nfcLock: boolean; // 550 series — genuine labels only
 }
 
 export type NetworkSupport = 'none' | 'wifi' | 'wired';
 
 export interface PrintOptions {
   density?: 'light' | 'medium' | 'normal' | 'high';
-  mode?: 'text' | 'graphics';  // text = 300×300dpi, graphics = 300×600dpi
-  compress?: boolean;           // RLE compression, default false
+  mode?: 'text' | 'graphics'; // text = 300×300dpi, graphics = 300×600dpi
+  compress?: boolean; // RLE compression, default false
   copies?: number;
-  roll?: 0 | 1;                 // Twin Turbo only
-  jobId?: number;               // 550 protocol: 4-byte job ID, auto-generated if omitted
+  roll?: 0 | 1; // Twin Turbo only
+  jobId?: number; // 550 protocol: 4-byte job ID, auto-generated if omitted
 }
 ```
 
@@ -483,69 +505,113 @@ export interface PrintOptions {
 export const DEVICES = {
   LW_400: {
     name: 'LabelWriter 400',
-    vid: 0x0922, pid: 0x0021,
-    headDots: 672, bytesPerRow: 84,
-    protocol: '450', network: 'none', nfcLock: false,
+    vid: 0x0922,
+    pid: 0x0021,
+    headDots: 672,
+    bytesPerRow: 84,
+    protocol: '450',
+    network: 'none',
+    nfcLock: false,
   },
   LW_400_TURBO: {
     name: 'LabelWriter 400 Turbo',
-    vid: 0x0922, pid: 0x0023,
-    headDots: 672, bytesPerRow: 84,
-    protocol: '450', network: 'none', nfcLock: false,
+    vid: 0x0922,
+    pid: 0x0023,
+    headDots: 672,
+    bytesPerRow: 84,
+    protocol: '450',
+    network: 'none',
+    nfcLock: false,
   },
   LW_450: {
     name: 'LabelWriter 450',
-    vid: 0x0922, pid: 0x0029,
-    headDots: 672, bytesPerRow: 84,
-    protocol: '450', network: 'none', nfcLock: false,
+    vid: 0x0922,
+    pid: 0x0020,
+    headDots: 672,
+    bytesPerRow: 84,
+    protocol: '450',
+    network: 'none',
+    nfcLock: false,
   },
   LW_450_TURBO: {
     name: 'LabelWriter 450 Turbo',
-    vid: 0x0922, pid: 0x002A,
-    headDots: 672, bytesPerRow: 84,
-    protocol: '450', network: 'none', nfcLock: false,
+    vid: 0x0922,
+    pid: 0x002a,
+    headDots: 672,
+    bytesPerRow: 84,
+    protocol: '450',
+    network: 'none',
+    nfcLock: false,
   },
   LW_450_TWIN_TURBO: {
     name: 'LabelWriter 450 Twin Turbo',
-    vid: 0x0922, pid: 0x002B,
-    headDots: 672, bytesPerRow: 84,
-    protocol: '450', network: 'none', nfcLock: false,
+    vid: 0x0922,
+    pid: 0x002b,
+    headDots: 672,
+    bytesPerRow: 84,
+    protocol: '450',
+    network: 'none',
+    nfcLock: false,
   },
   LW_450_DUO: {
     name: 'LabelWriter 450 Duo',
-    vid: 0x0922, pid: 0x002C,
-    headDots: 672, bytesPerRow: 84,
-    protocol: '450', network: 'none', nfcLock: false,
+    vid: 0x0922,
+    pid: 0x002c,
+    headDots: 672,
+    bytesPerRow: 84,
+    protocol: '450',
+    network: 'none',
+    nfcLock: false,
   },
   LW_4XL: {
     name: 'LabelWriter 4XL',
-    vid: 0x0922, pid: 0x0025,
-    headDots: 672, bytesPerRow: 84,
-    protocol: '450', network: 'none', nfcLock: false,
+    vid: 0x0922,
+    pid: 0x0025,
+    headDots: 672,
+    bytesPerRow: 84,
+    protocol: '450',
+    network: 'none',
+    nfcLock: false,
   },
   LW_WIRELESS: {
     name: 'LabelWriter Wireless',
-    vid: 0x0922, pid: 0x0031,
-    headDots: 672, bytesPerRow: 84,
-    protocol: '450', network: 'wifi', nfcLock: false,
+    vid: 0x0922,
+    pid: 0x0031,
+    headDots: 672,
+    bytesPerRow: 84,
+    protocol: '450',
+    network: 'wifi',
+    nfcLock: false,
   },
   LW_550: {
     name: 'LabelWriter 550',
-    vid: 0x0922, pid: 0x0052,
-    headDots: 672, bytesPerRow: 84,
-    protocol: '550', network: 'none', nfcLock: true,
+    vid: 0x0922,
+    pid: 0x0052,
+    headDots: 672,
+    bytesPerRow: 84,
+    protocol: '550',
+    network: 'none',
+    nfcLock: true,
   },
   LW_550_TURBO: {
     name: 'LabelWriter 550 Turbo',
-    vid: 0x0922, pid: 0x0053,
-    headDots: 672, bytesPerRow: 84,
-    protocol: '550', network: 'wired', nfcLock: true,
+    vid: 0x0922,
+    pid: 0x0053,
+    headDots: 672,
+    bytesPerRow: 84,
+    protocol: '550',
+    network: 'wired',
+    nfcLock: true,
   },
   LW_5XL: {
     name: 'LabelWriter 5XL',
-    vid: 0x0922, pid: 0x0054,
-    headDots: 1248, bytesPerRow: 156,
-    protocol: '550', network: 'wired', nfcLock: true,
+    vid: 0x0922,
+    pid: 0x0054,
+    headDots: 1248,
+    bytesPerRow: 156,
+    protocol: '550',
+    network: 'wired',
+    nfcLock: true,
   },
 } as const satisfies Record<string, DeviceDescriptor>;
 ```
@@ -570,6 +636,7 @@ Implement these functions:
 - `encodeLabel(device, bitmap, options): Uint8Array` — full label stream
 
 **Key notes for `encodeLabel`:**
+
 - Fit bitmap height to `bytesPerRow * 8` BEFORE rotating — use `padBitmap`
   or `scaleBitmap` from `@mbtech-nl/bitmap` first, then `rotateBitmap(bitmap, 90)`
 - After rotation, `widthPx` = head dots (672 or 1248), `heightPx` = label length
@@ -580,6 +647,7 @@ Implement these functions:
   repeating the full reset sequence
 
 **RLE compression algorithm:**
+
 ```
 For each run of identical pixels:
   compressedByte = (pixelValue << 7) | (runLength - 1)
@@ -664,6 +732,7 @@ export class TcpTransport implements Transport {
 ```
 
 **USB implementation notes:**
+
 - Use real `usb` package types throughout — no custom wrapper interfaces
 - `write()` sends to Bulk OUT endpoint
 - `read()` reads from Bulk IN endpoint — returns `Uint8Array`
@@ -671,6 +740,7 @@ export class TcpTransport implements Transport {
 - `close()` is async — always await, always call in `finally`
 
 **TCP implementation notes:**
+
 - `net.Socket` to port 9100
 - Handle partial reads via stream buffer — accumulate until `byteCount` received
 - 450 series: 1-byte status response; 550 series: 32-byte status response
@@ -690,7 +760,7 @@ export class LabelWriterPrinter {
   print(bitmap: LabelBitmap, options?: PrintOptions): Promise<void>;
   printText(text: string, options?: TextPrintOptions): Promise<void>;
   printImage(image: Buffer | string, options?: ImagePrintOptions): Promise<void>;
-  recover(): Promise<void>;   // sends error recovery sequence
+  recover(): Promise<void>; // sends error recovery sequence
   close(): Promise<void>;
 }
 
@@ -711,7 +781,7 @@ export interface PrinterStatus {
   ready: boolean;
   paperOut: boolean;
   errors: string[];
-  rawBytes: Uint8Array;   // 1 byte for 450, 32 bytes for 550
+  rawBytes: Uint8Array; // 1 byte for 450, 32 bytes for 550
 }
 
 export interface TextPrintOptions extends PrintOptions {
@@ -793,6 +863,7 @@ labelwriter recover
 ```
 
 **`print text` options:**
+
 ```
 --invert
 --scale-x <n>
@@ -806,6 +877,7 @@ labelwriter recover
 ```
 
 **`print image` options:**
+
 ```
 --threshold <0-255>
 --dither
@@ -927,6 +999,7 @@ All pages fully authored — complete prose, real API examples, no placeholders.
 ### 9.2 NFC Lock Documentation
 
 The 550 series NFC lock must be documented prominently in multiple places:
+
 - `index.md`: a callout card "550 series requires genuine Dymo labels"
 - `getting-started.md`: dedicated subsection explaining what the NFC lock is,
   which models are affected, and that it cannot be bypassed
@@ -950,10 +1023,7 @@ export default defineConfig({
   title: 'labelwriter',
   description: 'TypeScript driver for Dymo LabelWriter label printers — USB, TCP, WebUSB',
   base: '/labelwriter/',
-  ignoreDeadLinks: [
-    /^\.\/LICENSE$/,
-    /^\.\/(cli|core|node|web)\/dist\/README$/,
-  ],
+  ignoreDeadLinks: [/^\.\/LICENSE$/, /^\.\/(cli|core|node|web)\/dist\/README$/],
   themeConfig: {
     nav: [
       { text: 'Get started', link: '/getting-started' },
@@ -983,7 +1053,7 @@ export default defineConfig({
       },
     },
   },
-})
+});
 ```
 
 ---
@@ -1168,7 +1238,7 @@ jobs:
 
 ## 11. Root `README.md`
 
-```markdown
+````markdown
 [![CI](https://github.com/thermal-label/labelwriter/actions/workflows/ci.yml/badge.svg)](https://github.com/thermal-label/labelwriter/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/thermal-label/labelwriter/branch/main/graph/badge.svg)](https://codecov.io/gh/thermal-label/labelwriter)
 [![npm core](https://img.shields.io/npm/v/@thermal-label/labelwriter-core)](https://npmjs.com/package/@thermal-label/labelwriter-core)
@@ -1197,10 +1267,12 @@ pnpm add @thermal-label/labelwriter-node   # Node.js
 pnpm add @thermal-label/labelwriter-web    # Browser
 npm install -g @thermal-label/labelwriter-cli  # CLI
 ```
+````
 
 ## Quick Start
 
 ### Node.js
+
 ```ts
 import { openPrinter } from '@thermal-label/labelwriter-node';
 const printer = await openPrinter();
@@ -1209,6 +1281,7 @@ await printer.close();
 ```
 
 ### Browser (WebUSB)
+
 ```ts
 import { requestPrinter } from '@thermal-label/labelwriter-web';
 const printer = await requestPrinter();
@@ -1216,6 +1289,7 @@ await printer.printText('Hello WebUSB');
 ```
 
 ### CLI
+
 ```bash
 labelwriter list
 labelwriter print text "Hello World"
@@ -1231,6 +1305,7 @@ labelwriter print text "Hello World"
 ## License
 
 MIT
+
 ```
 
 ---
@@ -1238,6 +1313,7 @@ MIT
 ## 12. Implementation Sequence
 
 ```
+
 1. Scaffold
    - LICENSE, .github/FUNDING.yml, .github/ISSUE_TEMPLATE/hardware_verification.md
    - Root package.json, eslint.config.js, tsconfig.base.json, pnpm-workspace.yaml, .gitignore
@@ -1253,7 +1329,7 @@ MIT
    - src/types.ts
    - src/devices.ts — full device registry
    - src/protocol.ts — all encoder functions, both 450 and 550 protocol
-   - src/__tests__/ — all tests
+   - src/**tests**/ — all tests
    - Gate: typecheck + lint + test + build
 
 3. @thermal-label/labelwriter-node
@@ -1284,6 +1360,7 @@ MIT
    - Run pnpm test:coverage — verify 90% thresholds across all packages
    - Verify all PROGRESS.md checkboxes ticked
    - Verify ci.yml passes locally
+
 ```
 
 ---
@@ -1317,3 +1394,4 @@ MIT
 - **`sideEffects: false`** in all package.json files
 - **Changesets** for versioning
 - **Coverage thresholds enforced only at step 7**
+```

@@ -15,12 +15,12 @@ describe('listPrinters', () => {
   });
 
   it('filters out non-LabelWriter devices', () => {
-    __setDevices([makeDevice(0x0922, 0x9999), makeDevice(0x1234, 0x0029)]);
+    __setDevices([makeDevice(0x0922, 0x9999), makeDevice(0x1234, 0x0020)]);
     expect(listPrinters()).toHaveLength(0);
   });
 
   it('returns known LabelWriter devices', () => {
-    __setDevices([makeDevice(0x0922, 0x0029)]);
+    __setDevices([makeDevice(0x0922, 0x0020)]);
     const printers = listPrinters();
     expect(printers).toHaveLength(1);
     expect(printers[0]!.device.name).toBe('LabelWriter 450');
@@ -28,13 +28,13 @@ describe('listPrinters', () => {
   });
 
   it('returns correct path as busNumber:deviceAddress', () => {
-    __setDevices([makeDevice(0x0922, 0x0029, undefined, 3, 5)]);
+    __setDevices([makeDevice(0x0922, 0x0020, undefined, 3, 5)]);
     const printers = listPrinters();
     expect(printers[0]!.path).toBe('3:5');
   });
 
   it('returns multiple devices', () => {
-    __setDevices([makeDevice(0x0922, 0x0029), makeDevice(0x0922, 0x0052)]);
+    __setDevices([makeDevice(0x0922, 0x0020), makeDevice(0x0922, 0x0052)]);
     expect(listPrinters()).toHaveLength(2);
   });
 });
@@ -50,35 +50,35 @@ describe('openPrinter', () => {
   });
 
   it('returns LabelWriterPrinter for first known device', async () => {
-    __setDevices([makeDevice(0x0922, 0x0029)]);
+    __setDevices([makeDevice(0x0922, 0x0020)]);
     const printer = await openPrinter();
-    expect(printer.device.pid).toBe(0x0029);
+    expect(printer.device.pid).toBe(0x0020);
     await printer.close();
   });
 
   it('skips unknown devices', async () => {
-    __setDevices([makeDevice(0x9999, 0x9999), makeDevice(0x0922, 0x0029)]);
+    __setDevices([makeDevice(0x9999, 0x9999), makeDevice(0x0922, 0x0020)]);
     const printer = await openPrinter();
-    expect(printer.device.pid).toBe(0x0029);
+    expect(printer.device.pid).toBe(0x0020);
     await printer.close();
   });
 
   it('filters by pid', async () => {
-    __setDevices([makeDevice(0x0922, 0x0029), makeDevice(0x0922, 0x002a)]);
+    __setDevices([makeDevice(0x0922, 0x0020), makeDevice(0x0922, 0x002a)]);
     const printer = await openPrinter({ pid: 0x002a });
     expect(printer.device.pid).toBe(0x002a);
     await printer.close();
   });
 
   it('matches device by serial number', async () => {
-    __setDevices([makeDevice(0x0922, 0x0029, 'SN-TARGET')]);
+    __setDevices([makeDevice(0x0922, 0x0020, 'SN-TARGET')]);
     const printer = await openPrinter({ serialNumber: 'SN-TARGET' });
-    expect(printer.device.pid).toBe(0x0029);
+    expect(printer.device.pid).toBe(0x0020);
     await printer.close();
   });
 
   it('skips device when serial does not match', async () => {
-    __setDevices([makeDevice(0x0922, 0x0029, 'OTHER-SN')]);
+    __setDevices([makeDevice(0x0922, 0x0020, 'OTHER-SN')]);
     await expect(openPrinter({ serialNumber: 'NOT-FOUND' })).rejects.toThrow();
   });
 });

@@ -22,7 +22,7 @@ pnpm add @thermal-label/labelwriter-core
 ```ts
 import { DEVICES, findDevice } from '@thermal-label/labelwriter-core';
 
-const device = findDevice(0x0922, 0x0029); // LabelWriter 450
+const device = findDevice(0x0922, 0x0020); // LabelWriter 450
 console.log(device?.name); // 'LabelWriter 450'
 
 // All known devices
@@ -41,7 +41,13 @@ const recovery = buildErrorRecovery();
 ### Bitmap Helpers (re-exported from `@mbtech-nl/bitmap`)
 
 ```ts
-import { renderText, renderImage, rotateBitmap, padBitmap, scaleBitmap } from '@thermal-label/labelwriter-core';
+import {
+  renderText,
+  renderImage,
+  rotateBitmap,
+  padBitmap,
+  scaleBitmap,
+} from '@thermal-label/labelwriter-core';
 ```
 
 ## Types
@@ -51,11 +57,11 @@ interface DeviceDescriptor {
   name: string;
   vid: number;
   pid: number;
-  headDots: number;       // 672 or 1248
-  bytesPerRow: number;    // headDots / 8 = 84 or 156
+  headDots: number; // 672 or 1248
+  bytesPerRow: number; // headDots / 8 = 84 or 156
   protocol: '450' | '550';
   network: 'none' | 'wifi' | 'wired';
-  nfcLock: boolean;       // 550 series — genuine labels only
+  nfcLock: boolean; // 550 series — genuine labels only
 }
 
 interface PrintOptions {
@@ -63,8 +69,8 @@ interface PrintOptions {
   mode?: 'text' | 'graphics';
   compress?: boolean;
   copies?: number;
-  roll?: 0 | 1;           // Twin Turbo only
-  jobId?: number;         // 550 protocol — auto-generated if omitted
+  roll?: 0 | 1; // Twin Turbo only
+  jobId?: number; // 550 protocol — auto-generated if omitted
 }
 ```
 
