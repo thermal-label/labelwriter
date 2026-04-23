@@ -1,0 +1,39 @@
+{
+  "name": "@thermal-label/labelwriter-cli",
+  "version": "0.1.0",
+  "description": "CLI for Dymo LabelWriter printers",
+  "keywords": ["dymo", "labelwriter", "label-printer", "thermal-label", "cli"],
+  "license": "MIT",
+  "author": "Mannes Brak",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mbtech-nl/thermal-label",
+    "directory": "packages/cli"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "labelwriter": "./bin/labelwriter.js"
+  },
+  "files": ["bin", "dist", "README.md"],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@thermal-label/labelwriter-node": "workspace:*",
+    "chalk": "^5.0.0",
+    "commander": "^12.0.0",
+    "ora": "^8.0.0"
+  },
+  "devDependencies": {
+    "@mbtech-nl/tsconfig": "^1.0.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^2.0.0",
+    "typescript": "~5.5.0",
+    "vitest": "^2.0.0"
+  }
+}

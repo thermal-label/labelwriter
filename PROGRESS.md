@@ -129,22 +129,22 @@
 
 > plan: L1267–L1269, L755–L830
 
-- [ ] `packages/cli/package.json` (plan: L765–L782)
-- [ ] `packages/cli/README.md` (plan: L392–L396)
-- [ ] `packages/cli/tsconfig.json`
-- [ ] `packages/cli/bin/labelwriter.js` — dynamic import shim (plan: L823–L825)
-- [ ] `packages/cli/src/index.ts` — `run()` entry point
-- [ ] `packages/cli/src/commands/list.ts` — `labelwriter list` (plan: L787)
-- [ ] `packages/cli/src/commands/status.ts` — `labelwriter status [--host]` (plan: L788)
-- [ ] `packages/cli/src/commands/print-text.ts` — `labelwriter print text <text>` with all options (plan: L789, L796–L806)
-- [ ] `packages/cli/src/commands/print-image.ts` — `labelwriter print image <file>` with all options (plan: L790, L808–L819)
-- [ ] `packages/cli/src/commands/recover.ts` — `labelwriter recover` (plan: L791)
-- [ ] `packages/cli/src/__tests__/` — mock `@thermal-label/labelwriter-node`; test each command (plan: L830)
-- [ ] **Gate:** `pnpm --filter @thermal-label/labelwriter-cli typecheck` (plan: L1269)
-- [ ] **Gate:** `pnpm lint` (plan: L1269)
-- [ ] **Gate:** `pnpm --filter @thermal-label/labelwriter-cli test` (plan: L1269)
-- [ ] **Gate:** `pnpm --filter @thermal-label/labelwriter-cli build` (plan: L1269)
-- [ ] **Commit:** `feat: add labelwriter-cli`
+- [x] `packages/cli/package.json` (plan: L765–L782)
+- [x] `packages/cli/README.md` (plan: L392–L396)
+- [x] `packages/cli/tsconfig.json`
+- [x] `packages/cli/bin/labelwriter.js` — dynamic import shim (plan: L823–L825)
+- [x] `packages/cli/src/index.ts` — `run()` entry point
+- [x] `packages/cli/src/commands/list.ts` — `labelwriter list` (plan: L787)
+- [x] `packages/cli/src/commands/status.ts` — `labelwriter status [--host]` (plan: L788)
+- [x] `packages/cli/src/commands/print-text.ts` — `labelwriter print text <text>` with all options (plan: L789, L796–L806)
+- [x] `packages/cli/src/commands/print-image.ts` — `labelwriter print image <file>` with all options (plan: L790, L808–L819)
+- [x] `packages/cli/src/commands/recover.ts` — `labelwriter recover` (plan: L791)
+- [x] `packages/cli/src/__tests__/` — mock `@thermal-label/labelwriter-node`; test each command (plan: L830)
+- [x] **Gate:** `pnpm --filter @thermal-label/labelwriter-cli typecheck` (plan: L1269)
+- [x] **Gate:** `pnpm lint` (plan: L1269)
+- [x] **Gate:** `pnpm --filter @thermal-label/labelwriter-cli test` (plan: L1269)
+- [x] **Gate:** `pnpm --filter @thermal-label/labelwriter-cli build` (plan: L1269)
+- [x] **Commit:** `feat: add labelwriter-cli`
 
 ---
 
