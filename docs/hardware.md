@@ -2,20 +2,19 @@
 
 ## Supported devices
 
-| Model | PID | Protocol | Head dots | Network | NFC lock |
-|-------|-----|----------|-----------|---------|----------|
-| LabelWriter 400 | 0x0025 | 450 | 672 | None | No |
-| LabelWriter 400 Turbo | 0x0026 | 450 | 672 | None | No |
-| LabelWriter 450 | 0x0029 | 450 | 672 | None | No |
-| LabelWriter 450 Turbo | 0x002A | 450 | 672 | None | No |
-| LabelWriter 450 Twin Turbo | 0x002B | 450 | 672 | None | No |
-| LabelWriter 450 Duo Label | 0x002C | 450 | 672 | None | No |
-| LabelWriter 450 Duo Tape | 0x002D | 450 | 672 | None | No |
-| LabelWriter 4XL | 0x002F | 450 | 672 | None | No |
-| LabelWriter 550 | 0x0059 | 550 | 672 | None | **Yes** |
-| LabelWriter 550 Turbo | 0x005A | 550 | 672 | None | **Yes** |
-| LabelWriter 5XL | 0x005C | 550 | 1248 | None | **Yes** |
-| LabelWriter Wireless | 0x0030 | 450 | 672 | Wi-Fi | No |
+| Model | PID | Protocol | Head dots | Network | NFC lock | Status |
+|-------|-----|----------|-----------|---------|----------|--------|
+| LabelWriter 400 | `0x0021` | 450 | 672 | — | No | ✅ Verified |
+| LabelWriter 400 Turbo | `0x0023` | 450 | 672 | — | No | 🔲 Expected |
+| LabelWriter 450 | `0x0029` | 450 | 672 | — | No | 🔲 Expected |
+| LabelWriter 450 Turbo | `0x002A` | 450 | 672 | — | No | 🔲 Expected |
+| LabelWriter 450 Twin Turbo | `0x002B` | 450 | 672 | — | No | 🔲 Expected |
+| LabelWriter 450 Duo | `0x002C` | 450 | 672 | — | No | 🔲 Expected |
+| LabelWriter 4XL | `0x0025` | 450 | 672 | — | No | 🔲 Expected |
+| LabelWriter Wireless | `0x0031` | 450 | 672 | Wi-Fi | No | 🔲 Expected |
+| LabelWriter 550 | `0x0052` | 550 | 672 | — | **Yes** | 🔲 Expected |
+| LabelWriter 550 Turbo | `0x0053` | 550 | 672 | Ethernet | **Yes** | 🔲 Expected |
+| LabelWriter 5XL | `0x0054` | 550 | 1248 | Ethernet | **Yes** | 🔲 Expected |
 
 All devices use vendor ID `0x0922` (Dymo).
 
@@ -36,9 +35,9 @@ All devices use vendor ID `0x0922` (Dymo).
     </div>
   </div>
   <div class="hw-cta-actions">
-    <a class="hw-chip hw-chip-works" href="https://github.com/thermal-label/labelwriter/issues/new?template=hardware_verification.md&title=Verified%3A+%5BDevice+name%5D&labels=hardware%2Cverified" target="_blank" rel="noopener">✅ It works</a>
-    <a class="hw-chip hw-chip-partial" href="https://github.com/thermal-label/labelwriter/issues/new?template=hardware_verification.md&title=Partial%3A+%5BDevice+name%5D&labels=hardware%2Cpartial" target="_blank" rel="noopener">⚠️ Partially works</a>
-    <a class="hw-chip hw-chip-broken" href="https://github.com/thermal-label/labelwriter/issues/new?template=hardware_verification.md&title=Broken%3A+%5BDevice+name%5D&labels=hardware%2Cbroken" target="_blank" rel="noopener">❌ Doesn't work</a>
+    <a class="hw-chip hw-chip-works" href="https://github.com/thermal-label/labelwriter/issues/new?template=hardware_verification.yml&title=Verified%3A+%5BDevice+name%5D&labels=hardware%2Cverified" target="_blank" rel="noopener">✅ It works</a>
+    <a class="hw-chip hw-chip-partial" href="https://github.com/thermal-label/labelwriter/issues/new?template=hardware_verification.yml&title=Partial%3A+%5BDevice+name%5D&labels=hardware%2Cpartial" target="_blank" rel="noopener">⚠️ Partially works</a>
+    <a class="hw-chip hw-chip-broken" href="https://github.com/thermal-label/labelwriter/issues/new?template=hardware_verification.yml&title=Broken%3A+%5BDevice+name%5D&labels=hardware%2Cbroken" target="_blank" rel="noopener">❌ Doesn't work</a>
   </div>
 </div>
 

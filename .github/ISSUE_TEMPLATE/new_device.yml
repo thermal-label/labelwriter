@@ -1,0 +1,62 @@
+name: New device support
+description: Request support for a Dymo LabelWriter not currently on the compatibility list.
+title: "New device: [Device name] ([PID])"
+labels: ["hardware", "new-device"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        All Dymo LabelWriter devices share vendor ID `0x0922`. If your device shows up
+        under that VID but isn't on the [hardware list](https://thermal-label.github.io/labelwriter/hardware),
+        open this issue.
+
+  - type: input
+    id: model
+    attributes:
+      label: Device model
+      placeholder: "e.g. LabelWriter 450 SE"
+    validations:
+      required: true
+
+  - type: input
+    id: pid
+    attributes:
+      label: USB PID
+      description: "Find it with `lsusb | grep -i dymo` (Linux/macOS) or Device Manager (Windows)."
+      placeholder: "e.g. 0x0028"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: protocol
+    attributes:
+      label: Protocol generation (if known)
+      description: 550-series devices require a job header and have NFC label validation.
+      options:
+        - "450-series (no job header, no NFC lock)"
+        - "550-series (job header required, NFC label lock)"
+        - "Not sure"
+
+  - type: dropdown
+    id: tried
+    attributes:
+      label: Did you try running `labelwriter list`?
+      options:
+        - "Yes — device appeared in the list"
+        - "Yes — device did not appear"
+        - "No"
+    validations:
+      required: true
+
+  - type: textarea
+    id: lsusb
+    attributes:
+      label: "`lsusb -v` output"
+      description: "Run `lsusb -v -d 0922:<pid>` and paste the output. Omit if on Windows."
+      render: shell
+
+  - type: input
+    id: product_page
+    attributes:
+      label: Product page or purchase link
+      placeholder: "https://…"
