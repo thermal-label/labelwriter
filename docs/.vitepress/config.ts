@@ -35,6 +35,9 @@ export default defineConfig({
         '@thermal-label/labelwriter-web': fileURLToPath(
           new URL('../../packages/web/src/index.ts', import.meta.url),
         ),
+        '@thermal-label/labelwriter-core': fileURLToPath(
+          new URL('../../packages/core/src/index.ts', import.meta.url),
+        ),
       },
     },
   },
