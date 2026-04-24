@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [web/src](../README.md) / ImagePrintOptions
 
@@ -24,7 +24,7 @@ Defined in: core/dist/types.d.ts:16
 
 [`PrintOptions`](../../../node/src/interfaces/PrintOptions.md).[`compress`](../../../node/src/interfaces/PrintOptions.md#compress)
 
-***
+---
 
 ### copies?
 
@@ -36,7 +36,7 @@ Defined in: core/dist/types.d.ts:17
 
 [`PrintOptions`](../../../node/src/interfaces/PrintOptions.md).[`copies`](../../../node/src/interfaces/PrintOptions.md#copies)
 
-***
+---
 
 ### density?
 
@@ -48,7 +48,7 @@ Defined in: core/dist/types.d.ts:14
 
 [`PrintOptions`](../../../node/src/interfaces/PrintOptions.md).[`density`](../../../node/src/interfaces/PrintOptions.md#density)
 
-***
+---
 
 ### dither?
 
@@ -56,7 +56,7 @@ Defined in: core/dist/types.d.ts:14
 
 Defined in: web/src/types.ts:19
 
-***
+---
 
 ### invert?
 
@@ -64,7 +64,7 @@ Defined in: web/src/types.ts:19
 
 Defined in: web/src/types.ts:20
 
-***
+---
 
 ### jobId?
 
@@ -76,7 +76,7 @@ Defined in: core/dist/types.d.ts:19
 
 [`PrintOptions`](../../../node/src/interfaces/PrintOptions.md).[`jobId`](../../../node/src/interfaces/PrintOptions.md#jobid)
 
-***
+---
 
 ### mode?
 
@@ -88,7 +88,7 @@ Defined in: core/dist/types.d.ts:15
 
 [`PrintOptions`](../../../node/src/interfaces/PrintOptions.md).[`mode`](../../../node/src/interfaces/PrintOptions.md#mode)
 
-***
+---
 
 ### roll?
 
@@ -100,7 +100,7 @@ Defined in: core/dist/types.d.ts:18
 
 [`PrintOptions`](../../../node/src/interfaces/PrintOptions.md).[`roll`](../../../node/src/interfaces/PrintOptions.md#roll)
 
-***
+---
 
 ### rotate?
 
@@ -108,7 +108,7 @@ Defined in: core/dist/types.d.ts:18
 
 Defined in: web/src/types.ts:21
 
-***
+---
 
 ### threshold?
 

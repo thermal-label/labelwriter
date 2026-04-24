@@ -1,6 +1,6 @@
 [**labelwriter**](../../README.md)
 
-***
+---
 
 [labelwriter](../../README.md) / node/src
 

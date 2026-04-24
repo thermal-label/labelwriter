@@ -88,10 +88,7 @@ describe('LabelWriterDiscovery', () => {
     });
 
     it('matches by serial number', async () => {
-      __setDevices([
-        makeDevice(0x0922, 0x0020, 'SN-A'),
-        makeDevice(0x0922, 0x0020, 'SN-TARGET'),
-      ]);
+      __setDevices([makeDevice(0x0922, 0x0020, 'SN-A'), makeDevice(0x0922, 0x0020, 'SN-TARGET')]);
       usbOpen.mockResolvedValue(fakeTransport());
 
       const printer = await discovery.openPrinter({ serialNumber: 'SN-TARGET' });

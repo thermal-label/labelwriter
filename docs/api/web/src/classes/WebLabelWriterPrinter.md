@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [web/src](../README.md) / WebLabelWriterPrinter
 
@@ -38,7 +38,7 @@ Defined in: web/src/printer.ts:28
 
 Defined in: web/src/printer.ts:25
 
-***
+---
 
 ### device
 
@@ -58,7 +58,7 @@ Defined in: web/src/printer.ts:95
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### getStatus()
 
@@ -70,7 +70,7 @@ Defined in: web/src/printer.ts:34
 
 `Promise`\<[`PrinterStatus`](../interfaces/PrinterStatus.md)\>
 
-***
+---
 
 ### isConnected()
 
@@ -82,7 +82,7 @@ Defined in: web/src/printer.ts:91
 
 `boolean`
 
-***
+---
 
 ### print()
 
@@ -104,7 +104,7 @@ Defined in: web/src/printer.ts:41
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### printImage()
 
@@ -126,7 +126,7 @@ Defined in: web/src/printer.ts:56
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### printImageURL()
 
@@ -148,7 +148,7 @@ Defined in: web/src/printer.ts:73
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### printText()
 
@@ -170,7 +170,7 @@ Defined in: web/src/printer.ts:46
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### recover()
 

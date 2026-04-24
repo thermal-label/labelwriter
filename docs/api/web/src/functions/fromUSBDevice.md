@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [web/src](../README.md) / fromUSBDevice
 

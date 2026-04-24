@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [node/src](../README.md) / DeviceDescriptor
 
@@ -16,7 +16,7 @@ Defined in: core/dist/types.d.ts:3
 
 Defined in: core/dist/types.d.ts:8
 
-***
+---
 
 ### headDots
 
@@ -24,7 +24,7 @@ Defined in: core/dist/types.d.ts:8
 
 Defined in: core/dist/types.d.ts:7
 
-***
+---
 
 ### name
 
@@ -32,7 +32,7 @@ Defined in: core/dist/types.d.ts:7
 
 Defined in: core/dist/types.d.ts:4
 
-***
+---
 
 ### network
 
@@ -40,7 +40,7 @@ Defined in: core/dist/types.d.ts:4
 
 Defined in: core/dist/types.d.ts:10
 
-***
+---
 
 ### nfcLock
 
@@ -48,7 +48,7 @@ Defined in: core/dist/types.d.ts:10
 
 Defined in: core/dist/types.d.ts:11
 
-***
+---
 
 ### pid
 
@@ -56,7 +56,7 @@ Defined in: core/dist/types.d.ts:11
 
 Defined in: core/dist/types.d.ts:6
 
-***
+---
 
 ### protocol
 
@@ -64,7 +64,7 @@ Defined in: core/dist/types.d.ts:6
 
 Defined in: core/dist/types.d.ts:9
 
-***
+---
 
 ### vid
 

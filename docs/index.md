@@ -4,7 +4,7 @@ layout: home
 hero:
   name: '@thermal-label/labelwriter'
   text: TypeScript driver for Dymo LabelWriter
-  tagline: No vendor software. No proprietary drivers. Just USB, TCP, and WebUSB — from Node.js, the CLI, or the browser.
+  tagline: No vendor software. No proprietary drivers. Just USB, TCP, and WebUSB — from Node.js or the browser.
   actions:
     - theme: brand
       text: Get started
@@ -19,19 +19,19 @@ hero:
 features:
   - icon: 🟢
     title: Node.js
-    details: Direct USB bulk-transfer printing from Node.js servers and desktop apps. Wi-Fi TCP printing for wireless models. Zero native dependencies beyond the usb package.
+    details: Direct USB bulk-transfer printing from Node.js servers and desktop apps. TCP for network-attached 550 Turbo / 5XL / Wireless. Zero native dependencies beyond the usb package.
     link: /node
     linkText: Node.js guide
-  - icon: ⌨️
-    title: CLI
-    details: One-line label printing from the terminal. Print text, images, check status, and recover from errors — great for scripting and automation.
-    link: /cli
-    linkText: CLI guide
   - icon: 🌐
     title: Browser
     details: WebUSB printing directly from Chrome or Edge — no server, no install, no driver swap required.
     link: /web
     linkText: Web guide
+  - icon: 🔌
+    title: PrinterAdapter
+    details: The node and web packages share the PrinterAdapter interface. Swap between USB, TCP, and WebUSB transports without changing call sites.
+    link: /core
+    linkText: Core & protocol
 ---
 
 <div class="home-extra">

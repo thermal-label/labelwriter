@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [node/src](../README.md) / PrinterInfo
 
@@ -16,7 +16,7 @@ Defined in: node/src/types.ts:10
 
 Defined in: node/src/types.ts:11
 
-***
+---
 
 ### path
 
@@ -24,7 +24,7 @@ Defined in: node/src/types.ts:11
 
 Defined in: node/src/types.ts:13
 
-***
+---
 
 ### serialNumber
 
@@ -32,7 +32,7 @@ Defined in: node/src/types.ts:13
 
 Defined in: node/src/types.ts:12
 
-***
+---
 
 ### transport
 

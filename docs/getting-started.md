@@ -5,30 +5,35 @@
 ### Install
 
 ```bash
-npm install @thermal-label/labelwriter-node
+pnpm add @thermal-label/labelwriter-node
 ```
 
-### Print text over USB
+### Print over USB
 
 ```ts
-import { openPrinter } from '@thermal-label/labelwriter-node';
+import { discovery } from '@thermal-label/labelwriter-node';
+import { MEDIA } from '@thermal-label/labelwriter-core';
 
-const printer = await openPrinter();
+const printer = await discovery.openPrinter();
 try {
-  await printer.printText('Hello, world!');
+  // image is `RawImageData` — `{ width, height, data }` where `data` is a
+  // `Uint8Array` of RGBA pixels. Produce it from @napi-rs/canvas, sharp,
+  // or any server-side image pipeline.
+  await printer.print(image, MEDIA.ADDRESS_STANDARD);
 } finally {
   await printer.close();
 }
 ```
 
-### Print over TCP (wireless models)
+### Print over TCP (network-attached models)
 
 ```ts
-import { openPrinterTcp } from '@thermal-label/labelwriter-node';
+import { discovery } from '@thermal-label/labelwriter-node';
+import { MEDIA } from '@thermal-label/labelwriter-core';
 
-const printer = await openPrinterTcp('192.168.1.100');
+const printer = await discovery.openPrinter({ host: '192.168.1.100' });
 try {
-  await printer.printText('Shipped!', { density: 'high' });
+  await printer.print(image, MEDIA.SHIPPING_STANDARD, { density: 'high' });
 } finally {
   await printer.close();
 }
@@ -36,7 +41,8 @@ try {
 
 ### Linux udev rule
 
-On Linux, USB access requires a udev rule. Create `/etc/udev/rules.d/99-labelwriter.rules`:
+USB access on Linux requires a udev rule. Create
+`/etc/udev/rules.d/99-labelwriter.rules`:
 
 ```
 SUBSYSTEM=="usb", ATTR{idVendor}=="0922", GROUP="plugdev", MODE="0664"
@@ -51,71 +57,68 @@ sudo usermod -aG plugdev $USER
 
 Log out and back in for the group change to take effect.
 
-## CLI
+## Unified CLI
 
-### Install globally
-
-```bash
-npm install -g @thermal-label/labelwriter-cli
-```
-
-### Quick examples
+For ad-hoc printing from a terminal, use
+[`thermal-label-cli`](https://www.npmjs.com/package/thermal-label-cli).
+It auto-detects every installed `@thermal-label/*-node` driver:
 
 ```bash
-# List connected printers
-labelwriter list
-
-# Print a text label
-labelwriter print text "Hello, world!"
-
-# Print with options
-labelwriter print text "Fragile" --density high --copies 3
-
-# Check printer status
-labelwriter status
-
-# Print image
-labelwriter print image ./label.png --threshold 128
+pnpm add -g thermal-label-cli @thermal-label/labelwriter-node
+thermal-label list
+thermal-label print ./label.png --media address-standard
 ```
-
-See the [CLI reference](/cli) for all commands and flags.
 
 ## Web (browser)
 
 ### Install
 
 ```bash
-npm install @thermal-label/labelwriter-web
+pnpm add @thermal-label/labelwriter-web
 ```
 
-Requires Chrome or Edge (WebUSB is not supported in Firefox or Safari).
-Must be served over HTTPS or localhost (secure context requirement).
+Requires Chrome or Edge (WebUSB is not supported in Firefox or Safari),
+served from a secure context (`https://` or `localhost`).
 
 ### Quick start
 
 ```ts
 import { requestPrinter } from '@thermal-label/labelwriter-web';
+import { MEDIA } from '@thermal-label/labelwriter-core';
 
-// Triggers browser's USB device picker
+// Must run from a user gesture (click handler, etc.)
 const printer = await requestPrinter();
-await printer.printText('Hello from the browser!');
-await printer.disconnect();
+try {
+  await printer.print(image, MEDIA.ADDRESS_STANDARD);
+} finally {
+  await printer.close();
+}
 ```
 
 ## NFC label lock
 
 ### What is it?
 
-The Dymo LabelWriter 550 series (550, 550 Turbo, 5XL, and related models) includes hardware-level NFC validation. Before printing, the printer reads an NFC chip embedded in the label roll. If the chip is absent or not recognised as a genuine Dymo label, the printer reports a paper-out error and refuses to print.
+The Dymo LabelWriter 550 series (550, 550 Turbo, 5XL, and related
+models) includes hardware-level NFC validation. Before printing, the
+printer reads an NFC chip embedded in the label roll. If the chip is
+absent or not recognised as a genuine Dymo label, the printer reports
+a paper-out error and refuses to print.
 
 ### Which models are affected?
 
-All `protocol: '550'` devices — see [Hardware](/hardware) for the full list. The 450 series and older models do not have this restriction.
+All `protocol: '550'` devices — see [Hardware](/hardware) for the full
+list. The 450 series and older models do not have this restriction.
 
 ### Can it be bypassed?
 
-**No.** The NFC check is performed entirely within the printer's own firmware, independent of the host software. There is no command or sequence that disables it. Using genuine Dymo-certified label rolls is the only solution.
+**No.** The NFC check is performed entirely within the printer's own
+firmware, independent of the host software. There is no command or
+sequence that disables it. Using genuine Dymo-certified label rolls is
+the only solution.
 
 ### What does the error look like?
 
-`getStatus()` will return `{ ready: false, paperOut: true, errors: ['Paper out'] }`. The printer will also show a blinking orange LED.
+`getStatus()` returns a `PrinterStatus` whose `errors[]` contains a
+`{ code: 'no_media', message: 'No labels loaded' }` entry and whose
+`ready` is `false`. The printer also shows a blinking orange LED.

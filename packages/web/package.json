@@ -2,7 +2,14 @@
   "name": "@thermal-label/labelwriter-web",
   "version": "0.2.0",
   "description": "WebUSB browser driver for Dymo LabelWriter printers",
-  "keywords": ["dymo", "labelwriter", "label-printer", "thermal-label", "webusb", "browser"],
+  "keywords": [
+    "dymo",
+    "labelwriter",
+    "label-printer",
+    "thermal-label",
+    "webusb",
+    "browser"
+  ],
   "license": "MIT",
   "author": "Mannes Brak",
   "repository": {
@@ -19,7 +26,10 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "typecheck": "tsc --project tsconfig.json --noEmit",
@@ -27,9 +37,9 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@thermal-label/contracts": "^0.1.1",
+    "@thermal-label/contracts": "^0.1.2",
     "@thermal-label/labelwriter-core": "workspace:*",
-    "@thermal-label/transport": "^0.1.0"
+    "@thermal-label/transport": "^0.2.0"
   },
   "peerDependencies": {
     "typescript": ">=5.0"

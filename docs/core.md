@@ -1,22 +1,47 @@
 # Core protocol reference
 
-`@thermal-label/labelwriter-core` is the universal protocol encoder. It has no runtime dependencies beyond `@mbtech-nl/bitmap` and works in Node.js and the browser.
+`@thermal-label/labelwriter-core` is the shared protocol layer used by
+both the Node.js and Web packages. It contains the ESC/raster
+encoder, the 450/550 status parsers, the device and media
+registries, and the offline preview helper. It also re-exports the
+`@thermal-label/contracts` base types.
+
+Consume `*-core` directly when you need the protocol encoder or
+offline preview without a live printer.
 
 ## Install
 
 ```bash
-npm install @thermal-label/labelwriter-core
+pnpm add @thermal-label/labelwriter-core
 ```
+
+## Core exports
+
+| Export                                                               | Description                                                                 |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `DEVICES` / `findDevice`                                             | Device registry (family, transports, protocol `'450' \| '550'`)             |
+| `MEDIA` / `DEFAULT_MEDIA`                                            | Media registry and the 89×28 mm fallback for assumed previews               |
+| `findMediaByDimensions(w, h)`                                        | Match a 550-status response to a registry entry                             |
+| `STATUS_REQUEST`                                                     | `ESC A` byte sequence                                                       |
+| `parseStatus(device, bytes)`                                         | Parse the status response into `PrinterStatus`                              |
+| `statusByteCount(device)`                                            | 1 for 450-series, 32 for 550-series                                         |
+| `createPreviewOffline(image, media)`                                 | Render `PreviewResult` without a live printer connection                    |
+| `encodeLabel(device, bitmap, opts)`                                  | Full job byte stream — job header (550) + raster + form feed                |
+| `buildReset`, `buildDensity`, `buildRasterRow`, …                    | Per-command byte builders                                                   |
+| `LabelWriterDevice`                                                  | Device descriptor type (extends contracts `DeviceDescriptor`)               |
+| `LabelWriterMedia`                                                   | Media descriptor type (extends contracts `MediaDescriptor`)                 |
+| `LabelWriterPrintOptions`                                            | Protocol options (`density`, `mode`, `compress`, `copies`, `roll`, `jobId`) |
+| `Density`                                                            | `'light' \| 'medium' \| 'normal' \| 'high'`                                 |
+| `PrinterAdapter`, `MediaDescriptor`, `PrinterStatus`, `Transport`, … | Re-exported from `@thermal-label/contracts`                                 |
 
 ## Encoding a label
 
 ```ts
-import { encodeLabel, DEVICES } from '@thermal-label/labelwriter-core';
-import type { LabelBitmap } from '@thermal-label/labelwriter-core';
+import { encodeLabel, DEVICES, type LabelBitmap } from '@thermal-label/labelwriter-core';
 
-const bitmap: LabelBitmap = { widthPx: 672, heightPx: 200, data: new Uint8Array(672 / 8 * 200) };
+const bitmap: LabelBitmap = { widthPx: 672, heightPx: 200, data: new Uint8Array((672 / 8) * 200) };
 const bytes = encodeLabel(DEVICES.LW_450, bitmap);
-// bytes is a Uint8Array ready to send to the printer
+// bytes is a Uint8Array ready to send to the printer transport
 ```
 
 ## Protocol command reference
@@ -53,11 +78,11 @@ Example: 200 dots → `0x1B 0x4C 0xC8 0x00`.
 ```
 
 | Value | Density |
-|-------|---------|
-| 0 | Light |
-| 1 | Medium |
-| 2 | Normal |
-| 4 | High |
+| ----- | ------- |
+| 0     | Light   |
+| 1     | Medium  |
+| 2     | Normal  |
+| 4     | High    |
 
 ### Print mode — `ESC i <n>`
 
@@ -65,10 +90,10 @@ Example: 200 dots → `0x1B 0x4C 0xC8 0x00`.
 0x1B 0x69 <mode>
 ```
 
-| Value | Mode |
-|-------|------|
-| 0 | Text |
-| 1 | Graphics |
+| Value | Mode     |
+| ----- | -------- |
+| 0     | Text     |
+| 1     | Graphics |
 
 ### Form feed — `ESC E`
 

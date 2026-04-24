@@ -56,8 +56,8 @@
 
       <div v-if="nfcLock" class="nfc-notice">
         <strong>⚠ 550 series detected:</strong>
-        This printer requires genuine Dymo-certified label rolls with an NFC chip.
-        Non-certified labels will trigger a paper-out error at the hardware level.
+        This printer requires genuine Dymo-certified label rolls with an NFC chip. Non-certified
+        labels will trigger a paper-out error at the hardware level.
       </div>
 
       <p v-if="statusMessage" class="status-msg" :class="statusClass">{{ statusMessage }}</p>
@@ -70,10 +70,37 @@
 </template>
 
 <script setup lang="ts">
-import { renderText, scaleBitmap } from '@thermal-label/labelwriter-core';
-import type { LabelBitmap } from '@thermal-label/labelwriter-core';
+import {
+  MEDIA,
+  renderText,
+  scaleBitmap,
+  type Density,
+  type LabelBitmap,
+  type LabelWriterMedia,
+  type RawImageData,
+} from '@thermal-label/labelwriter-core';
 import { computed, onMounted, ref, watch } from 'vue';
-import type { WebLabelWriterPrinter, Density } from '@thermal-label/labelwriter-web';
+import type { WebLabelWriterPrinter } from '@thermal-label/labelwriter-web';
+
+function bitmapToRawImage(bitmap: LabelBitmap, inverted: boolean): RawImageData {
+  const { widthPx, heightPx } = bitmap;
+  const data = new Uint8Array(widthPx * heightPx * 4);
+  for (let y = 0; y < heightPx; y += 1) {
+    for (let x = 0; x < widthPx; x += 1) {
+      const bit = getPixel(bitmap, x, y);
+      const isInk = inverted ? !bit : bit;
+      const offset = (y * widthPx + x) * 4;
+      const value = isInk ? 0 : 255;
+      data[offset] = value;
+      data[offset + 1] = value;
+      data[offset + 2] = value;
+      data[offset + 3] = 255;
+    }
+  }
+  return { width: widthPx, height: heightPx, data };
+}
+
+const PRINT_MEDIA: LabelWriterMedia = MEDIA.ADDRESS_STANDARD;
 
 const PREVIEW_SCALE = 4;
 
@@ -165,8 +192,8 @@ async function connect(): Promise<void> {
     const { requestPrinter } = await import('@thermal-label/labelwriter-web');
     const p = await requestPrinter();
     printer.value = p;
-    printerName.value = p.descriptor.name;
-    nfcLock.value = p.descriptor.nfcLock;
+    printerName.value = p.device.name;
+    nfcLock.value = p.device.nfcLock;
     statusType.value = 'ok';
     statusMessage.value = 'Ready to print.';
   } catch (error) {
@@ -180,7 +207,7 @@ async function connect(): Promise<void> {
 async function disconnect(): Promise<void> {
   if (!printer.value) return;
   try {
-    await printer.value.disconnect();
+    await printer.value.close();
   } catch {
     // ignore
   }
@@ -204,7 +231,9 @@ async function print(): Promise<void> {
   statusMessage.value = 'Sending to printer…';
   statusType.value = 'idle';
   try {
-    await printer.value.printText(trimmed, { density: density.value, invert: invert.value });
+    const bitmap = renderText(trimmed, { invert: invert.value });
+    const image = bitmapToRawImage(bitmap, invert.value);
+    await printer.value.print(image, PRINT_MEDIA, { density: density.value });
     statusType.value = 'ok';
     statusMessage.value = 'Label sent ✓';
   } catch (error) {

@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [node/src](../README.md) / PrinterStatus
 
@@ -16,7 +16,7 @@ Defined in: node/src/types.ts:17
 
 Defined in: node/src/types.ts:20
 
-***
+---
 
 ### paperOut
 
@@ -24,7 +24,7 @@ Defined in: node/src/types.ts:20
 
 Defined in: node/src/types.ts:19
 
-***
+---
 
 ### rawBytes
 
@@ -32,7 +32,7 @@ Defined in: node/src/types.ts:19
 
 Defined in: node/src/types.ts:21
 
-***
+---
 
 ### ready
 

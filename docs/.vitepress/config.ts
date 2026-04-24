@@ -5,10 +5,7 @@ export default defineConfig({
   title: 'labelwriter',
   description: 'TypeScript driver for Dymo LabelWriter label printers — USB, TCP, WebUSB',
   base: '/labelwriter/',
-  ignoreDeadLinks: [
-    /^\.\/LICENSE$/,
-    /^\.\/(core|node|web)\/dist\/README$/,
-  ],
+  ignoreDeadLinks: [/^\.\/LICENSE$/, /^\.\/(core|node|web)\/dist\/README$/],
   themeConfig: {
     nav: [
       { text: 'Get started', link: '/getting-started' },

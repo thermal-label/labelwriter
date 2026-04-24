@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [node/src](../README.md) / Transport
 
@@ -20,7 +20,7 @@ Defined in: node/src/transport.ts:9
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### read()
 
@@ -38,7 +38,7 @@ Defined in: node/src/transport.ts:8
 
 `Promise`\<`Uint8Array`\>
 
-***
+---
 
 ### write()
 

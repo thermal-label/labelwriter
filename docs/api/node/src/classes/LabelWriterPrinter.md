@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [node/src](../README.md) / LabelWriterPrinter
 
@@ -42,7 +42,7 @@ Defined in: node/src/printer.ts:62
 
 Defined in: node/src/printer.ts:58
 
-***
+---
 
 ### transport
 
@@ -62,7 +62,7 @@ Defined in: node/src/printer.ts:109
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### getStatus()
 
@@ -74,7 +74,7 @@ Defined in: node/src/printer.ts:68
 
 `Promise`\<[`PrinterStatus`](../interfaces/PrinterStatus.md)\>
 
-***
+---
 
 ### print()
 
@@ -96,7 +96,7 @@ Defined in: node/src/printer.ts:75
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### printImage()
 
@@ -118,7 +118,7 @@ Defined in: node/src/printer.ts:90
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### printText()
 
@@ -140,7 +140,7 @@ Defined in: node/src/printer.ts:80
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### recover()
 

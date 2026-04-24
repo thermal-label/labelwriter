@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [core/src](../README.md) / PrintOptions
 
@@ -16,7 +16,7 @@ Defined in: core/src/types.ts:16
 
 Defined in: core/src/types.ts:19
 
-***
+---
 
 ### copies?
 
@@ -24,7 +24,7 @@ Defined in: core/src/types.ts:19
 
 Defined in: core/src/types.ts:20
 
-***
+---
 
 ### density?
 
@@ -32,7 +32,7 @@ Defined in: core/src/types.ts:20
 
 Defined in: core/src/types.ts:17
 
-***
+---
 
 ### jobId?
 
@@ -40,7 +40,7 @@ Defined in: core/src/types.ts:17
 
 Defined in: core/src/types.ts:22
 
-***
+---
 
 ### mode?
 
@@ -48,7 +48,7 @@ Defined in: core/src/types.ts:22
 
 Defined in: core/src/types.ts:18
 
-***
+---
 
 ### roll?
 

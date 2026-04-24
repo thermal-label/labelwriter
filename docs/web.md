@@ -1,62 +1,97 @@
 # Web (browser)
 
-`@thermal-label/labelwriter-web` is a browser-only package that uses the [WebUSB API](https://developer.mozilla.org/en-US/docs/Web/API/USB) to communicate with Dymo LabelWriter printers directly from the browser — no backend, no drivers.
+`@thermal-label/labelwriter-web` talks to Dymo LabelWriter printers
+directly from Chrome or Edge via the
+[WebUSB API](https://developer.mozilla.org/en-US/docs/Web/API/USB) —
+no backend, no native drivers. It implements the same `PrinterAdapter`
+the Node.js driver does, backed by `WebUsbTransport` from
+`@thermal-label/transport/web`.
 
 ## Browser support
 
-| Browser | Support |
-|---------|---------|
-| Chrome 61+ | ✅ |
-| Edge 79+ | ✅ |
-| Firefox | ❌ |
-| Safari | ❌ |
-| Samsung Internet | ❌ |
+| Browser    | Support |
+| ---------- | ------- |
+| Chrome 61+ | ✅      |
+| Edge 79+   | ✅      |
+| Firefox    | ❌      |
+| Safari     | ❌      |
 
-WebUSB requires a **secure context** — the page must be served over HTTPS or from `localhost`.
+WebUSB requires a **secure context** (HTTPS or `localhost`) and a
+**user gesture** (click / keypress) for the initial pairing prompt.
 
 ## Install
 
 ```bash
-npm install @thermal-label/labelwriter-web
+pnpm add @thermal-label/labelwriter-web
 ```
 
 ## Quick start
 
 ```ts
 import { requestPrinter } from '@thermal-label/labelwriter-web';
+import { MEDIA } from '@thermal-label/labelwriter-core';
 
-// Opens the browser's USB device picker, filtered to known LabelWriter PIDs.
-// Must be called in response to a user gesture (click, keypress, etc.)
+// Must run from a user gesture.
 const printer = await requestPrinter();
-
-await printer.printText('Hello from the browser!', { density: 'high' });
-await printer.disconnect();
+try {
+  await printer.print(image, MEDIA.ADDRESS_STANDARD);
+} finally {
+  await printer.close();
+}
 ```
 
-## Connect to a known device
+`image` is `RawImageData` — build one from `ImageData` returned by a
+canvas `getImageData()` call, or from an `<img>` drawn to an
+`OffscreenCanvas`:
 
-If you already have a `USBDevice` from `navigator.usb.getDevices()`:
+```ts
+const bmp = await createImageBitmap(file);
+const canvas = new OffscreenCanvas(bmp.width, bmp.height);
+const ctx = canvas.getContext('2d')!;
+ctx.drawImage(bmp, 0, 0);
+const id = ctx.getImageData(0, 0, bmp.width, bmp.height);
+const image = { width: id.width, height: id.height, data: new Uint8Array(id.data.buffer) };
+```
+
+## Connect to a previously paired device
 
 ```ts
 import { fromUSBDevice } from '@thermal-label/labelwriter-web';
 
 const [usbDevice] = await navigator.usb.getDevices();
-const printer = fromUSBDevice(usbDevice);
-await printer.printText('Reconnected!');
+const printer = await fromUSBDevice(usbDevice);
 ```
 
-## Printing images
+`fromUSBDevice()` is async — it hands the device to
+`WebUsbTransport.fromDevice()` which opens it and claims interface 0.
+
+## Status
 
 ```ts
-// From ImageData (e.g. from a <canvas>)
-const canvas = document.querySelector('canvas');
-const ctx = canvas.getContext('2d');
-const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-await printer.printImage(imageData, { threshold: 128 });
+const status = await printer.getStatus();
 
-// From a URL
-await printer.printImageURL('/logo.png', { rotate: 90 });
+status.ready; // printer idle and error-free
+status.mediaLoaded; // label roll present
+status.detectedMedia; // LabelWriterMedia | undefined (550 only)
+status.errors; // PrinterError[] — same shape as the node driver
 ```
+
+On the 550 series, `detectedMedia` is populated automatically from
+the 32-byte status response. Subsequent `print()` calls can omit
+`media` and the adapter will reuse the detection.
+
+## Preview
+
+```ts
+const preview = await printer.createPreview(image, {
+  media: MEDIA.SHIPPING_STANDARD,
+});
+preview.planes[0].bitmap; // 1bpp LabelBitmap
+preview.planes[0].displayColor; // '#000000' — single-colour driver
+```
+
+For offline previews, import `createPreviewOffline` from
+`@thermal-label/labelwriter-core`.
 
 ## Live demo
 
@@ -65,30 +100,21 @@ Try it in your browser: [Demo](/demo)
 ## NFC label lock
 
 ::: warning 550 series
-The LabelWriter 550 series enforces NFC chip validation on label rolls at the hardware level. Non-certified labels will be rejected. See [Getting started — NFC label lock](/getting-started#nfc-label-lock).
+The LabelWriter 550 series enforces NFC chip validation on label
+rolls at the hardware level. Non-certified labels will be rejected.
+See [Getting started — NFC label lock](/getting-started#nfc-label-lock).
 :::
 
-## API
+## API summary
 
-### `requestPrinter()`
+| Export                  | Description                                      |
+| ----------------------- | ------------------------------------------------ |
+| `requestPrinter(opts?)` | Show the USB picker and wrap the selected device |
+| `fromUSBDevice(device)` | Wrap a pre-paired `USBDevice` (async)            |
+| `WebLabelWriterPrinter` | Adapter class                                    |
+| `DEFAULT_FILTERS`       | LabelWriter VID/PID filter set                   |
 
-Calls `navigator.usb.requestDevice()` filtered to all known LabelWriter PIDs and wraps the selected device in a `WebLabelWriterPrinter`. Must be called inside a user gesture handler.
-
-### `fromUSBDevice(device)`
-
-Wraps an existing `USBDevice` in a `WebLabelWriterPrinter`. Throws if the device is not a recognised LabelWriter model.
-
-### `WebLabelWriterPrinter`
-
-| Member | Type | Description |
-|--------|------|-------------|
-| `device` | `USBDevice` | Underlying USB device |
-| `descriptor` | `DeviceDescriptor` | Device metadata (name, protocol, etc.) |
-| `getStatus()` | `Promise<PrinterStatus>` | Read printer status |
-| `print(bitmap, options?)` | `Promise<void>` | Print a `LabelBitmap` |
-| `printText(text, options?)` | `Promise<void>` | Render text and print |
-| `printImage(imageData, options?)` | `Promise<void>` | Print from `ImageData` |
-| `printImageURL(url, options?)` | `Promise<void>` | Load URL and print |
-| `recover()` | `Promise<void>` | Send error recovery |
-| `isConnected()` | `boolean` | Whether the device is open |
-| `disconnect()` | `Promise<void>` | Close USB connection |
+`WebLabelWriterPrinter` implements `PrinterAdapter` from
+`@thermal-label/contracts` — `print`, `createPreview`, `getStatus`,
+`close`, plus the `family`, `model`, `device`, `connected` getters
+and the driver-specific `recover()` helper.

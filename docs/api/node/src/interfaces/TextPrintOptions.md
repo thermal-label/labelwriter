@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [node/src](../README.md) / TextPrintOptions
 
@@ -24,7 +24,7 @@ Defined in: core/dist/types.d.ts:16
 
 [`PrintOptions`](PrintOptions.md).[`compress`](PrintOptions.md#compress)
 
-***
+---
 
 ### copies?
 
@@ -36,7 +36,7 @@ Defined in: core/dist/types.d.ts:17
 
 [`PrintOptions`](PrintOptions.md).[`copies`](PrintOptions.md#copies)
 
-***
+---
 
 ### density?
 
@@ -48,7 +48,7 @@ Defined in: core/dist/types.d.ts:14
 
 [`PrintOptions`](PrintOptions.md).[`density`](PrintOptions.md#density)
 
-***
+---
 
 ### invert?
 
@@ -56,7 +56,7 @@ Defined in: core/dist/types.d.ts:14
 
 Defined in: node/src/types.ts:25
 
-***
+---
 
 ### jobId?
 
@@ -68,7 +68,7 @@ Defined in: core/dist/types.d.ts:19
 
 [`PrintOptions`](PrintOptions.md).[`jobId`](PrintOptions.md#jobid)
 
-***
+---
 
 ### mode?
 
@@ -80,7 +80,7 @@ Defined in: core/dist/types.d.ts:15
 
 [`PrintOptions`](PrintOptions.md).[`mode`](PrintOptions.md#mode)
 
-***
+---
 
 ### roll?
 
@@ -92,7 +92,7 @@ Defined in: core/dist/types.d.ts:18
 
 [`PrintOptions`](PrintOptions.md).[`roll`](PrintOptions.md#roll)
 
-***
+---
 
 ### scaleX?
 
@@ -100,7 +100,7 @@ Defined in: core/dist/types.d.ts:18
 
 Defined in: node/src/types.ts:26
 
-***
+---
 
 ### scaleY?
 

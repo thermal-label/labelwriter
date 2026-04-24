@@ -60,9 +60,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     media?: MediaDescriptor,
     options?: LabelWriterPrintOptions,
   ): Promise<void> {
-    const resolvedMedia = (media ?? this.lastStatus?.detectedMedia) as
-      | LabelWriterMedia
-      | undefined;
+    const resolvedMedia = (media ?? this.lastStatus?.detectedMedia) as LabelWriterMedia | undefined;
     if (!resolvedMedia) {
       throw new MediaNotSpecifiedError();
     }

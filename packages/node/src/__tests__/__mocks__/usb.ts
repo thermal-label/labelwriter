@@ -18,10 +18,7 @@ export interface MockDevice {
   deviceAddress: number;
   open(): void;
   close(): void;
-  getStringDescriptor(
-    index: number,
-    callback: (err: Error | null, value?: string) => void,
-  ): void;
+  getStringDescriptor(index: number, callback: (err: Error | null, value?: string) => void): void;
 }
 
 const devices: MockDevice[] = [];

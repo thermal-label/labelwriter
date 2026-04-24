@@ -31,7 +31,10 @@ function makeTransport(statusBytes: Uint8Array = new Uint8Array([0x00])): {
   return { transport, written };
 }
 
-function solidRgba(width: number, height: number): {
+function solidRgba(
+  width: number,
+  height: number,
+): {
   width: number;
   height: number;
   data: Uint8Array;

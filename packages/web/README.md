@@ -4,11 +4,11 @@ WebUSB browser driver for Dymo LabelWriter printers.
 
 ## Browser support
 
-| Browser | Support |
-|---------|---------|
-| Chrome / Edge | ✅ |
-| Firefox | ❌ (WebUSB not supported) |
-| Safari | ❌ (WebUSB not supported) |
+| Browser       | Support                   |
+| ------------- | ------------------------- |
+| Chrome / Edge | ✅                        |
+| Firefox       | ❌ (WebUSB not supported) |
+| Safari        | ❌ (WebUSB not supported) |
 
 Requires a secure context (HTTPS or localhost).
 
@@ -44,16 +44,16 @@ Wraps an already-obtained `USBDevice` in a `WebLabelWriterPrinter`.
 
 ### `WebLabelWriterPrinter`
 
-| Method | Description |
-|--------|-------------|
-| `getStatus()` | Read printer status (1 byte for 450, 32 for 550) |
-| `print(bitmap, options?)` | Print a raw bitmap |
-| `printText(text, options?)` | Render text and print |
-| `printImage(imageData, options?)` | Print from `ImageData` |
-| `printImageURL(url, options?)` | Load image URL and print |
-| `recover()` | Send error recovery sequence |
-| `isConnected()` | Check USB connection state |
-| `disconnect()` | Close USB connection |
+| Method                            | Description                                      |
+| --------------------------------- | ------------------------------------------------ |
+| `getStatus()`                     | Read printer status (1 byte for 450, 32 for 550) |
+| `print(bitmap, options?)`         | Print a raw bitmap                               |
+| `printText(text, options?)`       | Render text and print                            |
+| `printImage(imageData, options?)` | Print from `ImageData`                           |
+| `printImageURL(url, options?)`    | Load image URL and print                         |
+| `recover()`                       | Send error recovery sequence                     |
+| `isConnected()`                   | Check USB connection state                       |
+| `disconnect()`                    | Close USB connection                             |
 
 ## License
 

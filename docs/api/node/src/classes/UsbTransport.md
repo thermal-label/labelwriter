@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [node/src](../README.md) / UsbTransport
 
@@ -28,7 +28,7 @@ Defined in: node/src/transport.ts:61
 
 [`Transport`](../interfaces/Transport.md).[`close`](../interfaces/Transport.md#close)
 
-***
+---
 
 ### read()
 
@@ -50,7 +50,7 @@ Defined in: node/src/transport.ts:56
 
 [`Transport`](../interfaces/Transport.md).[`read`](../interfaces/Transport.md#read)
 
-***
+---
 
 ### write()
 
@@ -72,7 +72,7 @@ Defined in: node/src/transport.ts:52
 
 [`Transport`](../interfaces/Transport.md).[`write`](../interfaces/Transport.md#write)
 
-***
+---
 
 ### open()
 

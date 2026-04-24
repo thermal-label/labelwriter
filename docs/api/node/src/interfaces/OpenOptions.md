@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
-***
+---
 
 [labelwriter](../../../README.md) / [node/src](../README.md) / OpenOptions
 
@@ -16,7 +16,7 @@ Defined in: node/src/types.ts:4
 
 Defined in: node/src/types.ts:6
 
-***
+---
 
 ### serialNumber?
 
@@ -24,7 +24,7 @@ Defined in: node/src/types.ts:6
 
 Defined in: node/src/types.ts:7
 
-***
+---
 
 ### vid?
 

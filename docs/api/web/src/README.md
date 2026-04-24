@@ -1,6 +1,6 @@
 [**labelwriter**](../../README.md)
 
-***
+---
 
 [labelwriter](../../README.md) / web/src
 
@@ -27,13 +27,13 @@
 
 Re-exports [Density](../../node/src/type-aliases/Density.md)
 
-***
+---
 
 ### DeviceDescriptor
 
 Re-exports [DeviceDescriptor](../../node/src/interfaces/DeviceDescriptor.md)
 
-***
+---
 
 ### PrintOptions
 
