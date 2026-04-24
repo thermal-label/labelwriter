@@ -14,7 +14,7 @@
   "author": "Mannes Brak",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mbtech-nl/thermal-label",
+    "url": "https://github.com/thermal-label/labelwriter.git",
     "directory": "packages/web"
   },
   "type": "module",
