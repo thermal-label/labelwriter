@@ -7,13 +7,12 @@ export default defineConfig({
   base: '/labelwriter/',
   ignoreDeadLinks: [
     /^\.\/LICENSE$/,
-    /^\.\/(cli|core|node|web)\/dist\/README$/,
+    /^\.\/(core|node|web)\/dist\/README$/,
   ],
   themeConfig: {
     nav: [
       { text: 'Get started', link: '/getting-started' },
       { text: 'Node.js', link: '/node' },
-      { text: 'CLI', link: '/cli' },
       { text: 'Web', link: '/web' },
       { text: 'Hardware', link: '/hardware' },
       { text: 'Core', link: '/core' },
@@ -21,7 +20,6 @@ export default defineConfig({
     sidebar: [
       { text: 'Getting Started', link: '/getting-started' },
       { text: 'Node.js', link: '/node' },
-      { text: 'CLI', link: '/cli' },
       { text: 'Web', link: '/web' },
       { text: 'Hardware', link: '/hardware' },
       { text: 'Core', link: '/core' },

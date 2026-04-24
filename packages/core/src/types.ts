@@ -1,9 +1,22 @@
-export type NetworkSupport = 'none' | 'wifi' | 'wired';
+/* eslint-disable import-x/consistent-type-specifier-style */
+import type {
+  DeviceDescriptor,
+  MediaDescriptor,
+  PrintOptions,
+} from '@thermal-label/contracts';
 
+export type NetworkSupport = 'none' | 'wifi' | 'wired';
 export type Density = 'light' | 'medium' | 'normal' | 'high';
 
-export interface DeviceDescriptor {
-  name: string;
+/**
+ * Dymo LabelWriter device descriptor.
+ *
+ * Extends the contracts base with LabelWriter-specific fields: head
+ * geometry, protocol generation (`'450'` legacy ESC raster, `'550'`
+ * job-header raster), network capability, and NFC roll authentication.
+ */
+export interface LabelWriterDevice extends DeviceDescriptor {
+  family: 'labelwriter';
   vid: number;
   pid: number;
   headDots: number;
@@ -13,11 +26,32 @@ export interface DeviceDescriptor {
   nfcLock: boolean;
 }
 
-export interface PrintOptions {
+/**
+ * Dymo LabelWriter media descriptor.
+ *
+ * Extends `MediaDescriptor` with the length in printer dots. Die-cut
+ * media carries a fixed `heightMm`; continuous media leaves it
+ * undefined. All LabelWriter media is single-colour.
+ */
+export interface LabelWriterMedia extends MediaDescriptor {
+  type: 'die-cut' | 'continuous';
+  colorCapable: false;
+  /** Length in 300-dpi dots — used by the 550 to match status responses. */
+  lengthDots?: number;
+}
+
+/**
+ * Protocol-internal print options.
+ *
+ * Extends the cross-driver `PrintOptions` with the LabelWriter-specific
+ * `density` narrowed to the values the firmware recognises, the
+ * text/graphics mode byte, RLE compression toggle, roll selector (Twin
+ * Turbo / 450 Duo), and the optional 550-series job ID.
+ */
+export interface LabelWriterPrintOptions extends PrintOptions {
   density?: Density;
   mode?: 'text' | 'graphics';
   compress?: boolean;
-  copies?: number;
   roll?: 0 | 1;
   jobId?: number;
 }

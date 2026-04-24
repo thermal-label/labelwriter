@@ -1,8 +1,7 @@
-export { WebLabelWriterPrinter, requestPrinter, fromUSBDevice } from './printer.js';
-export type { PrinterStatus, TextPrintOptions, ImagePrintOptions } from './types.js';
-export type {
-  DeviceDescriptor,
-  LabelBitmap,
-  PrintOptions,
-  Density,
-} from '@thermal-label/labelwriter-core';
+export {
+  DEFAULT_FILTERS,
+  WebLabelWriterPrinter,
+  fromUSBDevice,
+  requestPrinter,
+  type RequestOptions,
+} from './printer.js';

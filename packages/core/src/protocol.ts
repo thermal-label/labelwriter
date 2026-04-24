@@ -1,6 +1,6 @@
 /* eslint-disable import-x/consistent-type-specifier-style */
 import { padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
-import type { DeviceDescriptor, PrintOptions, Density } from './types.js';
+import type { LabelWriterDevice, LabelWriterPrintOptions, Density } from './types.js';
 
 export function buildReset(): Uint8Array {
   return new Uint8Array([0x1b, 0x40]);
@@ -109,9 +109,9 @@ function concat(...arrays: Uint8Array[]): Uint8Array {
 }
 
 export function encodeLabel(
-  device: DeviceDescriptor,
+  device: LabelWriterDevice,
   bitmap: LabelBitmap,
-  options: PrintOptions = {},
+  options: LabelWriterPrintOptions = {},
 ): Uint8Array {
   const { density = 'normal', mode = 'text', compress = false, copies = 1, roll, jobId } = options;
 

@@ -1,142 +1,134 @@
-/* eslint-disable import-x/consistent-type-specifier-style */
-import type { DeviceDescriptor, LabelBitmap, PrintOptions } from '@thermal-label/labelwriter-core';
 import {
+  DEFAULT_MEDIA,
   DEVICES,
+  STATUS_REQUEST,
   buildErrorRecovery,
-  buildStatusRequest,
+  createPreviewOffline,
   encodeLabel,
   findDevice,
-  renderText,
+  parseStatus,
+  renderImage,
+  statusByteCount,
+  type LabelWriterDevice,
+  type LabelWriterMedia,
+  type LabelWriterPrintOptions,
+  type MediaDescriptor,
+  type PreviewOptions,
+  type PreviewResult,
+  type PrinterAdapter,
+  type PrinterStatus,
+  type RawImageData,
+  type Transport,
 } from '@thermal-label/labelwriter-core';
-import { WebUsbTransport } from './transport.js';
-import type { PrinterStatus, TextPrintOptions, ImagePrintOptions } from './types.js';
+import { MediaNotSpecifiedError } from '@thermal-label/contracts';
+import { buildUsbFilters } from '@thermal-label/transport';
+import { WebUsbTransport } from '@thermal-label/transport/web';
 
-function parsePrinterStatus(bytes: Uint8Array): PrinterStatus {
-  const byte0 = bytes[0] ?? 0;
-  const paperOut = (byte0 & 0x01) !== 0;
-  const errors: string[] = [];
-  if (paperOut) errors.push('Paper out');
-  if ((byte0 & 0x08) !== 0) errors.push('Cover open');
-  return { ready: errors.length === 0, paperOut, errors, rawBytes: bytes };
+export interface RequestOptions {
+  filters?: USBDeviceFilter[];
 }
 
-export class WebLabelWriterPrinter {
-  readonly device: USBDevice;
-  readonly descriptor: DeviceDescriptor;
-  private readonly transport: WebUsbTransport;
+/**
+ * WebUSB `PrinterAdapter` for Dymo LabelWriter printers.
+ *
+ * Thin wrapper around the shared `WebUsbTransport`. Callers obtain one
+ * of these via `requestPrinter()` (new pairing) or `fromUSBDevice()`
+ * (previously paired).
+ */
+export class WebLabelWriterPrinter implements PrinterAdapter {
+  readonly family = 'labelwriter' as const;
+  readonly device: LabelWriterDevice;
 
-  constructor(device: USBDevice, descriptor: DeviceDescriptor) {
+  private readonly transport: Transport;
+  private lastStatus: PrinterStatus | undefined;
+
+  constructor(device: LabelWriterDevice, transport: Transport) {
     this.device = device;
-    this.descriptor = descriptor;
-    this.transport = new WebUsbTransport(device);
+    this.transport = transport;
+  }
+
+  get model(): string {
+    return this.device.name;
+  }
+
+  get connected(): boolean {
+    return this.transport.connected;
+  }
+
+  async print(
+    image: RawImageData,
+    media?: MediaDescriptor,
+    options?: LabelWriterPrintOptions,
+  ): Promise<void> {
+    const resolvedMedia = (media ?? this.lastStatus?.detectedMedia) as
+      | LabelWriterMedia
+      | undefined;
+    if (!resolvedMedia) {
+      throw new MediaNotSpecifiedError();
+    }
+    const bitmap = renderImage(image, { dither: true });
+    const bytes = encodeLabel(this.device, bitmap, options);
+    await this.transport.write(bytes);
+  }
+
+  createPreview(image: RawImageData, options?: PreviewOptions): Promise<PreviewResult> {
+    const override = options?.media as LabelWriterMedia | undefined;
+    const detected = this.lastStatus?.detectedMedia as LabelWriterMedia | undefined;
+    if (override) return Promise.resolve(createPreviewOffline(image, override));
+    if (detected) return Promise.resolve(createPreviewOffline(image, detected));
+    return Promise.resolve({
+      ...createPreviewOffline(image, DEFAULT_MEDIA),
+      assumed: true,
+    });
   }
 
   async getStatus(): Promise<PrinterStatus> {
-    await this.transport.write(buildStatusRequest());
-    const byteCount = this.descriptor.protocol === '550' ? 32 : 1;
-    const bytes = await this.transport.read(byteCount);
-    return parsePrinterStatus(bytes);
+    await this.transport.write(STATUS_REQUEST);
+    const bytes = await this.transport.read(statusByteCount(this.device));
+    const status = parseStatus(this.device, bytes);
+    this.lastStatus = status;
+    return status;
   }
 
-  async print(bitmap: LabelBitmap, options: PrintOptions = {}): Promise<void> {
-    const data = encodeLabel(this.descriptor, bitmap, options);
-    await this.transport.write(data);
-  }
-
-  async printText(text: string, options: TextPrintOptions = {}): Promise<void> {
-    const { invert, scaleX, scaleY, ...printOptions } = options;
-    const bitmap = renderText(text, {
-      ...(invert !== undefined && { invert }),
-      ...(scaleX !== undefined && { scaleX }),
-      ...(scaleY !== undefined && { scaleY }),
-    });
-    await this.print(bitmap, printOptions);
-  }
-
-  async printImage(imageData: ImageData, options: ImagePrintOptions = {}): Promise<void> {
-    const { threshold, dither, invert, rotate, ...printOptions } = options;
-    const raw = {
-      width: imageData.width,
-      height: imageData.height,
-      data: new Uint8Array(imageData.data.buffer),
-    };
-    const { renderImage } = await import('@thermal-label/labelwriter-core');
-    const bitmap = renderImage(raw, {
-      ...(threshold !== undefined && { threshold }),
-      ...(dither !== undefined && { dither }),
-      ...(invert !== undefined && { invert }),
-      ...(rotate !== undefined && { rotate }),
-    });
-    await this.print(bitmap, printOptions);
-  }
-
-  async printImageURL(url: string, options: ImagePrintOptions = {}): Promise<void> {
-    const image = await loadImage(url);
-    const canvas = document.createElement('canvas');
-    canvas.width = image.naturalWidth;
-    canvas.height = image.naturalHeight;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('Could not get 2D canvas context');
-    ctx.drawImage(image, 0, 0);
-    const imageData = ctx.getImageData(0, 0, image.naturalWidth, image.naturalHeight);
-    await this.printImage(imageData, options);
-  }
-
-  async recover(): Promise<void> {
-    await this.transport.write(buildErrorRecovery());
-    const byteCount = this.descriptor.protocol === '550' ? 32 : 1;
-    await this.transport.read(byteCount);
-  }
-
-  isConnected(): boolean {
-    return this.device.opened;
-  }
-
-  async disconnect(): Promise<void> {
+  async close(): Promise<void> {
     await this.transport.close();
   }
-}
 
-async function loadImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      resolve(img);
-    };
-    img.onerror = () => {
-      reject(new Error(`Failed to load image: ${url}`));
-    };
-    img.src = url;
-  });
-}
-
-async function setupUSBDevice(device: USBDevice): Promise<void> {
-  await device.open();
-  if (device.configuration === null) {
-    await device.selectConfiguration(1);
+  /** Driver-specific recovery sequence — mirror of the node driver. */
+  async recover(): Promise<void> {
+    await this.transport.write(buildErrorRecovery());
+    await this.transport.read(statusByteCount(this.device));
   }
-  await device.claimInterface(0);
 }
 
-export async function requestPrinter(): Promise<WebLabelWriterPrinter> {
-  const filters = Object.values(DEVICES).map(d => ({ vendorId: d.vid, productId: d.pid }));
+/** WebUSB filter set matching every supported LabelWriter VID/PID. */
+export const DEFAULT_FILTERS = buildUsbFilters(Object.values(DEVICES));
+
+/**
+ * Show the browser's USB picker and wrap the selected device.
+ *
+ * Requires a user gesture. The selected `USBDevice` is handed to
+ * `WebUsbTransport.fromDevice()`, which opens it and claims interface 0.
+ */
+export async function requestPrinter(options: RequestOptions = {}): Promise<WebLabelWriterPrinter> {
+  const filters = options.filters ?? DEFAULT_FILTERS;
   const usbDevice = await navigator.usb.requestDevice({ filters });
-  await setupUSBDevice(usbDevice);
-  const descriptor = findDevice(usbDevice.vendorId, usbDevice.productId);
-  if (!descriptor) {
-    throw new Error(
-      `Unknown device: VID=0x${usbDevice.vendorId.toString(16)} PID=0x${usbDevice.productId.toString(16)}`,
-    );
-  }
-  return new WebLabelWriterPrinter(usbDevice, descriptor);
+  return fromUSBDevice(usbDevice);
 }
 
-export function fromUSBDevice(usbDevice: USBDevice): WebLabelWriterPrinter {
+/**
+ * Wrap an already-selected `USBDevice` (e.g. from
+ * `navigator.usb.getDevices()`).
+ *
+ * @throws when the VID/PID is not in the LabelWriter registry.
+ */
+export async function fromUSBDevice(usbDevice: USBDevice): Promise<WebLabelWriterPrinter> {
   const descriptor = findDevice(usbDevice.vendorId, usbDevice.productId);
   if (!descriptor) {
     throw new Error(
-      `Unknown device: VID=0x${usbDevice.vendorId.toString(16)} PID=0x${usbDevice.productId.toString(16)}`,
+      `Unsupported USB device: VID=0x${usbDevice.vendorId.toString(16)} PID=0x${usbDevice.productId.toString(16)}`,
     );
   }
-  return new WebLabelWriterPrinter(usbDevice, descriptor);
+  const transport = await WebUsbTransport.fromDevice(usbDevice);
+  return new WebLabelWriterPrinter(descriptor, transport);
 }

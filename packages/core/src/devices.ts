@@ -1,9 +1,11 @@
 /* eslint-disable import-x/consistent-type-specifier-style */
-import type { DeviceDescriptor } from './types.js';
+import type { LabelWriterDevice } from './types.js';
 
 export const DEVICES = {
   LW_400: {
     name: 'LabelWriter 400',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb'],
     vid: 0x0922,
     pid: 0x0021,
     headDots: 672,
@@ -14,6 +16,8 @@ export const DEVICES = {
   },
   LW_400_TURBO: {
     name: 'LabelWriter 400 Turbo',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb'],
     vid: 0x0922,
     pid: 0x0023,
     headDots: 672,
@@ -24,6 +28,8 @@ export const DEVICES = {
   },
   LW_450: {
     name: 'LabelWriter 450',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb'],
     vid: 0x0922,
     pid: 0x0020,
     headDots: 672,
@@ -34,6 +40,8 @@ export const DEVICES = {
   },
   LW_450_TURBO: {
     name: 'LabelWriter 450 Turbo',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb'],
     vid: 0x0922,
     pid: 0x002a,
     headDots: 672,
@@ -44,6 +52,8 @@ export const DEVICES = {
   },
   LW_450_TWIN_TURBO: {
     name: 'LabelWriter 450 Twin Turbo',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb'],
     vid: 0x0922,
     pid: 0x002b,
     headDots: 672,
@@ -54,6 +64,8 @@ export const DEVICES = {
   },
   LW_450_DUO: {
     name: 'LabelWriter 450 Duo',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb'],
     vid: 0x0922,
     pid: 0x002c,
     headDots: 672,
@@ -64,6 +76,8 @@ export const DEVICES = {
   },
   LW_4XL: {
     name: 'LabelWriter 4XL',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb'],
     vid: 0x0922,
     pid: 0x0025,
     headDots: 672,
@@ -74,6 +88,8 @@ export const DEVICES = {
   },
   LW_WIRELESS: {
     name: 'LabelWriter Wireless',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb', 'tcp'],
     vid: 0x0922,
     pid: 0x0031,
     headDots: 672,
@@ -84,6 +100,8 @@ export const DEVICES = {
   },
   LW_550: {
     name: 'LabelWriter 550',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb'],
     vid: 0x0922,
     pid: 0x0052,
     headDots: 672,
@@ -94,6 +112,8 @@ export const DEVICES = {
   },
   LW_550_TURBO: {
     name: 'LabelWriter 550 Turbo',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb', 'tcp'],
     vid: 0x0922,
     pid: 0x0053,
     headDots: 672,
@@ -104,6 +124,8 @@ export const DEVICES = {
   },
   LW_5XL: {
     name: 'LabelWriter 5XL',
+    family: 'labelwriter',
+    transports: ['usb', 'webusb', 'tcp'],
     vid: 0x0922,
     pid: 0x0054,
     headDots: 1248,
@@ -112,8 +134,8 @@ export const DEVICES = {
     network: 'wired',
     nfcLock: true,
   },
-} as const satisfies Record<string, DeviceDescriptor>;
+} as const satisfies Record<string, LabelWriterDevice>;
 
-export function findDevice(vid: number, pid: number): DeviceDescriptor | undefined {
+export function findDevice(vid: number, pid: number): LabelWriterDevice | undefined {
   return Object.values(DEVICES).find(d => d.vid === vid && d.pid === pid);
 }

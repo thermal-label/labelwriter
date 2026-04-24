@@ -1,9 +1,13 @@
+import { DEVICES, findDevice, type LabelWriterDevice } from '@thermal-label/labelwriter-core';
 /* eslint-disable import-x/consistent-type-specifier-style */
-import { DEVICES, findDevice } from '@thermal-label/labelwriter-core';
+import type {
+  DiscoveredPrinter,
+  OpenOptions,
+  PrinterDiscovery,
+} from '@thermal-label/contracts';
+import { TcpTransport, UsbTransport } from '@thermal-label/transport/node';
 import * as usb from 'usb';
 import { LabelWriterPrinter } from './printer.js';
-import { UsbTransport, TcpTransport } from './transport.js';
-import type { OpenOptions, PrinterInfo } from './types.js';
 
 async function readSerialNumber(device: usb.Device): Promise<string | undefined> {
   const idx = device.deviceDescriptor.iSerialNumber;
@@ -15,64 +19,82 @@ async function readSerialNumber(device: usb.Device): Promise<string | undefined>
   });
 }
 
-export function listPrinters(): PrinterInfo[] {
-  const devices = usb.getDeviceList();
-  const results: PrinterInfo[] = [];
+async function enumerateUsbDevices(): Promise<
+  { device: usb.Device; descriptor: LabelWriterDevice; serialNumber: string | undefined }[]
+> {
+  const results: {
+    device: usb.Device;
+    descriptor: LabelWriterDevice;
+    serialNumber: string | undefined;
+  }[] = [];
 
-  for (const device of devices) {
-    const { idVendor, idProduct } = device.deviceDescriptor;
+  for (const device of usb.getDeviceList()) {
+    const { idVendor, idProduct, iSerialNumber } = device.deviceDescriptor;
     const descriptor = findDevice(idVendor, idProduct);
     if (!descriptor) continue;
 
-    results.push({
-      device: descriptor,
-      serialNumber: undefined,
-      path: `${String(device.busNumber)}:${String(device.deviceAddress)}`,
-      transport: 'usb',
-    });
+    let serialNumber: string | undefined;
+    if (iSerialNumber) {
+      device.open();
+      try {
+        serialNumber = await readSerialNumber(device);
+      } finally {
+        device.close();
+      }
+    }
+
+    results.push({ device, descriptor, serialNumber });
   }
 
   return results;
 }
 
-export async function openPrinter(options: OpenOptions = {}): Promise<LabelWriterPrinter> {
-  const devices = usb.getDeviceList();
+/**
+ * `PrinterDiscovery` implementation for Dymo LabelWriter printers.
+ *
+ * `listPrinters()` only enumerates USB — there is no mDNS / DNS-SD
+ * implementation for the networked 550 Turbo / 5XL / Wireless. Network
+ * printers are opened by explicit `openPrinter({ host, port })`.
+ */
+export class LabelWriterDiscovery implements PrinterDiscovery {
+  readonly family = 'labelwriter';
 
-  for (const device of devices) {
-    const { idVendor, idProduct } = device.deviceDescriptor;
-    const descriptor = findDevice(idVendor, idProduct);
-    if (!descriptor) continue;
-    if (options.vid !== undefined && idVendor !== options.vid) continue;
-    if (options.pid !== undefined && idProduct !== options.pid) continue;
-
-    device.open();
-
-    if (options.serialNumber !== undefined) {
-      const serial = await readSerialNumber(device);
-      if (serial !== options.serialNumber) {
-        device.close();
-        continue;
-      }
-    }
-
-    try {
-      const xport = UsbTransport.open(idVendor, idProduct);
-      return new LabelWriterPrinter(descriptor, xport, 'usb');
-    } catch (err) {
-      device.close();
-      throw err;
-    }
+  async listPrinters(): Promise<DiscoveredPrinter[]> {
+    const found = await enumerateUsbDevices();
+    return found.map(({ device, descriptor, serialNumber }) => ({
+      device: descriptor,
+      ...(serialNumber === undefined ? {} : { serialNumber }),
+      transport: 'usb' as const,
+      connectionId: `${String(device.busNumber)}:${String(device.deviceAddress)}`,
+    }));
   }
 
-  throw new Error('No compatible Dymo LabelWriter printer found.');
+  async openPrinter(options: OpenOptions = {}): Promise<LabelWriterPrinter> {
+    if (options.host !== undefined) {
+      const transport = await TcpTransport.connect(options.host, options.port);
+      const descriptor = Object.values(DEVICES).find(d => d.network !== 'none');
+      if (!descriptor) throw new Error('No network-capable LabelWriter descriptor found.');
+      return new LabelWriterPrinter(descriptor, transport, 'tcp');
+    }
+
+    const found = await enumerateUsbDevices();
+    const match = found.find(entry => {
+      if (options.vid !== undefined && entry.descriptor.vid !== options.vid) return false;
+      if (options.pid !== undefined && entry.descriptor.pid !== options.pid) return false;
+      if (options.serialNumber !== undefined && entry.serialNumber !== options.serialNumber)
+        return false;
+      return true;
+    });
+
+    if (!match) throw new Error('No compatible Dymo LabelWriter printer found.');
+
+    const transport = await UsbTransport.open(match.descriptor.vid, match.descriptor.pid);
+    return new LabelWriterPrinter(match.descriptor, transport, 'usb');
+  }
 }
 
-export async function openPrinterTcp(host: string, port?: number): Promise<LabelWriterPrinter> {
-  const xport = await TcpTransport.connect(host, port);
-
-  const knownNetworkDevices = Object.values(DEVICES).filter(d => d.network !== 'none');
-  const descriptor = knownNetworkDevices[0];
-  if (!descriptor) throw new Error('No network-capable device descriptor found');
-
-  return new LabelWriterPrinter(descriptor, xport, 'tcp');
-}
+/**
+ * Named export discovered by the unified `thermal-label-cli` — the CLI
+ * walks installed drivers looking for `mod.discovery`.
+ */
+export const discovery = new LabelWriterDiscovery();
