@@ -1,6 +1,6 @@
 {
   "name": "@thermal-label/labelwriter-core",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Protocol encoding and device registry for Dymo LabelWriter printers",
   "keywords": [
     "dymo",
