@@ -7,7 +7,7 @@ export const DEVICES = {
     family: 'labelwriter',
     transports: ['usb', 'webusb'],
     vid: 0x0922,
-    pid: 0x0021,
+    pid: 0x0019,
     headDots: 672,
     bytesPerRow: 84,
     protocol: '450',

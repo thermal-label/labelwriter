@@ -4,7 +4,7 @@
 
 | Model                      | PID      | Protocol | Head dots | Network  | NFC lock | Status      |
 | -------------------------- | -------- | -------- | --------- | -------- | -------- | ----------- |
-| LabelWriter 400            | `0x0021` | 450      | 672       | —        | No       | ✅ Verified |
+| LabelWriter 400            | `0x0019` | 450      | 672       | —        | No       | ✅ Verified |
 | LabelWriter 400 Turbo      | `0x0023` | 450      | 672       | —        | No       | 🔲 Expected |
 | LabelWriter 450            | `0x0020` | 450      | 672       | —        | No       | ✅ Verified |
 | LabelWriter 450 Turbo      | `0x002A` | 450      | 672       | —        | No       | 🔲 Expected |

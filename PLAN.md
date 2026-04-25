@@ -24,7 +24,7 @@ Class (bulk transfer). The byte stream is identical over USB and TCP.
 
 | Device                     | USB PID  | Head dots | Network | NFC lock | Status      | Notes                                                         |
 | -------------------------- | -------- | --------- | ------- | -------- | ----------- | ------------------------------------------------------------- |
-| LabelWriter 400            | `0x0021` | 672       | ❌      | ❌       | 🟡 Expected | Predecessor to 450 series, same protocol                      |
+| LabelWriter 400            | `0x0019` | 672       | ❌      | ❌       | 🟡 Expected | Predecessor to 450 series, same protocol                      |
 | LabelWriter 400 Turbo      | `0x0023` | 672       | ❌      | ❌       | 🟡 Expected | Same protocol as 450                                          |
 | LabelWriter 450            | `0x0020` | 672       | ❌      | ❌       | 🟡 Expected | Reference 450 protocol                                        |
 | LabelWriter 450 Turbo      | `0x002A` | 672       | ❌      | ❌       | 🟡 Expected |                                                               |
@@ -506,7 +506,7 @@ export const DEVICES = {
   LW_400: {
     name: 'LabelWriter 400',
     vid: 0x0922,
-    pid: 0x0021,
+    pid: 0x0019,
     headDots: 672,
     bytesPerRow: 84,
     protocol: '450',

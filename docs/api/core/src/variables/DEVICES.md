@@ -38,7 +38,7 @@ Defined in: core/src/devices.ts:4
 
 #### LW_400.pid
 
-> `readonly` **pid**: `33` = `0x0021`
+> `readonly` **pid**: `33` = `0x0019`
 
 #### LW_400.protocol
 
