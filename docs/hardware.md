@@ -18,6 +18,10 @@
 
 All devices use vendor ID `0x0922` (Dymo).
 
+> Going further than the two-step CTA below? Follow the full
+> [verification checklist](./verification-checklist) — it covers TCP,
+> the 550-series NFC negative test, and the WebUSB demo.
+
 <div class="hw-cta">
   <div class="hw-cta-header">
     <span class="hw-cta-icon">🔌</span>
