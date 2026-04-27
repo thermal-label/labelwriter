@@ -1,0 +1,20 @@
+# Community-verified hardware status for @thermal-label/labelwriter.
+# See https://github.com/thermal-label/.github/blob/main/CONTRIBUTING/hardware-status-schema.md
+# for the canonical schema and validation rules.
+#
+# Devices in DEVICES that don't appear here are rendered as "untested"
+# on https://thermal-label.github.io/hardware/. To add a verification
+# report, file a Hardware verification issue and a maintainer will
+# update this file.
+#
+# This file is validated on push by scripts/validate-hardware-status.mjs.
+#
+# No public verification reports filed yet — the LabelWriter family
+# was developed against the protocol spec and bench-printed samples,
+# but has not been formally verified end-to-end. Volunteers welcome:
+# https://github.com/thermal-label/.github/blob/main/CONTRIBUTING/verifying-hardware.md
+
+schemaVersion: 1
+driver: labelwriter
+
+devices: []
