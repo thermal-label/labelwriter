@@ -1,34 +1,47 @@
 [**labelwriter**](../../../README.md)
 
----
+***
 
 [labelwriter](../../../README.md) / [node/src](../README.md) / LabelWriterPrinter
 
 # Class: LabelWriterPrinter
 
-Defined in: node/src/printer.ts:57
+Node.js driver for Dymo LabelWriter printers.
+
+Implements the shared `PrinterAdapter` interface. Takes any
+`Transport` — `UsbTransport` from `@thermal-label/transport/node` for
+USB-attached printers, `TcpTransport` for the networked 550 Turbo /
+5XL / Wireless.
+
+Orientation is auto-decided via `pickRotation`: rectangular die-cut
+media declares `defaultOrientation: 'horizontal'`, so the driver
+rotates landscape input 90° CW. Pre-retrofit, landscape input was
+silently cropped to head width — the auto-rotate path fixes that.
+Override per-call with `options.rotate`.
+
+## Implements
+
+- `PrinterAdapter`
 
 ## Constructors
 
 ### Constructor
 
-> **new LabelWriterPrinter**(`device`, `xport`, `transport`): `LabelWriterPrinter`
-
-Defined in: node/src/printer.ts:62
+> **new LabelWriterPrinter**(`device`, `transport`, `transportType`): `LabelWriterPrinter`
 
 #### Parameters
 
 ##### device
 
-[`DeviceDescriptor`](../interfaces/DeviceDescriptor.md)
-
-##### xport
-
-[`Transport`](../interfaces/Transport.md)
+`LabelWriterDevice`
 
 ##### transport
 
-`"usb"` \| `"tcp"`
+`Transport`
+
+##### transportType
+
+`TransportType`
 
 #### Returns
 
@@ -38,17 +51,71 @@ Defined in: node/src/printer.ts:62
 
 ### device
 
-> `readonly` **device**: [`DeviceDescriptor`](../interfaces/DeviceDescriptor.md)
+> `readonly` **device**: `LabelWriterDevice`
 
-Defined in: node/src/printer.ts:58
+The device descriptor for the connected printer.
 
----
+Useful for logging, diagnostics, and displaying VID/PID. Undefined
+if the connection was established without device matching (e.g. a
+raw TCP connection to a known IP).
 
-### transport
+#### Implementation of
 
-> `readonly` **transport**: `"usb"` \| `"tcp"`
+`PrinterAdapter.device`
 
-Defined in: node/src/printer.ts:59
+***
+
+### family
+
+> `readonly` **family**: `"labelwriter"`
+
+Driver family identifier, e.g. `'brother-ql'` or `'labelwriter'`.
+
+#### Implementation of
+
+`PrinterAdapter.family`
+
+***
+
+### transportType
+
+> `readonly` **transportType**: `TransportType`
+
+## Accessors
+
+### connected
+
+#### Get Signature
+
+> **get** **connected**(): `boolean`
+
+Whether the printer is currently connected.
+
+##### Returns
+
+`boolean`
+
+#### Implementation of
+
+`PrinterAdapter.connected`
+
+***
+
+### model
+
+#### Get Signature
+
+> **get** **model**(): `string`
+
+Human-readable model name from the driver's device registry.
+
+##### Returns
+
+`string`
+
+#### Implementation of
+
+`PrinterAdapter.model`
 
 ## Methods
 
@@ -56,97 +123,149 @@ Defined in: node/src/printer.ts:59
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: node/src/printer.ts:109
+Close the connection. Always call in `finally` blocks.
 
 #### Returns
 
 `Promise`\<`void`\>
 
----
+#### Implementation of
 
-### getStatus()
+`PrinterAdapter.close`
 
-> **getStatus**(): `Promise`\<[`PrinterStatus`](../interfaces/PrinterStatus.md)\>
+***
 
-Defined in: node/src/printer.ts:68
+### createPreview()
 
-#### Returns
+> **createPreview**(`image`, `options?`): `Promise`\<`PreviewResult`\>
 
-`Promise`\<[`PrinterStatus`](../interfaces/PrinterStatus.md)\>
+Generate a preview showing how this printer would reproduce the
+design on the given media. Returns separated 1bpp planes with
+display colours.
 
----
+The driver uses its own colour-splitting logic (the same code that
+`print()` uses internally) to produce the planes. The consuming app
+renders whatever planes come back without needing to know the
+splitting rules.
 
-### print()
-
-> **print**(`bitmap`, `options?`): `Promise`\<`void`\>
-
-Defined in: node/src/printer.ts:75
-
-#### Parameters
-
-##### bitmap
-
-`LabelBitmap`
-
-##### options?
-
-[`PrintOptions`](../interfaces/PrintOptions.md)
-
-#### Returns
-
-`Promise`\<`void`\>
-
----
-
-### printImage()
-
-> **printImage**(`image`, `options?`): `Promise`\<`void`\>
-
-Defined in: node/src/printer.ts:90
+For offline preview without a live connection, use the static
+`createPreviewOffline()` function exported from the driver's
+`*-core` package instead.
 
 #### Parameters
 
 ##### image
 
-`string` \| `Buffer`
+`RawImageData`
+
+— full RGBA, typically from `designer.render()`.
 
 ##### options?
 
-[`ImagePrintOptions`](../interfaces/ImagePrintOptions.md)
+`PreviewOptions`
+
+— optional media override. If media is omitted, uses
+  detected media from the last `getStatus()`. If no status is
+  available, the driver defaults to single-colour at the printer's
+  native head width and sets `PreviewResult.assumed = true`.
 
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`PreviewResult`\>
 
----
+#### Implementation of
 
-### printText()
+`PrinterAdapter.createPreview`
 
-> **printText**(`text`, `options?`): `Promise`\<`void`\>
+***
 
-Defined in: node/src/printer.ts:80
+### getStatus()
+
+> **getStatus**(): `Promise`\<`PrinterStatus`\>
+
+Query printer status including detected media.
+
+#### Returns
+
+`Promise`\<`PrinterStatus`\>
+
+#### Implementation of
+
+`PrinterAdapter.getStatus`
+
+***
+
+### print()
+
+> **print**(`image`, `media?`, `options?`): `Promise`\<`void`\>
+
+Print from a full-colour RGBA image.
+
+The driver converts to its native format internally:
+
+- Single-colour media (`media.palette` undefined) — threshold/dither
+  RGBA to a single 1bpp plane via `renderImage`.
+- Multi-ink media (`media.palette` defined) — split into planes via
+  `renderMultiPlaneImage` using that palette.
+
+**Orientation:** drivers compute the rotation via `pickRotation`
+(see `./orientation.ts`) — the input image is treated as the
+intended visual; the driver auto-rotates landscape input on media
+tagged `defaultOrientation: 'horizontal'`.
+
+**Multi-ink splitting:** the palette on the media descriptor names
+every ink the driver should classify pixels into; the contracts
+package does not pick "red" or "black" — those facts live with the
+media entry.
+
+**Batch printing:** call `print()` once per label. The driver
+handles job framing internally (e.g. Brother QL page-break commands
+between sequential `print()` calls within the same session).
 
 #### Parameters
 
-##### text
+##### image
 
-`string`
+`RawImageData`
+
+— full RGBA, typically from `designer.render()`.
+
+##### media?
+
+`MediaDescriptor`
+
+— which media to print on. Determines dimensions,
+  margins, and colour mode. If omitted, uses detected media from
+  the last `getStatus()`.
 
 ##### options?
 
-[`TextPrintOptions`](../interfaces/TextPrintOptions.md)
+`LabelWriterPrintOptions`
+
+— per-call options (copies, density, etc.).
 
 #### Returns
 
 `Promise`\<`void`\>
 
----
+#### Throws
+
+MediaNotSpecifiedError if no media is known.
+
+#### Implementation of
+
+`PrinterAdapter.print`
+
+***
 
 ### recover()
 
 > **recover**(): `Promise`\<`void`\>
 
-Defined in: node/src/printer.ts:103
+Send the error-recovery byte sequence and drain the response.
+
+Driver-specific escape hatch — not on `PrinterAdapter`. Useful after
+a paper jam / label-too-long condition to resume normal operation.
 
 #### Returns
 

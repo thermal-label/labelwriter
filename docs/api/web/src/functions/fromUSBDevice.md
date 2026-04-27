@@ -1,14 +1,15 @@
 [**labelwriter**](../../../README.md)
 
----
+***
 
 [labelwriter](../../../README.md) / [web/src](../README.md) / fromUSBDevice
 
 # Function: fromUSBDevice()
 
-> **fromUSBDevice**(`usbDevice`): [`WebLabelWriterPrinter`](../classes/WebLabelWriterPrinter.md)
+> **fromUSBDevice**(`usbDevice`): `Promise`\<[`WebLabelWriterPrinter`](../classes/WebLabelWriterPrinter.md)\>
 
-Defined in: web/src/printer.ts:115
+Wrap an already-selected `USBDevice` (e.g. from
+`navigator.usb.getDevices()`).
 
 ## Parameters
 
@@ -18,4 +19,8 @@ Defined in: web/src/printer.ts:115
 
 ## Returns
 
-[`WebLabelWriterPrinter`](../classes/WebLabelWriterPrinter.md)
+`Promise`\<[`WebLabelWriterPrinter`](../classes/WebLabelWriterPrinter.md)\>
+
+## Throws
+
+when the VID/PID is not in the LabelWriter registry.

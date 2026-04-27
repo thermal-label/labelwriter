@@ -13,5 +13,6 @@
   "excludeExternals": true,
   "excludePrivate": true,
   "excludeProtected": false,
-  "readme": "none"
+  "readme": "none",
+  "disableSources": true
 }

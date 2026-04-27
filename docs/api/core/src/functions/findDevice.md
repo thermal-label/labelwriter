@@ -1,14 +1,12 @@
 [**labelwriter**](../../../README.md)
 
----
+***
 
 [labelwriter](../../../README.md) / [core/src](../README.md) / findDevice
 
 # Function: findDevice()
 
-> **findDevice**(`vid`, `pid`): [`DeviceDescriptor`](../interfaces/DeviceDescriptor.md) \| `undefined`
-
-Defined in: core/src/devices.ts:117
+> **findDevice**(`vid`, `pid`): [`LabelWriterDevice`](../interfaces/LabelWriterDevice.md) \| `undefined`
 
 ## Parameters
 
@@ -22,4 +20,4 @@ Defined in: core/src/devices.ts:117
 
 ## Returns
 
-[`DeviceDescriptor`](../interfaces/DeviceDescriptor.md) \| `undefined`
+[`LabelWriterDevice`](../interfaces/LabelWriterDevice.md) \| `undefined`

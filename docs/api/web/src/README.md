@@ -1,6 +1,6 @@
 [**labelwriter**](../../README.md)
 
----
+***
 
 [labelwriter](../../README.md) / web/src
 
@@ -12,29 +12,13 @@
 
 ## Interfaces
 
-- [ImagePrintOptions](interfaces/ImagePrintOptions.md)
-- [PrinterStatus](interfaces/PrinterStatus.md)
-- [TextPrintOptions](interfaces/TextPrintOptions.md)
+- [RequestOptions](interfaces/RequestOptions.md)
+
+## Variables
+
+- [DEFAULT\_FILTERS](variables/DEFAULT_FILTERS.md)
 
 ## Functions
 
 - [fromUSBDevice](functions/fromUSBDevice.md)
 - [requestPrinter](functions/requestPrinter.md)
-
-## References
-
-### Density
-
-Re-exports [Density](../../node/src/type-aliases/Density.md)
-
----
-
-### DeviceDescriptor
-
-Re-exports [DeviceDescriptor](../../node/src/interfaces/DeviceDescriptor.md)
-
----
-
-### PrintOptions
-
-Re-exports [PrintOptions](../../node/src/interfaces/PrintOptions.md)

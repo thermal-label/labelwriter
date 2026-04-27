@@ -1,6 +1,6 @@
 [**labelwriter**](../../../README.md)
 
----
+***
 
 [labelwriter](../../../README.md) / [core/src](../README.md) / encodeLabel
 
@@ -8,13 +8,11 @@
 
 > **encodeLabel**(`device`, `bitmap`, `options?`): `Uint8Array`
 
-Defined in: core/src/protocol.ts:103
-
 ## Parameters
 
 ### device
 
-[`DeviceDescriptor`](../interfaces/DeviceDescriptor.md)
+[`LabelWriterDevice`](../interfaces/LabelWriterDevice.md)
 
 ### bitmap
 
@@ -22,7 +20,7 @@ Defined in: core/src/protocol.ts:103
 
 ### options?
 
-[`PrintOptions`](../interfaces/PrintOptions.md) = `{}`
+[`LabelWriterPrintOptions`](../interfaces/LabelWriterPrintOptions.md) = `{}`
 
 ## Returns
 
