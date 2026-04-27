@@ -1,4 +1,3 @@
-/* eslint-disable import-x/consistent-type-specifier-style */
 import { renderImage, type RawImageData } from '@mbtech-nl/bitmap';
 import type { PreviewResult } from '@thermal-label/contracts';
 import type { LabelWriterMedia } from './types.js';

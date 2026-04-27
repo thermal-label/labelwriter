@@ -1,4 +1,3 @@
-/* eslint-disable import-x/consistent-type-specifier-style */
 import { padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
 import type { LabelWriterDevice, LabelWriterPrintOptions, Density } from './types.js';
 

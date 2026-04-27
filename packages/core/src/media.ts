@@ -1,4 +1,3 @@
-/* eslint-disable import-x/consistent-type-specifier-style */
 import type { LabelWriterMedia } from './types.js';
 
 /**

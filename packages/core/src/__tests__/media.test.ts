@@ -1,4 +1,3 @@
-/* eslint-disable import-x/consistent-type-specifier-style */
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_MEDIA, MEDIA, findMediaByDimensions } from '../media.js';
 import type { LabelWriterMedia } from '../types.js';

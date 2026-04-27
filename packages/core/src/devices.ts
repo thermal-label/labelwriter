@@ -1,4 +1,3 @@
-/* eslint-disable import-x/consistent-type-specifier-style */
 import type { LabelWriterDevice } from './types.js';
 
 export const DEVICES = {

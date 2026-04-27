@@ -1,4 +1,3 @@
-/* eslint-disable import-x/consistent-type-specifier-style */
 import type { DeviceDescriptor, MediaDescriptor, PrintOptions } from '@thermal-label/contracts';
 
 export type NetworkSupport = 'none' | 'wifi' | 'wired';
