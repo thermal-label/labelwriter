@@ -107,7 +107,7 @@ a paper-out error and refuses to print.
 
 ### Which models are affected?
 
-All `protocol: '550'` devices — see [Hardware](/hardware) for the full
+All `protocol: '550'` devices — see [Hardware](./hardware) for the full
 list. The 450 series and older models do not have this restriction.
 
 ### Can it be bypassed?

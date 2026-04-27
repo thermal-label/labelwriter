@@ -95,14 +95,14 @@ For offline previews, import `createPreviewOffline` from
 
 ## Live demo
 
-Try it in your browser: [Demo](/demo)
+Try it in your browser: [Demo](/demo/labelwriter)
 
 ## NFC label lock
 
 ::: warning 550 series
 The LabelWriter 550 series enforces NFC chip validation on label
 rolls at the hardware level. Non-certified labels will be rejected.
-See [Getting started — NFC label lock](/getting-started#nfc-label-lock).
+See [Getting started — NFC label lock](./getting-started#nfc-label-lock).
 :::
 
 ## API summary

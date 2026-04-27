@@ -56,7 +56,7 @@ features:
 </div>
 
 ::: warning 550 series NFC label lock
-The LabelWriter 550, 550 Turbo, and 5XL enforce NFC chip validation on every print job. **Non-certified labels are rejected at the hardware level** — there is no software workaround. See [Hardware](/hardware#nfc-label-lock-550-series) for the full model list.
+The LabelWriter 550, 550 Turbo, and 5XL enforce NFC chip validation on every print job. **Non-certified labels are rejected at the hardware level** — there is no software workaround. See [Hardware](./hardware#nfc-label-lock-550-series) for the full model list.
 :::
 
 <div class="ecosystem">
