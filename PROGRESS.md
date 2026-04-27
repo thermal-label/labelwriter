@@ -209,3 +209,18 @@
 - [x] All checkboxes in this file are ticked (plan: L1286)
 - [x] `ci.yml` passes locally (plan: L1287)
 - [x] **Commit:** `chore: verified all gates pass, ready for release`
+
+## Step N — MediaDescriptor refactor + orientation
+
+> Plan: [../brother-ql/MEDIA_DESCRIPTOR_REFACTOR.md](../brother-ql/MEDIA_DESCRIPTOR_REFACTOR.md)
+
+- [x] Bump `@thermal-label/contracts` to `^0.2.0` in all packages
+- [x] `LabelWriterMedia` drops `colorCapable`; `LabelWriterPrintOptions` adds `rotate`
+- [x] MEDIA registry: rectangular die-cuts tagged `defaultOrientation: "horizontal"` + `cornerRadiusMm: 3` + `printMargins` (1.5 mm Dymo spec); continuous 56 mm leaves orientation undefined
+- [x] `orientation.ts` (new) — `ROTATE_DIRECTION = 90` (tentative; verify on hardware per plan §6 step 1)
+- [x] `index.ts` re-exports `pickRotation` + `ROTATE_DIRECTION`
+- [x] Node + Web printers: wire `pickRotation` into `print()`; closes the silent-landscape-crop bug for rectangular die-cut media
+- [x] Tests: media test asserts `defaultOrientation` on die-cuts; `colorCapable` invariant test removed
+- [x] Gates green (typecheck, lint, format, test, build)
+- [ ] Hardware verification print on 89×28 mm address with landscape RGBA (plan §6 step 1)
+

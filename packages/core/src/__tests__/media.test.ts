@@ -25,10 +25,18 @@ describe('MEDIA registry', () => {
     expect(DEFAULT_MEDIA).toBe(MEDIA.ADDRESS_STANDARD);
   });
 
-  it('every entry declares colorCapable: false — LabelWriter is single-colour', () => {
-    for (const m of ALL_MEDIA) {
-      expect(m.colorCapable).toBe(false);
+  it('rectangular die-cut entries declare defaultOrientation: horizontal', () => {
+    const dieCutKeys = [
+      'ADDRESS_STANDARD',
+      'ADDRESS_LARGE',
+      'SHIPPING_STANDARD',
+      'SHIPPING_LARGE',
+      'FILE_FOLDER',
+    ] as const;
+    for (const key of dieCutKeys) {
+      expect(MEDIA[key].defaultOrientation, key).toBe('horizontal');
     }
+    expect((MEDIA.CONTINUOUS_56MM as LabelWriterMedia).defaultOrientation).toBeUndefined();
   });
 
   it('continuous entries omit heightMm; die-cut entries carry it', () => {

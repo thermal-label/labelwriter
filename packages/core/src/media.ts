@@ -8,6 +8,16 @@ import type { LabelWriterMedia } from './types.js';
  * the 550-series status parser can round-trip its dot-based response
  * to a friendly mm descriptor.
  *
+ * Rectangular die-cut entries declare `defaultOrientation: 'horizontal'`
+ * — users author landscape (long axis horizontal as you read it), and
+ * the driver auto-rotates 90° CW so the visual reads along the tape
+ * feed direction. Pre-retrofit, landscape input was silently cropped
+ * to head width; the auto-rotate path fixes that.
+ *
+ * `printMargins` is a design-tool hint (~1.5 mm shipping label inset
+ * per the Dymo spec). `cornerRadiusMm` is informational; previews use
+ * it to render the actual paper outline.
+ *
  * Not exhaustive — this covers the sizes Dymo ships in the US/EU retail
  * channels. Consumers that need a custom size can construct a
  * `LabelWriterMedia` on the fly.
@@ -19,7 +29,9 @@ export const MEDIA = {
     widthMm: 28,
     heightMm: 89,
     type: 'die-cut',
-    colorCapable: false,
+    defaultOrientation: 'horizontal',
+    cornerRadiusMm: 3,
+    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1050,
   },
   ADDRESS_LARGE: {
@@ -28,7 +40,9 @@ export const MEDIA = {
     widthMm: 36,
     heightMm: 89,
     type: 'die-cut',
-    colorCapable: false,
+    defaultOrientation: 'horizontal',
+    cornerRadiusMm: 3,
+    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1050,
   },
   SHIPPING_STANDARD: {
@@ -37,7 +51,9 @@ export const MEDIA = {
     widthMm: 59,
     heightMm: 102,
     type: 'die-cut',
-    colorCapable: false,
+    defaultOrientation: 'horizontal',
+    cornerRadiusMm: 3,
+    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1200,
   },
   SHIPPING_LARGE: {
@@ -46,7 +62,9 @@ export const MEDIA = {
     widthMm: 102,
     heightMm: 159,
     type: 'die-cut',
-    colorCapable: false,
+    defaultOrientation: 'horizontal',
+    cornerRadiusMm: 3,
+    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1878,
   },
   FILE_FOLDER: {
@@ -55,7 +73,9 @@ export const MEDIA = {
     widthMm: 19,
     heightMm: 87,
     type: 'die-cut',
-    colorCapable: false,
+    defaultOrientation: 'horizontal',
+    cornerRadiusMm: 3,
+    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1027,
   },
   CONTINUOUS_56MM: {
@@ -63,7 +83,6 @@ export const MEDIA = {
     name: '56mm Continuous',
     widthMm: 56,
     type: 'continuous',
-    colorCapable: false,
   },
 } as const satisfies Record<string, LabelWriterMedia>;
 

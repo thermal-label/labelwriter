@@ -1,10 +1,12 @@
 import {
   DEFAULT_MEDIA,
+  ROTATE_DIRECTION,
   STATUS_REQUEST,
   buildErrorRecovery,
   createPreviewOffline,
   encodeLabel,
   parseStatus,
+  pickRotation,
   renderImage,
   statusByteCount,
   type LabelWriterDevice,
@@ -28,6 +30,12 @@ import { MediaNotSpecifiedError } from '@thermal-label/contracts';
  * `Transport` — `UsbTransport` from `@thermal-label/transport/node` for
  * USB-attached printers, `TcpTransport` for the networked 550 Turbo /
  * 5XL / Wireless.
+ *
+ * Orientation is auto-decided via `pickRotation`: rectangular die-cut
+ * media declares `defaultOrientation: 'horizontal'`, so the driver
+ * rotates landscape input 90° CW. Pre-retrofit, landscape input was
+ * silently cropped to head width — the auto-rotate path fixes that.
+ * Override per-call with `options.rotate`.
  */
 export class LabelWriterPrinter implements PrinterAdapter {
   readonly family = 'labelwriter' as const;
@@ -60,7 +68,8 @@ export class LabelWriterPrinter implements PrinterAdapter {
     if (!resolvedMedia) {
       throw new MediaNotSpecifiedError();
     }
-    const bitmap = renderImage(image, { dither: true });
+    const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
+    const bitmap = renderImage(image, { dither: true, rotate });
     const bytes = encodeLabel(this.device, bitmap, options);
     await this.transport.write(bytes);
   }

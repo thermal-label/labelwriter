@@ -48,8 +48,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       '@thermal-label/contracts':
-        specifier: ^0.1.2
-        version: 0.1.2
+        specifier: ^0.2.0
+        version: 0.2.0
     devDependencies:
       '@mbtech-nl/tsconfig':
         specifier: ^1.0.1
@@ -70,14 +70,14 @@ importers:
   packages/node:
     dependencies:
       '@thermal-label/contracts':
-        specifier: ^0.1.2
-        version: 0.1.2
+        specifier: ^0.2.0
+        version: 0.2.0
       '@thermal-label/labelwriter-core':
         specifier: workspace:*
         version: link:../core
       '@thermal-label/transport':
-        specifier: ^0.2.0
-        version: 0.2.0(usb@2.17.0)
+        specifier: ^0.2.1
+        version: 0.2.1(usb@2.17.0)
       usb:
         specifier: ^2.0.0
         version: 2.17.0
@@ -105,14 +105,14 @@ importers:
   packages/web:
     dependencies:
       '@thermal-label/contracts':
-        specifier: ^0.1.2
-        version: 0.1.2
+        specifier: ^0.2.0
+        version: 0.2.0
       '@thermal-label/labelwriter-core':
         specifier: workspace:*
         version: link:../core
       '@thermal-label/transport':
-        specifier: ^0.2.0
-        version: 0.2.0(usb@2.17.0)
+        specifier: ^0.2.1
+        version: 0.2.1(usb@2.17.0)
     devDependencies:
       '@mbtech-nl/tsconfig':
         specifier: ^1.0.1
@@ -879,8 +879,11 @@ packages:
   '@thermal-label/contracts@0.1.2':
     resolution: {integrity: sha512-p3Fj9PjGrTdCtNoMHcQNbCSfVffFd0E42okIAjIyoCNRsTM+L2qR7AAVIL6EX33EFxV7A7F5ziGpNZxz9yNU7w==}
 
-  '@thermal-label/transport@0.2.0':
-    resolution: {integrity: sha512-MXoVkK71okEkKzp3ZfAqGo80jTogHGw56kc6DwJXtVUJRLRgMqwpjnvDVL5qnQ1xi7zKGB9mLp639nIhXPnk+w==}
+  '@thermal-label/contracts@0.2.0':
+    resolution: {integrity: sha512-EqruuizBc8bgZwthZYir9f4t9YWWajMncTOn2+qkWPyxq/z3vU8giIcB4oYfQy7KYcltK0t8L5HKQJrCyvO5zw==}
+
+  '@thermal-label/transport@0.2.1':
+    resolution: {integrity: sha512-2rHBfDXQMA+9P9tpCcG7WqlbYrrqMxar4wdYL9ao3LMXla3R/iyeztuorm5JR3w41yRp4CSXOEKnTfBL1PE90A==}
     engines: {node: '>=24.0.0'}
     peerDependencies:
       serialport: '>=12.0.0'
@@ -3415,7 +3418,11 @@ snapshots:
     dependencies:
       '@mbtech-nl/bitmap': 1.2.0
 
-  '@thermal-label/transport@0.2.0(usb@2.17.0)':
+  '@thermal-label/contracts@0.2.0':
+    dependencies:
+      '@mbtech-nl/bitmap': 1.2.0
+
+  '@thermal-label/transport@0.2.1(usb@2.17.0)':
     dependencies:
       '@thermal-label/contracts': 0.1.2
     optionalDependencies:

@@ -26,11 +26,11 @@ export interface LabelWriterDevice extends DeviceDescriptor {
  *
  * Extends `MediaDescriptor` with the length in printer dots. Die-cut
  * media carries a fixed `heightMm`; continuous media leaves it
- * undefined. All LabelWriter media is single-colour.
+ * undefined. All LabelWriter media is single-ink (the base `palette`
+ * field stays undefined).
  */
 export interface LabelWriterMedia extends MediaDescriptor {
   type: 'die-cut' | 'continuous';
-  colorCapable: false;
   /** Length in 300-dpi dots — used by the 550 to match status responses. */
   lengthDots?: number;
 }
@@ -41,7 +41,9 @@ export interface LabelWriterMedia extends MediaDescriptor {
  * Extends the cross-driver `PrintOptions` with the LabelWriter-specific
  * `density` narrowed to the values the firmware recognises, the
  * text/graphics mode byte, RLE compression toggle, roll selector (Twin
- * Turbo / 450 Duo), and the optional 550-series job ID.
+ * Turbo / 450 Duo), and the optional 550-series job ID. `rotate`
+ * overrides the orientation heuristic — `'auto'` (default) defers to
+ * the media's `defaultOrientation`; an explicit angle bypasses it.
  */
 export interface LabelWriterPrintOptions extends PrintOptions {
   density?: Density;
@@ -49,4 +51,5 @@ export interface LabelWriterPrintOptions extends PrintOptions {
   compress?: boolean;
   roll?: 0 | 1;
   jobId?: number;
+  rotate?: 'auto' | 0 | 90 | 180 | 270;
 }

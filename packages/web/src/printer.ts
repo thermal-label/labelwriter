@@ -1,12 +1,14 @@
 import {
   DEFAULT_MEDIA,
   DEVICES,
+  ROTATE_DIRECTION,
   STATUS_REQUEST,
   buildErrorRecovery,
   createPreviewOffline,
   encodeLabel,
   findDevice,
   parseStatus,
+  pickRotation,
   renderImage,
   statusByteCount,
   type LabelWriterDevice,
@@ -31,9 +33,9 @@ export interface RequestOptions {
 /**
  * WebUSB `PrinterAdapter` for Dymo LabelWriter printers.
  *
- * Thin wrapper around the shared `WebUsbTransport`. Callers obtain one
- * of these via `requestPrinter()` (new pairing) or `fromUSBDevice()`
- * (previously paired).
+ * Thin wrapper around the shared `WebUsbTransport`. Mirrors the node
+ * driver's `pickRotation` wiring: rectangular die-cut media auto-rotates
+ * landscape input via the media's `defaultOrientation` hint.
  */
 export class WebLabelWriterPrinter implements PrinterAdapter {
   readonly family = 'labelwriter' as const;
@@ -64,7 +66,8 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     if (!resolvedMedia) {
       throw new MediaNotSpecifiedError();
     }
-    const bitmap = renderImage(image, { dither: true });
+    const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
+    const bitmap = renderImage(image, { dither: true, rotate });
     const bytes = encodeLabel(this.device, bitmap, options);
     await this.transport.write(bytes);
   }
