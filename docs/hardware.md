@@ -80,3 +80,6 @@ To print successfully with a 550-series device, you must use genuine Dymo-brande
 All models except the 5XL have a print head 672 dots wide (84 bytes per raster row). The LabelWriter 5XL has a 1248-dot head (156 bytes per row).
 
 Label length in dots determines the number of raster rows in the print job. The `setLabelLength` command (`ESC L <len_lo> <len_hi>`) specifies this in a 16-bit little-endian value.
+
+
+<!--@include: ./_status-fragment.md-->
