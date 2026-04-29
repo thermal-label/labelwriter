@@ -1,6 +1,6 @@
 {
   "name": "@thermal-label/labelwriter-web",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "WebUSB browser driver for Dymo LabelWriter printers",
   "keywords": [
     "dymo",
