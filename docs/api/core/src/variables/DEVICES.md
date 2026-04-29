@@ -84,7 +84,7 @@
 
 #### LW\_400\_TURBO.pid
 
-> `readonly` **pid**: `35` = `0x0023`
+> `readonly` **pid**: `26` = `0x001a`
 
 #### LW\_400\_TURBO.protocol
 
@@ -172,7 +172,7 @@
 
 #### LW\_450\_DUO.pid
 
-> `readonly` **pid**: `44` = `0x002c`
+> `readonly` **pid**: `35` = `0x0023`
 
 #### LW\_450\_DUO.protocol
 
@@ -216,7 +216,7 @@
 
 #### LW\_450\_TURBO.pid
 
-> `readonly` **pid**: `42` = `0x002a`
+> `readonly` **pid**: `33` = `0x0021`
 
 #### LW\_450\_TURBO.protocol
 
@@ -260,7 +260,7 @@
 
 #### LW\_450\_TWIN\_TURBO.pid
 
-> `readonly` **pid**: `43` = `0x002b`
+> `readonly` **pid**: `34` = `0x0022`
 
 #### LW\_450\_TWIN\_TURBO.protocol
 
@@ -280,7 +280,7 @@
 
 #### LW\_4XL.bytesPerRow
 
-> `readonly` **bytesPerRow**: `84` = `84`
+> `readonly` **bytesPerRow**: `156` = `156`
 
 #### LW\_4XL.family
 
@@ -288,7 +288,7 @@
 
 #### LW\_4XL.headDots
 
-> `readonly` **headDots**: `672` = `672`
+> `readonly` **headDots**: `1248` = `1248`
 
 #### LW\_4XL.name
 
@@ -304,7 +304,7 @@
 
 #### LW\_4XL.pid
 
-> `readonly` **pid**: `37` = `0x0025`
+> `readonly` **pid**: `31` = `0x001f`
 
 #### LW\_4XL.protocol
 
@@ -348,7 +348,7 @@
 
 #### LW\_550.pid
 
-> `readonly` **pid**: `82` = `0x0052`
+> `readonly` **pid**: `40` = `0x0028`
 
 #### LW\_550.protocol
 
@@ -392,7 +392,7 @@
 
 #### LW\_550\_TURBO.pid
 
-> `readonly` **pid**: `83` = `0x0053`
+> `readonly` **pid**: `41` = `0x0029`
 
 #### LW\_550\_TURBO.protocol
 
@@ -436,7 +436,7 @@
 
 #### LW\_5XL.pid
 
-> `readonly` **pid**: `84` = `0x0054`
+> `readonly` **pid**: `42` = `0x002a`
 
 #### LW\_5XL.protocol
 
@@ -447,6 +447,182 @@
 > `readonly` **transports**: \[`"usb"`, `"webusb"`, `"tcp"`\]
 
 #### LW\_5XL.vid
+
+> `readonly` **vid**: `2338` = `0x0922`
+
+### LW\_DUO\_128
+
+> `readonly` **LW\_DUO\_128**: `object`
+
+#### LW\_DUO\_128.bytesPerRow
+
+> `readonly` **bytesPerRow**: `84` = `84`
+
+#### LW\_DUO\_128.family
+
+> `readonly` **family**: `"labelwriter"` = `'labelwriter'`
+
+#### LW\_DUO\_128.headDots
+
+> `readonly` **headDots**: `672` = `672`
+
+#### LW\_DUO\_128.name
+
+> `readonly` **name**: `"LabelWriter Duo - 128"` = `'LabelWriter Duo - 128'`
+
+#### LW\_DUO\_128.network
+
+> `readonly` **network**: `"none"` = `'none'`
+
+#### LW\_DUO\_128.nfcLock
+
+> `readonly` **nfcLock**: `false` = `false`
+
+#### LW\_DUO\_128.pid
+
+> `readonly` **pid**: `29` = `0x001d`
+
+#### LW\_DUO\_128.protocol
+
+> `readonly` **protocol**: `"450"` = `'450'`
+
+#### LW\_DUO\_128.transports
+
+> `readonly` **transports**: \[`"usb"`, `"webusb"`\]
+
+#### LW\_DUO\_128.vid
+
+> `readonly` **vid**: `2338` = `0x0922`
+
+### LW\_DUO\_96
+
+> `readonly` **LW\_DUO\_96**: `object`
+
+#### LW\_DUO\_96.bytesPerRow
+
+> `readonly` **bytesPerRow**: `84` = `84`
+
+#### LW\_DUO\_96.family
+
+> `readonly` **family**: `"labelwriter"` = `'labelwriter'`
+
+#### LW\_DUO\_96.headDots
+
+> `readonly` **headDots**: `672` = `672`
+
+#### LW\_DUO\_96.name
+
+> `readonly` **name**: `"LabelWriter Duo - 96"` = `'LabelWriter Duo - 96'`
+
+#### LW\_DUO\_96.network
+
+> `readonly` **network**: `"none"` = `'none'`
+
+#### LW\_DUO\_96.nfcLock
+
+> `readonly` **nfcLock**: `false` = `false`
+
+#### LW\_DUO\_96.pid
+
+> `readonly` **pid**: `23` = `0x0017`
+
+#### LW\_DUO\_96.protocol
+
+> `readonly` **protocol**: `"450"` = `'450'`
+
+#### LW\_DUO\_96.transports
+
+> `readonly` **transports**: \[`"usb"`, `"webusb"`\]
+
+#### LW\_DUO\_96.vid
+
+> `readonly` **vid**: `2338` = `0x0922`
+
+### LW\_SE450
+
+> `readonly` **LW\_SE450**: `object`
+
+#### LW\_SE450.bytesPerRow
+
+> `readonly` **bytesPerRow**: `84` = `84`
+
+#### LW\_SE450.family
+
+> `readonly` **family**: `"labelwriter"` = `'labelwriter'`
+
+#### LW\_SE450.headDots
+
+> `readonly` **headDots**: `672` = `672`
+
+#### LW\_SE450.name
+
+> `readonly` **name**: `"LabelWriter SE450"` = `'LabelWriter SE450'`
+
+#### LW\_SE450.network
+
+> `readonly` **network**: `"none"` = `'none'`
+
+#### LW\_SE450.nfcLock
+
+> `readonly` **nfcLock**: `false` = `false`
+
+#### LW\_SE450.pid
+
+> `readonly` **pid**: `1024` = `0x0400`
+
+#### LW\_SE450.protocol
+
+> `readonly` **protocol**: `"450"` = `'450'`
+
+#### LW\_SE450.transports
+
+> `readonly` **transports**: \[`"usb"`, `"webusb"`\]
+
+#### LW\_SE450.vid
+
+> `readonly` **vid**: `2338` = `0x0922`
+
+### LW\_TWIN\_TURBO
+
+> `readonly` **LW\_TWIN\_TURBO**: `object`
+
+#### LW\_TWIN\_TURBO.bytesPerRow
+
+> `readonly` **bytesPerRow**: `84` = `84`
+
+#### LW\_TWIN\_TURBO.family
+
+> `readonly` **family**: `"labelwriter"` = `'labelwriter'`
+
+#### LW\_TWIN\_TURBO.headDots
+
+> `readonly` **headDots**: `672` = `672`
+
+#### LW\_TWIN\_TURBO.name
+
+> `readonly` **name**: `"LabelWriter Twin Turbo"` = `'LabelWriter Twin Turbo'`
+
+#### LW\_TWIN\_TURBO.network
+
+> `readonly` **network**: `"none"` = `'none'`
+
+#### LW\_TWIN\_TURBO.nfcLock
+
+> `readonly` **nfcLock**: `false` = `false`
+
+#### LW\_TWIN\_TURBO.pid
+
+> `readonly` **pid**: `24` = `0x0018`
+
+#### LW\_TWIN\_TURBO.protocol
+
+> `readonly` **protocol**: `"450"` = `'450'`
+
+#### LW\_TWIN\_TURBO.transports
+
+> `readonly` **transports**: \[`"usb"`, `"webusb"`\]
+
+#### LW\_TWIN\_TURBO.vid
 
 > `readonly` **vid**: `2338` = `0x0922`
 
