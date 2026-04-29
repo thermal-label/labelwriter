@@ -5,16 +5,20 @@
 | Model                      | PID      | Protocol | Head dots | Network  | NFC lock | Status      |
 | -------------------------- | -------- | -------- | --------- | -------- | -------- | ----------- |
 | LabelWriter 400            | `0x0019` | 450      | 672       | —        | No       | ✅ Verified |
-| LabelWriter 400 Turbo      | `0x0023` | 450      | 672       | —        | No       | 🔲 Expected |
+| LabelWriter 400 Turbo      | `0x001a` | 450      | 672       | —        | No       | 🔲 Expected |
+| LabelWriter Twin Turbo     | `0x0018` | 450      | 672       | —        | No       | 🔲 Expected |
+| LabelWriter Duo - 96       | `0x0017` | 450      | 672       | —        | No       | 🔲 Expected |
+| LabelWriter Duo - 128      | `0x001d` | 450      | 672       | —        | No       | 🔲 Expected |
 | LabelWriter 450            | `0x0020` | 450      | 672       | —        | No       | ✅ Verified |
-| LabelWriter 450 Turbo      | `0x002A` | 450      | 672       | —        | No       | 🔲 Expected |
-| LabelWriter 450 Twin Turbo | `0x002B` | 450      | 672       | —        | No       | 🔲 Expected |
-| LabelWriter 450 Duo        | `0x002C` | 450      | 672       | —        | No       | 🔲 Expected |
-| LabelWriter 4XL            | `0x0025` | 450      | 672       | —        | No       | 🔲 Expected |
+| LabelWriter 450 Turbo      | `0x0021` | 450      | 672       | —        | No       | 🔲 Expected |
+| LabelWriter 450 Twin Turbo | `0x0022` | 450      | 672       | —        | No       | 🔲 Expected |
+| LabelWriter 450 Duo        | `0x0023` | 450      | 672       | —        | No       | 🔲 Expected |
+| LabelWriter 4XL            | `0x001f` | 450      | 1248      | —        | No       | 🔲 Expected |
+| LabelWriter SE450          | `0x0400` | 450      | 672       | —        | No       | 🔲 Expected |
 | LabelWriter Wireless       | `0x0031` | 450      | 672       | Wi-Fi    | No       | 🔲 Expected |
-| LabelWriter 550            | `0x0052` | 550      | 672       | —        | **Yes**  | 🔲 Expected |
-| LabelWriter 550 Turbo      | `0x0053` | 550      | 672       | Ethernet | **Yes**  | 🔲 Expected |
-| LabelWriter 5XL            | `0x0054` | 550      | 1248      | Ethernet | **Yes**  | 🔲 Expected |
+| LabelWriter 550            | `0x0028` | 550      | 672       | —        | **Yes**  | 🔲 Expected |
+| LabelWriter 550 Turbo      | `0x0029` | 550      | 672       | Ethernet | **Yes**  | 🔲 Expected |
+| LabelWriter 5XL            | `0x002a` | 550      | 1248      | Ethernet | **Yes**  | 🔲 Expected |
 
 All devices use vendor ID `0x0922` (Dymo).
 
@@ -84,6 +88,5 @@ To print successfully with a 550-series device, you must use genuine Dymo-brande
 All models except the 5XL have a print head 672 dots wide (84 bytes per raster row). The LabelWriter 5XL has a 1248-dot head (156 bytes per row).
 
 Label length in dots determines the number of raster rows in the print job. The `setLabelLength` command (`ESC L <len_lo> <len_hi>`) specifies this in a 16-bit little-endian value.
-
 
 <!--@include: ./_status-fragment.md-->

@@ -59,7 +59,7 @@ describe('LabelWriterDiscovery', () => {
     });
 
     it('returns multiple devices', async () => {
-      __setDevices([makeDevice(0x0922, 0x0020), makeDevice(0x0922, 0x0052)]);
+      __setDevices([makeDevice(0x0922, 0x0020), makeDevice(0x0922, 0x0028)]);
       expect(await discovery.listPrinters()).toHaveLength(2);
     });
   });

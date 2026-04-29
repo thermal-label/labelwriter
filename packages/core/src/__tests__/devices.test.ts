@@ -38,8 +38,8 @@ describe('device properties', () => {
     expect(DEVICES.LW_5XL.bytesPerRow).toBe(156);
   });
 
-  it('all non-5XL devices have bytesPerRow: 84', () => {
-    const others = Object.entries(DEVICES).filter(([k]) => k !== 'LW_5XL');
+  it('all non-XXL devices have bytesPerRow: 84', () => {
+    const others = Object.entries(DEVICES).filter(([k]) => k !== 'LW_5XL' && k !== 'LW_4XL');
     for (const [, device] of others) {
       expect(device.bytesPerRow).toBe(84);
     }
