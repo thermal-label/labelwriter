@@ -1,10 +1,21 @@
 import { describe, it, expect } from 'vitest';
 import { DEVICES, findDevice } from '../devices.js';
 
+import type { DeviceEntry } from '@thermal-label/contracts';
+
+function usbOf(device: DeviceEntry): { vid: number; pid: number } {
+  const usb = device.transports.usb;
+  if (!usb) throw new Error(`${device.key} has no usb transport`);
+  return { vid: Number.parseInt(usb.vid, 16), pid: Number.parseInt(usb.pid, 16) };
+}
+
 describe('findDevice', () => {
   it('resolves all known PIDs', () => {
     for (const device of Object.values(DEVICES)) {
-      expect(findDevice(device.vid, device.pid)).toEqual(device);
+      const usb = device.transports.usb;
+      if (!usb) continue;
+      const { vid, pid } = usbOf(device);
+      expect(findDevice(vid, pid)).toBeDefined();
     }
   });
 
@@ -18,30 +29,41 @@ describe('findDevice', () => {
 });
 
 describe('device properties', () => {
-  it('all 450 protocol devices have nfcLock: false', () => {
+  it('lw-450 protocol engines do not declare genuineMediaRequired', () => {
     for (const device of Object.values(DEVICES)) {
-      if (device.protocol === '450') {
-        expect(device.nfcLock).toBe(false);
+      const protocols = device.engines.map(e => e.protocol);
+      if (protocols.every(p => p === 'lw-450')) {
+        for (const e of device.engines) {
+          expect(e.capabilities?.genuineMediaRequired).toBeFalsy();
+        }
       }
     }
   });
 
-  it('all 550 protocol devices have nfcLock: true', () => {
+  it('lw-550 protocol engines declare genuineMediaRequired: true', () => {
     for (const device of Object.values(DEVICES)) {
-      if (device.protocol === '550') {
-        expect(device.nfcLock).toBe(true);
+      for (const engine of device.engines) {
+        if (engine.protocol === 'lw-550') {
+          expect(engine.capabilities?.genuineMediaRequired).toBe(true);
+        }
       }
     }
   });
 
-  it('LW_5XL has bytesPerRow: 156', () => {
-    expect(DEVICES.LW_5XL.bytesPerRow).toBe(156);
+  it('XL devices use a 1248-dot head', () => {
+    expect(DEVICES.LW_5XL.engines[0]?.headDots).toBe(1248);
+    expect(DEVICES.LW_4XL.engines[0]?.headDots).toBe(1248);
   });
 
-  it('all non-XXL devices have bytesPerRow: 84', () => {
-    const others = Object.entries(DEVICES).filter(([k]) => k !== 'LW_5XL' && k !== 'LW_4XL');
-    for (const [, device] of others) {
-      expect(device.bytesPerRow).toBe(84);
+  it('lw-450 / lw-550 single-roll devices use a 672-dot head', () => {
+    const skip = new Set(['LW_5XL', 'LW_4XL', 'LW_300', 'LW_310', 'LW_SE450']);
+    for (const [key, device] of Object.entries(DEVICES)) {
+      if (skip.has(key)) continue;
+      const primary = device.engines.find(e => e.role === 'primary' || e.role === 'label');
+      if (!primary) continue;
+      if (primary.protocol === 'lw-450' || primary.protocol === 'lw-550') {
+        expect(primary.headDots).toBe(672);
+      }
     }
   });
 });

@@ -1,0 +1,15 @@
+{
+  key: 'LW_4XL',
+  name: 'LabelWriter 4XL',
+  family: 'labelwriter',
+  transports: {
+    // PID unconfirmed — 4XL is rare in lsusb logs. Best community guess.
+    usb: { vid: '0x0922', pid: '0x001f' },
+  },
+  engines: [
+    // 4" wide head: 1248 dots / 156 bytes per dymo-cups-drivers
+    // (4" × 300 dpi = 1200 dots + 48-dot margin convention).
+    { role: 'primary', protocol: 'lw-450', dpi: 300, headDots: 1248 },
+  ],
+  support: { status: 'untested' },
+}

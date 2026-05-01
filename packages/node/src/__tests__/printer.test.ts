@@ -187,4 +187,40 @@ describe('LabelWriterPrinter', () => {
       expect(vi.mocked(transport.close)).toHaveBeenCalled();
     });
   });
+
+  describe('engines', () => {
+    it('exposes a primary handle on single-engine devices', () => {
+      const { transport } = makeTransport();
+      const printer = new LabelWriterPrinter(device450, transport, 'usb');
+      expect(Object.keys(printer.engines)).toEqual(['primary']);
+      expect(printer.engines.primary?.role).toBe('primary');
+    });
+
+    it('exposes left + right handles on Twin Turbo', () => {
+      const { transport } = makeTransport();
+      const printer = new LabelWriterPrinter(DEVICES.LW_450_TWIN_TURBO, transport, 'usb');
+      expect(Object.keys(printer.engines).sort()).toEqual(['left', 'right']);
+    });
+
+    it("Duo exposes only the label engine (tape's d1-tape protocol is undrivable)", () => {
+      const { transport } = makeTransport();
+      const printer = new LabelWriterPrinter(DEVICES.LW_450_DUO, transport, 'usb');
+      expect(Object.keys(printer.engines)).toEqual(['label']);
+    });
+
+    it('engines.right.print(...) emits ESC q 0x32', async () => {
+      const { transport, written } = makeTransport();
+      const printer = new LabelWriterPrinter(DEVICES.LW_450_TWIN_TURBO, transport, 'usb');
+      await printer.engines.right!.print(solidRgba(672, 10), MEDIA.ADDRESS_STANDARD);
+      const out = written[0]!;
+      let found: number | undefined;
+      for (let i = 0; i < out.length - 2; i++) {
+        if (out[i] === 0x1b && out[i + 1] === 0x71) {
+          found = out[i + 2];
+          break;
+        }
+      }
+      expect(found).toBe(0x32);
+    });
+  });
 });

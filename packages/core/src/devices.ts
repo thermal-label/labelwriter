@@ -1,190 +1,48 @@
-import type { LabelWriterDevice } from './types.js';
+import type { DeviceEntry, DeviceRegistry } from '@thermal-label/contracts';
+import { DEVICES, REGISTRY, type DeviceKey } from './_generated/registry.js';
 
-export const DEVICES = {
-  LW_400: {
-    name: 'LabelWriter 400',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x0019,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_400_TURBO: {
-    name: 'LabelWriter 400 Turbo',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x001a,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_TWIN_TURBO: {
-    name: 'LabelWriter Twin Turbo',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x0018,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_DUO_96: {
-    name: 'LabelWriter Duo - 96',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x0017,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_DUO_128: {
-    name: 'LabelWriter Duo - 128',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x001d,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_450: {
-    name: 'LabelWriter 450',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x0020,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_SE450: {
-    name: 'LabelWriter SE450',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x0400,
-    headDots: 672,
-    bytesPerRow: 84,
-    // todo: is serial device?, might work different
-    // Bi-directional, RS232 Serial (1200 to 115.2K baud)
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_450_TURBO: {
-    name: 'LabelWriter 450 Turbo',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x0021,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_450_TWIN_TURBO: {
-    name: 'LabelWriter 450 Twin Turbo',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x0022,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_450_DUO: {
-    name: 'LabelWriter 450 Duo',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x0023,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_4XL: {
-    name: 'LabelWriter 4XL',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x001f, //unconfirmed
-    headDots: 1248,
-    bytesPerRow: 156,
-    protocol: '450',
-    network: 'none',
-    nfcLock: false,
-  },
-  LW_WIRELESS: {
-    name: 'LabelWriter Wireless',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb', 'tcp'],
-    vid: 0x0922,
-    pid: 0x0031, //unconfirmed
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '450',
-    network: 'wifi',
-    nfcLock: false,
-  },
-  LW_550: {
-    name: 'LabelWriter 550',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb'],
-    vid: 0x0922,
-    pid: 0x0028,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '550',
-    network: 'none',
-    nfcLock: true,
-  },
-  LW_550_TURBO: {
-    name: 'LabelWriter 550 Turbo',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb', 'tcp'],
-    vid: 0x0922,
-    pid: 0x0029,
-    headDots: 672,
-    bytesPerRow: 84,
-    protocol: '550',
-    network: 'wired',
-    nfcLock: true,
-  },
-  LW_5XL: {
-    name: 'LabelWriter 5XL',
-    family: 'labelwriter',
-    transports: ['usb', 'webusb', 'tcp'],
-    vid: 0x0922,
-    pid: 0x002a,
-    headDots: 1248,
-    bytesPerRow: 156,
-    protocol: '550',
-    network: 'wired',
-    nfcLock: true,
-  },
-} as const satisfies Record<string, LabelWriterDevice>;
+/**
+ * Aggregated LabelWriter device registry.
+ *
+ * The data is authored as one `data/devices/<KEY>.json5` file per
+ * device; `scripts/compile-data.mjs` validates and aggregates them
+ * into the build artifact `data/devices.json` and the typed
+ * `src/_generated/registry.ts` re-exported here.
+ */
+export const REGISTRY_LW: DeviceRegistry = REGISTRY;
 
-export function findDevice(vid: number, pid: number): LabelWriterDevice | undefined {
-  return Object.values(DEVICES).find(d => d.vid === vid && d.pid === pid);
+/**
+ * Map of device key → entry, for ergonomic dotted access
+ * (`DEVICES.LW_450`). Keys are literal so accessing a known device
+ * does not surface `undefined` to callers.
+ */
+export { DEVICES };
+export type { DeviceKey };
+
+function parseHex(s: string): number {
+  return Number.parseInt(s, 16);
+}
+
+// Re-export the contracts type so callers don't need a second import
+// when typing variables that hold a registry entry.
+export type { DeviceEntry };
+
+/**
+ * Find a registry entry by USB VID and PID.
+ *
+ * VIDs and PIDs in the registry are stored as hex strings (`'0x0922'`)
+ * matching what every datasheet, lsusb output, and forum post uses.
+ * Callers passing JS numbers (e.g. `usbDevice.vendorId`) are matched
+ * after parsing.
+ */
+export function findDevice(vid: number, pid: number): DeviceEntry | undefined {
+  // Every entry in REGISTRY happens to declare a USB transport today,
+  // but the contracts shape allows network-only devices, so the guard
+  // stays for forward-compatibility.
+  return REGISTRY.devices.find(d => {
+    const usb = d.transports.usb;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- see comment above
+    if (!usb) return false;
+    return parseHex(usb.vid) === vid && parseHex(usb.pid) === pid;
+  });
 }

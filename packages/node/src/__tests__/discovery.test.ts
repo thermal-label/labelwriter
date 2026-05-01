@@ -74,7 +74,7 @@ describe('LabelWriterDiscovery', () => {
       usbOpen.mockResolvedValue(fakeTransport());
 
       const printer = await discovery.openPrinter();
-      expect(printer.device.pid).toBe(0x0020);
+      expect(printer.device.transports.usb?.pid).toBe('0x0020');
       expect(usbOpen).toHaveBeenCalledWith(0x0922, 0x0020);
     });
 
@@ -83,7 +83,7 @@ describe('LabelWriterDiscovery', () => {
       usbOpen.mockResolvedValue(fakeTransport());
 
       const printer = await discovery.openPrinter({ pid: 0x002a });
-      expect(printer.device.pid).toBe(0x002a);
+      expect(printer.device.transports.usb?.pid).toBe('0x002a');
       expect(usbOpen).toHaveBeenCalledWith(0x0922, 0x002a);
     });
 
@@ -92,7 +92,7 @@ describe('LabelWriterDiscovery', () => {
       usbOpen.mockResolvedValue(fakeTransport());
 
       const printer = await discovery.openPrinter({ serialNumber: 'SN-TARGET' });
-      expect(printer.device.pid).toBe(0x0020);
+      expect(printer.device.transports.usb?.pid).toBe('0x0020');
     });
 
     it('opens a TCP printer when host is provided', async () => {

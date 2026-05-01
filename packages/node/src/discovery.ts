@@ -1,8 +1,12 @@
-import { DEVICES, findDevice, type LabelWriterDevice } from '@thermal-label/labelwriter-core';
+import { DEVICES, findDevice, type DeviceEntry } from '@thermal-label/labelwriter-core';
 import type { DiscoveredPrinter, OpenOptions, PrinterDiscovery } from '@thermal-label/contracts';
 import { TcpTransport, UsbTransport } from '@thermal-label/transport/node';
 import * as usb from 'usb';
 import { LabelWriterPrinter } from './printer.js';
+
+function parseHex(s: string): number {
+  return Number.parseInt(s, 16);
+}
 
 async function readSerialNumber(device: usb.Device): Promise<string | undefined> {
   const idx = device.deviceDescriptor.iSerialNumber;
@@ -15,11 +19,11 @@ async function readSerialNumber(device: usb.Device): Promise<string | undefined>
 }
 
 async function enumerateUsbDevices(): Promise<
-  { device: usb.Device; descriptor: LabelWriterDevice; serialNumber: string | undefined }[]
+  { device: usb.Device; descriptor: DeviceEntry; serialNumber: string | undefined }[]
 > {
   const results: {
     device: usb.Device;
-    descriptor: LabelWriterDevice;
+    descriptor: DeviceEntry;
     serialNumber: string | undefined;
   }[] = [];
 
@@ -67,15 +71,17 @@ export class LabelWriterDiscovery implements PrinterDiscovery {
   async openPrinter(options: OpenOptions = {}): Promise<LabelWriterPrinter> {
     if (options.host !== undefined) {
       const transport = await TcpTransport.connect(options.host, options.port);
-      const descriptor = Object.values(DEVICES).find(d => d.network !== 'none');
+      const descriptor = Object.values(DEVICES).find(d => d.transports.tcp !== undefined);
       if (!descriptor) throw new Error('No network-capable LabelWriter descriptor found.');
       return new LabelWriterPrinter(descriptor, transport, 'tcp');
     }
 
     const found = await enumerateUsbDevices();
     const match = found.find(entry => {
-      if (options.vid !== undefined && entry.descriptor.vid !== options.vid) return false;
-      if (options.pid !== undefined && entry.descriptor.pid !== options.pid) return false;
+      const usbT = entry.descriptor.transports.usb;
+      if (!usbT) return false;
+      if (options.vid !== undefined && parseHex(usbT.vid) !== options.vid) return false;
+      if (options.pid !== undefined && parseHex(usbT.pid) !== options.pid) return false;
       if (options.serialNumber !== undefined && entry.serialNumber !== options.serialNumber)
         return false;
       return true;
@@ -83,7 +89,9 @@ export class LabelWriterDiscovery implements PrinterDiscovery {
 
     if (!match) throw new Error('No compatible Dymo LabelWriter printer found.');
 
-    const transport = await UsbTransport.open(match.descriptor.vid, match.descriptor.pid);
+    const matchUsb = match.descriptor.transports.usb;
+    if (!matchUsb) throw new Error(`Device ${match.descriptor.key} has no USB transport.`);
+    const transport = await UsbTransport.open(parseHex(matchUsb.vid), parseHex(matchUsb.pid));
     return new LabelWriterPrinter(match.descriptor, transport, 'usb');
   }
 }

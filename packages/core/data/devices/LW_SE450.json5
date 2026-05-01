@@ -1,0 +1,20 @@
+{
+  key: 'LW_SE450',
+  name: 'LabelWriter SE450',
+  family: 'labelwriter',
+  // Embedded variant: USB + RS-232. PID 0x0400 confirmed via DYMO's own
+  // SE450 Tech Ref USB Specifications page. Narrow head: 448 dots / 56
+  // bytes (dymo-cups-drivers `MaxPrintWidth=56`, ppd Width=158.89pt at
+  // 203 dpi). Serial settings: 9600 8N1 per SE450 Tech Ref.
+  transports: {
+    usb: { vid: '0x0922', pid: '0x0400' },
+    serial: { defaultBaud: 9600, supportedBauds: [9600] },
+  },
+  engines: [{ role: 'primary', protocol: 'lw-450', dpi: 203, headDots: 448 }],
+  // SE450 firmware rejects ESC G (short form feed) and ESC q (roll select)
+  // — they are no-ops on this single-roll embedded variant. The encoder
+  // does not emit them by default, so this is a fact about the chassis
+  // rather than something the driver guards against.
+  hardwareQuirks: 'Single-roll embedded variant. Firmware does not accept ESC G (short form feed) or ESC q (roll select); both are roll-related and not relevant to the SE450.',
+  support: { status: 'untested' },
+}

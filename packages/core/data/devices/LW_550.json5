@@ -1,0 +1,26 @@
+{
+  key: 'LW_550',
+  name: 'LabelWriter 550',
+  family: 'labelwriter',
+  transports: {
+    usb: { vid: '0x0922', pid: '0x0028' },
+  },
+  engines: [
+    {
+      role: 'primary',
+      protocol: 'lw-550',
+      dpi: 300,
+      headDots: 672,
+      mediaCompatibility: ['standard'],
+      capabilities: {
+        mediaDetection: true,
+        // Driver-side capability: Dymo-only NFC roll authentication.
+        // Promote to a contracts-named key when a second vendor lands a
+        // comparable mechanism (cassette-ID, RFID auth, etc.).
+        genuineMediaRequired: true,
+      },
+    },
+  ],
+  hardwareQuirks: 'NFC-based roll authentication: refuses non-genuine rolls outright. On genuine rolls, the NFC-defined length is authoritative — host claims to print at a different length are silently overridden, manifesting as a misprint at NFC dimensions. Apps that compare detected vs selected media should warn the user before sending.',
+  support: { status: 'untested' },
+}

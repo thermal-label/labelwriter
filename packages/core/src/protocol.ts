@@ -1,5 +1,33 @@
 import { padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
-import type { LabelWriterDevice, LabelWriterPrintOptions, Density } from './types.js';
+import type { DeviceEntry, PrintEngine } from '@thermal-label/contracts';
+import { UnsupportedOperationError } from '@thermal-label/contracts';
+import type { LabelWriterPrintOptions, Density } from './types.js';
+
+/**
+ * Wire byte for `ESC q 0x30` — automatic roll selection on the Twin
+ * Turbo. The firmware picks an available roll. See LW 450 Series Tech
+ * Ref p.16.
+ */
+export const ROLL_BYTE_AUTO = 0x30;
+
+/**
+ * Engine protocols this encoder produces correct byte streams for.
+ * `lw-330` matches `lw-450` byte-for-byte minus the `ESC G` / `ESC q`
+ * commands the 300-series firmware rejects (per SE450 Tech Ref); the
+ * encoder never emits those for single-engine 300-series devices.
+ * `d1-tape` (Duo's tape side) requires a separate protocol module —
+ * see plans/backlog/duo-tape-support.md.
+ */
+const SUPPORTED_PROTOCOLS = new Set(['lw-330', 'lw-450', 'lw-550']);
+
+/**
+ * Whether the labelwriter encoder produces a correct byte stream for
+ * a given engine. Adapters use this to filter `printer.engines` down
+ * to the engines a caller can usefully drive today.
+ */
+export function isEngineDrivable(engine: PrintEngine): boolean {
+  return SUPPORTED_PROTOCOLS.has(engine.protocol);
+}
 
 export function buildReset(): Uint8Array {
   return new Uint8Array([0x1b, 0x40]);
@@ -31,8 +59,19 @@ export function buildShortFormFeed(): Uint8Array {
   return new Uint8Array([0x1b, 0x47]);
 }
 
-export function buildSelectRoll(roll: 0 | 1): Uint8Array {
-  return new Uint8Array([0x1b, 0x71, roll]);
+/**
+ * `ESC q <n>` — select roll on the Twin Turbo. Per LW 450 Series Tech
+ * Ref p.16, `n` is one of:
+ *   `0x30` ('0') — automatic selection (firmware picks)
+ *   `0x31` ('1') — first physical roll  (left)
+ *   `0x32` ('2') — second physical roll (right)
+ *
+ * Twin Turbo engine entries store `0x31` / `0x32` directly in
+ * `bind.address`, so the encoder hands the byte through unchanged.
+ * `ROLL_BYTE_AUTO` covers the auto case.
+ */
+export function buildSelectRoll(byte: number): Uint8Array {
+  return new Uint8Array([0x1b, 0x71, byte]);
 }
 
 export function buildJobHeader(jobId: number): Uint8Array {
@@ -107,30 +146,92 @@ function concat(...arrays: Uint8Array[]): Uint8Array {
   return out;
 }
 
+interface ResolvedEngine {
+  engine: PrintEngine;
+  /**
+   * Wire byte to prepend as `ESC q <byte>` for in-band engine
+   * selection, or `undefined` when the device's protocol does not use
+   * an address byte (single-engine printers, Duo's bInterfaceNumber
+   * routing).
+   */
+  selectRollByte: number | undefined;
+}
+
+function resolveEngine(device: DeviceEntry, requested: string | undefined): ResolvedEngine {
+  const engines = device.engines;
+  const first = engines[0];
+  if (!first) {
+    throw new Error(`Device ${device.key} has no engines declared.`);
+  }
+
+  const hasAddressedEngine = engines.some(e => e.bind?.address !== undefined);
+
+  if (requested === 'auto') {
+    return {
+      engine: first,
+      selectRollByte: hasAddressedEngine ? ROLL_BYTE_AUTO : undefined,
+    };
+  }
+
+  if (requested !== undefined) {
+    const found = engines.find(e => e.role === requested);
+    if (!found) {
+      const roles = engines.map(e => e.role).join(', ');
+      throw new Error(
+        `Device ${device.key} has no engine with role "${requested}". Available: ${roles}.`,
+      );
+    }
+    return { engine: found, selectRollByte: found.bind?.address };
+  }
+
+  // requested === undefined: keep back-compat — use the first engine
+  // for geometry. On Twin-Turbo-style devices (multiple engines with
+  // address byte) emit auto so the firmware picks; on Duo-style
+  // devices (interface routing, no address byte) emit nothing.
+  return {
+    engine: first,
+    selectRollByte: hasAddressedEngine ? ROLL_BYTE_AUTO : undefined,
+  };
+}
+
+function assertEncoderSupports(engine: PrintEngine, deviceKey: string): void {
+  if (!SUPPORTED_PROTOCOLS.has(engine.protocol)) {
+    throw new UnsupportedOperationError(
+      `encodeLabel on ${deviceKey} engine "${engine.role}"`,
+      `protocol "${engine.protocol}" is not handled by the labelwriter encoder. Supported: ${[...SUPPORTED_PROTOCOLS].join(', ')}.`,
+    );
+  }
+}
+
 export function encodeLabel(
-  device: LabelWriterDevice,
+  device: DeviceEntry,
   bitmap: LabelBitmap,
   options: LabelWriterPrintOptions = {},
 ): Uint8Array {
-  const { density = 'normal', mode = 'text', compress = false, copies = 1, roll, jobId } = options;
+  const { density = 'normal', mode = 'text', compress = false, copies = 1, jobId } = options;
 
-  const fitted = fitBitmapWidth(bitmap, device.headDots);
+  const { engine, selectRollByte } = resolveEngine(device, options.engine);
+  assertEncoderSupports(engine, device.key);
+
+  const headDots = engine.headDots;
+  const bytesPerRow = headDots / 8;
+  const fitted = fitBitmapWidth(bitmap, headDots);
 
   const parts: Uint8Array[] = [];
 
-  if (device.protocol === '550') {
+  if (engine.protocol === 'lw-550') {
     const id = jobId ?? Date.now() & 0xffffffff;
     parts.push(buildJobHeader(id));
   }
 
   parts.push(buildReset());
-  parts.push(buildSetBytesPerLine(device.bytesPerRow));
+  parts.push(buildSetBytesPerLine(bytesPerRow));
   parts.push(buildDensity(density));
   parts.push(buildMode(mode));
   parts.push(buildSetLabelLength(fitted.heightPx));
 
-  if (roll !== undefined) {
-    parts.push(buildSelectRoll(roll));
+  if (selectRollByte !== undefined) {
+    parts.push(buildSelectRoll(selectRollByte));
   }
 
   const rasterRows: Uint8Array[] = [];

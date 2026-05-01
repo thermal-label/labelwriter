@@ -2,11 +2,14 @@ export type { LabelBitmap, PaletteEntry, RawImageData } from '@mbtech-nl/bitmap'
 export { renderText, renderImage, rotateBitmap, padBitmap, scaleBitmap } from '@mbtech-nl/bitmap';
 
 export type {
-  DeviceDescriptor,
+  DeviceEntry,
+  DeviceRegistry,
+  DeviceSupport,
   MediaDescriptor,
   PreviewOptions,
   PreviewPlane,
   PreviewResult,
+  PrintEngine,
   PrintOptions,
   PrinterAdapter,
   PrinterError,
@@ -16,9 +19,13 @@ export type {
   TransportType,
 } from '@thermal-label/contracts';
 
-export { MediaNotSpecifiedError, pickRotation } from '@thermal-label/contracts';
+export {
+  MediaNotSpecifiedError,
+  UnsupportedOperationError,
+  pickRotation,
+} from '@thermal-label/contracts';
 
-export { DEVICES, findDevice } from './devices.js';
+export { DEVICES, REGISTRY_LW, findDevice } from './devices.js';
 export { DEFAULT_MEDIA, MEDIA, findMediaByDimensions } from './media.js';
 export { ROTATE_DIRECTION } from './orientation.js';
 export {
@@ -35,13 +42,17 @@ export {
   buildErrorRecovery,
   buildRasterRow,
   encodeLabel,
+  ROLL_BYTE_AUTO,
 } from './protocol.js';
 export { STATUS_REQUEST, parseStatus, statusByteCount } from './status.js';
 export { createPreviewOffline } from './preview.js';
 export type {
   Density,
   LabelWriterDevice,
+  LabelWriterEngineCapabilities,
+  LabelWriterEngineHandle,
   LabelWriterMedia,
   LabelWriterPrintOptions,
-  NetworkSupport,
 } from './types.js';
+
+export { isEngineDrivable } from './protocol.js';

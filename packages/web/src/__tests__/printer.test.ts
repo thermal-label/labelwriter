@@ -4,6 +4,18 @@ import { DEVICES, MEDIA } from '@thermal-label/labelwriter-core';
 import { fromUSBDevice, requestPrinter } from '../printer.js';
 import { createMockUSBDevice } from './webusb-mock.js';
 
+function usb(key: keyof typeof DEVICES): { vid: number; pid: number } {
+  const entry = DEVICES[key];
+  if (!entry.transports.usb) throw new Error(`${key} has no usb transport`);
+  return {
+    vid: Number.parseInt(entry.transports.usb.vid, 16),
+    pid: Number.parseInt(entry.transports.usb.pid, 16),
+  };
+}
+
+const LW_450 = usb('LW_450');
+const LW_550 = usb('LW_550');
+
 function solidRgba(
   width: number,
   height: number,
@@ -21,7 +33,7 @@ function solidRgba(
 
 describe('WebLabelWriterPrinter', () => {
   it('exposes adapter metadata', async () => {
-    const device = createMockUSBDevice(DEVICES.LW_450.vid, DEVICES.LW_450.pid);
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);
     expect(printer.family).toBe('labelwriter');
     expect(printer.model).toBe('LabelWriter 450');
@@ -29,7 +41,7 @@ describe('WebLabelWriterPrinter', () => {
   });
 
   it('print() writes encoded bytes to WebUSB with explicit media', async () => {
-    const device = createMockUSBDevice(DEVICES.LW_450.vid, DEVICES.LW_450.pid);
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);
     await printer.print(solidRgba(672, 10), MEDIA.ADDRESS_STANDARD);
 
@@ -39,13 +51,13 @@ describe('WebLabelWriterPrinter', () => {
   });
 
   it('print() throws MediaNotSpecifiedError without media', async () => {
-    const device = createMockUSBDevice(DEVICES.LW_450.vid, DEVICES.LW_450.pid);
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);
     await expect(printer.print(solidRgba(672, 10))).rejects.toBeInstanceOf(MediaNotSpecifiedError);
   });
 
   it('getStatus returns the contracts shape on the 450', async () => {
-    const device = createMockUSBDevice(DEVICES.LW_450.vid, DEVICES.LW_450.pid);
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);
     const status = await printer.getStatus();
     expect(status.ready).toBe(true);
@@ -57,7 +69,7 @@ describe('WebLabelWriterPrinter', () => {
     const bytes = new Uint8Array(32);
     bytes[4] = 28;
     bytes[6] = 89;
-    const device = createMockUSBDevice(DEVICES.LW_550.vid, DEVICES.LW_550.pid, bytes);
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, bytes);
     const printer = await fromUSBDevice(device);
     const status = await printer.getStatus();
     expect(status.rawBytes.length).toBe(32);
@@ -65,7 +77,7 @@ describe('WebLabelWriterPrinter', () => {
   });
 
   it('close() closes the transport', async () => {
-    const device = createMockUSBDevice(DEVICES.LW_450.vid, DEVICES.LW_450.pid);
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);
     await printer.close();
     expect(device.opened).toBe(false);
@@ -78,7 +90,7 @@ describe('WebLabelWriterPrinter', () => {
   });
 
   it('createPreview() returns a single black plane with explicit media', async () => {
-    const device = createMockUSBDevice(DEVICES.LW_450.vid, DEVICES.LW_450.pid);
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);
     const preview = await printer.createPreview(solidRgba(8, 8), {
       media: MEDIA.SHIPPING_STANDARD,
@@ -92,7 +104,7 @@ describe('WebLabelWriterPrinter', () => {
     const bytes = new Uint8Array(32);
     bytes[4] = 28;
     bytes[6] = 89;
-    const device = createMockUSBDevice(DEVICES.LW_550.vid, DEVICES.LW_550.pid, bytes);
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, bytes);
     const printer = await fromUSBDevice(device);
     await printer.getStatus();
     const preview = await printer.createPreview(solidRgba(8, 8));
@@ -101,7 +113,7 @@ describe('WebLabelWriterPrinter', () => {
   });
 
   it('createPreview() falls back to DEFAULT_MEDIA with assumed=true', async () => {
-    const device = createMockUSBDevice(DEVICES.LW_450.vid, DEVICES.LW_450.pid);
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);
     const preview = await printer.createPreview(solidRgba(8, 8));
     expect(preview.assumed).toBe(true);
@@ -109,11 +121,10 @@ describe('WebLabelWriterPrinter', () => {
   });
 
   it('recover() writes the error-recovery sequence and drains the status response', async () => {
-    const device = createMockUSBDevice(DEVICES.LW_450.vid, DEVICES.LW_450.pid);
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);
     const before = device.__transfers.length;
     await printer.recover();
-    // Writes the 87-byte recovery sequence.
     expect(device.__transfers.length).toBeGreaterThan(before);
     expect(device.__transfers[before]!.data.length).toBe(87);
   });
@@ -121,7 +132,7 @@ describe('WebLabelWriterPrinter', () => {
 
 describe('requestPrinter', () => {
   it('shows the USB picker with default LabelWriter filters', async () => {
-    const device = createMockUSBDevice(DEVICES.LW_450.vid, DEVICES.LW_450.pid);
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const requestDevice = vi.fn(() => Promise.resolve(device));
     Object.defineProperty(globalThis, 'navigator', {
       value: { usb: { requestDevice } },
@@ -134,12 +145,14 @@ describe('requestPrinter', () => {
     const call = (requestDevice.mock.calls as unknown as [{ filters: USBDeviceFilter[] }][])[0]![0];
     const pids = call.filters.map(f => f.productId);
     for (const d of Object.values(DEVICES)) {
-      expect(pids).toContain(d.pid);
+      const u = d.transports.usb;
+      if (!u) continue;
+      expect(pids).toContain(Number.parseInt(u.pid, 16));
     }
   });
 
   it('accepts a custom filter set', async () => {
-    const device = createMockUSBDevice(DEVICES.LW_550.vid, DEVICES.LW_550.pid);
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid);
     const requestDevice = vi.fn(() => Promise.resolve(device));
     Object.defineProperty(globalThis, 'navigator', {
       value: { usb: { requestDevice } },
@@ -147,11 +160,11 @@ describe('requestPrinter', () => {
     });
 
     await requestPrinter({
-      filters: [{ vendorId: DEVICES.LW_550.vid, productId: DEVICES.LW_550.pid }],
+      filters: [{ vendorId: LW_550.vid, productId: LW_550.pid }],
     });
 
     const call = (requestDevice.mock.calls as unknown as [{ filters: USBDeviceFilter[] }][])[0]![0];
     expect(call.filters).toHaveLength(1);
-    expect(call.filters[0]!.productId).toBe(DEVICES.LW_550.pid);
+    expect(call.filters[0]!.productId).toBe(LW_550.pid);
   });
 });

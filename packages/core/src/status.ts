@@ -1,6 +1,13 @@
-import type { PrinterError, PrinterStatus } from '@thermal-label/contracts';
-import type { LabelWriterDevice } from './types.js';
+import type { DeviceEntry, PrinterError, PrinterStatus } from '@thermal-label/contracts';
 import { findMediaByDimensions } from './media.js';
+
+function deviceProtocol(device: DeviceEntry): string {
+  const engine = device.engines[0];
+  if (!engine) {
+    throw new Error(`Device ${device.key} has no engines declared.`);
+  }
+  return engine.protocol;
+}
 
 /** `ESC A` — identical on 450 and 550 series. */
 export const STATUS_REQUEST = new Uint8Array([0x1b, 0x41]);
@@ -78,14 +85,14 @@ function parseStatus550(bytes: Uint8Array): PrinterStatus {
  * Call `byteCount(device)` first to know how many bytes to read from
  * the transport. The two protocols differ — 450 is one byte, 550 is 32.
  */
-export function parseStatus(device: LabelWriterDevice, bytes: Uint8Array): PrinterStatus {
-  return device.protocol === '550' ? parseStatus550(bytes) : parseStatus450(bytes);
+export function parseStatus(device: DeviceEntry, bytes: Uint8Array): PrinterStatus {
+  return deviceProtocol(device) === 'lw-550' ? parseStatus550(bytes) : parseStatus450(bytes);
 }
 
 /**
  * How many bytes to read from the transport for this device's status
  * response.
  */
-export function statusByteCount(device: LabelWriterDevice): number {
-  return device.protocol === '550' ? 32 : 1;
+export function statusByteCount(device: DeviceEntry): number {
+  return deviceProtocol(device) === 'lw-550' ? 32 : 1;
 }

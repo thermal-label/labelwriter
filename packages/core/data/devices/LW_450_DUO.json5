@@ -1,0 +1,31 @@
+{
+  key: 'LW_450_DUO',
+  name: 'LabelWriter 450 Duo',
+  family: 'labelwriter',
+  // Composite USB device. Label and tape live on separate USB
+  // interfaces with different protocols. Tape engine becomes drivable
+  // when a `d1-tape` protocol module is registered.
+  transports: {
+    usb: { vid: '0x0922', pid: '0x0023' },
+  },
+  engines: [
+    {
+      role: 'label',
+      protocol: 'lw-450',
+      dpi: 300,
+      headDots: 672,
+      mediaCompatibility: ['standard'],
+      bind: { usb: { bInterfaceNumber: 0 } },
+    },
+    {
+      role: 'tape',
+      protocol: 'd1-tape',
+      dpi: 180,
+      headDots: 128,
+      mediaCompatibility: ['d1'],
+      capabilities: { autocut: true },
+      bind: { usb: { bInterfaceNumber: 1 } },
+    },
+  ],
+  support: { status: 'untested' },
+}

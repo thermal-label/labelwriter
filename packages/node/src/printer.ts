@@ -5,11 +5,13 @@ import {
   buildErrorRecovery,
   createPreviewOffline,
   encodeLabel,
+  isEngineDrivable,
   parseStatus,
   pickRotation,
   renderImage,
   statusByteCount,
-  type LabelWriterDevice,
+  type DeviceEntry,
+  type LabelWriterEngineHandle,
   type LabelWriterMedia,
   type LabelWriterPrintOptions,
   type MediaDescriptor,
@@ -39,16 +41,18 @@ import { MediaNotSpecifiedError } from '@thermal-label/contracts';
  */
 export class LabelWriterPrinter implements PrinterAdapter {
   readonly family = 'labelwriter' as const;
-  readonly device: LabelWriterDevice;
+  readonly device: DeviceEntry;
   readonly transportType: TransportType;
+  readonly engines: Readonly<Record<string, LabelWriterEngineHandle>>;
 
   private readonly transport: Transport;
   private lastStatus: PrinterStatus | undefined;
 
-  constructor(device: LabelWriterDevice, transport: Transport, transportType: TransportType) {
+  constructor(device: DeviceEntry, transport: Transport, transportType: TransportType) {
     this.device = device;
     this.transport = transport;
     this.transportType = transportType;
+    this.engines = buildEngineHandles(device, this);
   }
 
   get model(): string {
@@ -107,4 +111,35 @@ export class LabelWriterPrinter implements PrinterAdapter {
     await this.transport.write(buildErrorRecovery());
     await this.transport.read(statusByteCount(this.device));
   }
+}
+
+interface LabelWriterPrintParent {
+  print(
+    image: RawImageData,
+    media?: MediaDescriptor,
+    options?: LabelWriterPrintOptions,
+  ): Promise<void>;
+}
+
+function buildEngineHandles(
+  device: DeviceEntry,
+  parent: LabelWriterPrintParent,
+): Readonly<Record<string, LabelWriterEngineHandle>> {
+  const handles: Record<string, LabelWriterEngineHandle> = {};
+  for (const engine of device.engines) {
+    if (!isEngineDrivable(engine)) continue;
+    const role = engine.role;
+    handles[role] = {
+      role,
+      engine,
+      print(
+        image: RawImageData,
+        media?: MediaDescriptor,
+        options?: Omit<LabelWriterPrintOptions, 'engine'>,
+      ): Promise<void> {
+        return parent.print(image, media, { ...options, engine: role });
+      },
+    };
+  }
+  return handles;
 }

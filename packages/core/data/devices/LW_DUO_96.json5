@@ -1,0 +1,34 @@
+{
+  key: 'LW_DUO_96',
+  name: 'LabelWriter Duo - 96',
+  family: 'labelwriter',
+  // Composite USB device: two interfaces — one for the label head
+  // (lw-450 protocol) and one for the D1 tape head (d1-tape protocol).
+  // Tape engine becomes drivable when a `d1-tape` protocol module is
+  // registered with the runtime resolver; until then the resolver
+  // returns the device with `engines.tape.drivable: false`.
+  transports: {
+    usb: { vid: '0x0922', pid: '0x0017' },
+  },
+  engines: [
+    {
+      role: 'label',
+      protocol: 'lw-450',
+      dpi: 300,
+      headDots: 672,
+      mediaCompatibility: ['standard'],
+      bind: { usb: { bInterfaceNumber: 0 } },
+    },
+    {
+      role: 'tape',
+      protocol: 'd1-tape',
+      dpi: 180,
+      // 128-dot head per the LW Duo PDF Appendix B.
+      headDots: 128,
+      mediaCompatibility: ['d1'],
+      capabilities: { autocut: true },
+      bind: { usb: { bInterfaceNumber: 1 } },
+    },
+  ],
+  support: { status: 'untested' },
+}

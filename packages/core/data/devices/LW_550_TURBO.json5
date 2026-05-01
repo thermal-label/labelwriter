@@ -1,0 +1,24 @@
+{
+  key: 'LW_550_TURBO',
+  name: 'LabelWriter 550 Turbo',
+  family: 'labelwriter',
+  transports: {
+    usb: { vid: '0x0922', pid: '0x0029' },
+    tcp: { port: 9100 },
+  },
+  engines: [
+    {
+      role: 'primary',
+      protocol: 'lw-550',
+      dpi: 300,
+      headDots: 672,
+      mediaCompatibility: ['standard'],
+      capabilities: {
+        mediaDetection: true,
+        genuineMediaRequired: true,
+      },
+    },
+  ],
+  hardwareQuirks: 'NFC-based roll authentication: refuses non-genuine rolls outright. On genuine rolls, the NFC-defined length is authoritative — host claims to print at a different length are silently overridden, manifesting as a misprint at NFC dimensions. Apps that compare detected vs selected media should warn the user before sending.',
+  support: { status: 'untested' },
+}

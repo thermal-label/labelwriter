@@ -1,0 +1,10 @@
+{
+  key: 'LW_450',
+  name: 'LabelWriter 450',
+  family: 'labelwriter',
+  transports: {
+    usb: { vid: '0x0922', pid: '0x0020' },
+  },
+  engines: [{ role: 'primary', protocol: 'lw-450', dpi: 300, headDots: 672 }],
+  support: { status: 'untested' },
+}

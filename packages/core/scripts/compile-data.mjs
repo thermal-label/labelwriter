@@ -1,0 +1,136 @@
+#!/usr/bin/env node
+// Compiles packages/core/data/devices/*.json5 into:
+//
+//   - data/devices.json — flat aggregated DeviceRegistry artifact, the
+//     plan-mandated source of truth for non-TS consumers.
+//   - src/_generated/registry.ts — TypeScript re-export of the same
+//     data, typed as DeviceRegistry. Lives in src/ so the existing
+//     rootDir-restricted tsconfig sees it without further plumbing.
+//
+// Validates each JSON5 entry against a structural subset of the
+// contracts DeviceRegistry shape. Run via `pnpm run compile-data`.
+// Wired as a prebuild step.
+
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import JSON5 from 'json5';
+
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+const PACKAGE_ROOT = resolve(SCRIPT_DIR, '..');
+const DEVICES_DIR = resolve(PACKAGE_ROOT, 'data/devices');
+const JSON_OUTPUT = resolve(PACKAGE_ROOT, 'data/devices.json');
+const TS_OUTPUT_DIR = resolve(PACKAGE_ROOT, 'src/_generated');
+const TS_OUTPUT = resolve(TS_OUTPUT_DIR, 'registry.ts');
+
+const DRIVER = 'labelwriter';
+const HEX_RE = /^0x[0-9a-fA-F]+$/;
+const SUPPORT_STATUS = new Set(['verified', 'partial', 'broken', 'untested']);
+const TRANSPORT_KEYS = new Set(['usb', 'tcp', 'serial', 'bluetooth-spp', 'bluetooth-gatt']);
+
+const errors = [];
+const fail = (where, msg) => errors.push(`${where}: ${msg}`);
+
+function validateEntry(entry, file) {
+  const where = `${file}`;
+
+  if (typeof entry?.key !== 'string') fail(where, 'key must be a string');
+  if (typeof entry?.name !== 'string') fail(where, 'name must be a string');
+  if (entry?.family !== DRIVER) fail(where, `family must be "${DRIVER}"`);
+
+  if (!entry?.transports || typeof entry.transports !== 'object') {
+    fail(where, 'transports must be an object');
+  } else {
+    for (const k of Object.keys(entry.transports)) {
+      if (!TRANSPORT_KEYS.has(k)) fail(where, `transports.${k} is not a known transport key`);
+    }
+    const usb = entry.transports.usb;
+    if (usb !== undefined) {
+      if (!HEX_RE.test(usb.vid ?? ''))
+        fail(where, 'transports.usb.vid must be a hex string like "0x0922"');
+      if (!HEX_RE.test(usb.pid ?? ''))
+        fail(where, 'transports.usb.pid must be a hex string like "0x0020"');
+    }
+    const tcp = entry.transports.tcp;
+    if (tcp !== undefined && typeof tcp.port !== 'number') {
+      fail(where, 'transports.tcp.port must be a number');
+    }
+    const serial = entry.transports.serial;
+    if (serial !== undefined && typeof serial.defaultBaud !== 'number') {
+      fail(where, 'transports.serial.defaultBaud must be a number');
+    }
+  }
+
+  if (!Array.isArray(entry?.engines) || entry.engines.length === 0) {
+    fail(where, 'engines must be a non-empty array');
+  } else {
+    const seenRoles = new Set();
+    for (const [i, eng] of entry.engines.entries()) {
+      const ewhere = `${where} engines[${i}]`;
+      if (typeof eng?.role !== 'string') fail(ewhere, 'role must be a string');
+      else if (seenRoles.has(eng.role)) fail(ewhere, `duplicate role "${eng.role}"`);
+      else seenRoles.add(eng.role);
+      if (typeof eng?.protocol !== 'string') fail(ewhere, 'protocol must be a string');
+      if (typeof eng?.dpi !== 'number') fail(ewhere, 'dpi must be a number');
+      if (typeof eng?.headDots !== 'number') fail(ewhere, 'headDots must be a number');
+    }
+  }
+
+  if (!entry?.support || typeof entry.support !== 'object') {
+    fail(where, 'support must be an object');
+  } else if (!SUPPORT_STATUS.has(entry.support.status)) {
+    fail(where, `support.status must be one of ${[...SUPPORT_STATUS].join('|')}`);
+  }
+}
+
+const files = readdirSync(DEVICES_DIR)
+  .filter(f => f.endsWith('.json5'))
+  .sort();
+const devices = [];
+const seenKeys = new Set();
+
+for (const file of files) {
+  let entry;
+  try {
+    entry = JSON5.parse(readFileSync(resolve(DEVICES_DIR, file), 'utf8'));
+  } catch (err) {
+    fail(file, `parse error: ${err.message}`);
+    continue;
+  }
+  validateEntry(entry, file);
+  if (entry?.key && seenKeys.has(entry.key)) fail(file, `duplicate key "${entry.key}"`);
+  if (entry?.key && file !== `${entry.key}.json5`) {
+    fail(file, `filename must match key (expected ${entry.key}.json5)`);
+  }
+  if (entry?.key) seenKeys.add(entry.key);
+  devices.push(entry);
+}
+
+if (errors.length > 0) {
+  console.error(`[compile-data] ${errors.length} error(s):`);
+  for (const e of errors) console.error('  - ' + e);
+  process.exit(1);
+}
+
+const registry = { schemaVersion: 1, driver: DRIVER, devices };
+writeFileSync(JSON_OUTPUT, JSON.stringify(registry, null, 2) + '\n');
+
+mkdirSync(TS_OUTPUT_DIR, { recursive: true });
+const deviceEntries = devices.map((d, i) => `  ${d.key}: REGISTRY.devices[${i}],`).join('\n');
+const keyUnion = devices.map(d => `'${d.key}'`).join(' | ');
+const tsBody = `// AUTO-GENERATED by scripts/compile-data.mjs from data/devices/*.json5.
+// Edit those files, not this one. Run \`pnpm run compile-data\`.
+
+import type { DeviceEntry, DeviceRegistry } from '@thermal-label/contracts';
+
+export const REGISTRY = ${JSON.stringify(registry, null, 2)} as const satisfies DeviceRegistry;
+
+export type DeviceKey = ${keyUnion};
+
+export const DEVICES: Record<DeviceKey, DeviceEntry> = {
+${deviceEntries}
+};
+`;
+writeFileSync(TS_OUTPUT, tsBody);
+
+console.log(`[compile-data] OK — ${devices.length} devices → ${JSON_OUTPUT} + ${TS_OUTPUT}`);

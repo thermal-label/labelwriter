@@ -1,0 +1,13 @@
+{
+  key: 'LW_310',
+  name: 'LabelWriter 310',
+  family: 'labelwriter',
+  // Shares PID 0x0009 with LW 300 (linux-usb.org usb.ids labels this PID
+  // "LabelWriter 310"; dymo-cups-drivers groups 300/310/315 in one PPD).
+  transports: {
+    usb: { vid: '0x0922', pid: '0x0009' },
+    serial: { defaultBaud: 115200, supportedBauds: [115200] },
+  },
+  engines: [{ role: 'primary', protocol: 'lw-330', dpi: 300, headDots: 464 }],
+  support: { status: 'untested' },
+}

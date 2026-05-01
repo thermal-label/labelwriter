@@ -1,0 +1,32 @@
+{
+  key: 'LW_TWIN_TURBO',
+  name: 'LabelWriter Twin Turbo',
+  family: 'labelwriter',
+  // 400-series Twin Turbo: two 672-dot heads in one chassis sharing one
+  // USB endpoint; the protocol selects the active head via in-band
+  // address byte. `bind.address` is the literal wire byte the lw-450
+  // protocol prepends as `ESC q <addr>` (per LW 450 Series Tech Ref
+  // p.16): ASCII '1' (0x31) for the left roll, ASCII '2' (0x32) for
+  // the right. Auto-select (ASCII '0' / 0x30) is a runtime mode, not a
+  // stored address — see the lw-450 protocol module.
+  transports: {
+    usb: { vid: '0x0922', pid: '0x0018' },
+  },
+  engines: [
+    {
+      role: 'left',
+      protocol: 'lw-450',
+      dpi: 300,
+      headDots: 672,
+      bind: { address: 0x31 },
+    },
+    {
+      role: 'right',
+      protocol: 'lw-450',
+      dpi: 300,
+      headDots: 672,
+      bind: { address: 0x32 },
+    },
+  ],
+  support: { status: 'untested' },
+}

@@ -1,0 +1,21 @@
+{
+  key: 'LW_300',
+  name: 'LabelWriter 300',
+  family: 'labelwriter',
+  // PID 0x0009 is registered as "LabelWriter 310" upstream (linux-usb.org
+  // usb.ids); the LW 300 and 310 share the entry per dymo-cups-drivers.
+  transports: {
+    usb: { vid: '0x0922', pid: '0x0009' },
+    serial: { defaultBaud: 115200, supportedBauds: [115200] },
+  },
+  engines: [
+    {
+      role: 'primary',
+      protocol: 'lw-330',
+      dpi: 300,
+      // 464 dots / 58 bytes per dymo-cups-drivers (clamps from 1.57" × 300 = 471).
+      headDots: 464,
+    },
+  ],
+  support: { status: 'untested' },
+}

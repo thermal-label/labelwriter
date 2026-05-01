@@ -125,11 +125,14 @@ describe('buildMode', () => {
 });
 
 describe('buildSelectRoll', () => {
-  it('roll 0 → [0x1B, 0x71, 0]', () => {
-    expect(Array.from(buildSelectRoll(0))).toEqual([0x1b, 0x71, 0]);
+  it("auto byte 0x30 (ASCII '0') → [0x1B, 0x71, 0x30]", () => {
+    expect(Array.from(buildSelectRoll(0x30))).toEqual([0x1b, 0x71, 0x30]);
   });
-  it('roll 1 → [0x1B, 0x71, 1]', () => {
-    expect(Array.from(buildSelectRoll(1))).toEqual([0x1b, 0x71, 1]);
+  it("left byte 0x31 (ASCII '1') → [0x1B, 0x71, 0x31]", () => {
+    expect(Array.from(buildSelectRoll(0x31))).toEqual([0x1b, 0x71, 0x31]);
+  });
+  it("right byte 0x32 (ASCII '2') → [0x1B, 0x71, 0x32]", () => {
+    expect(Array.from(buildSelectRoll(0x32))).toEqual([0x1b, 0x71, 0x32]);
   });
 });
 
@@ -179,7 +182,7 @@ describe('encodeLabel', () => {
     while (i < result.length) {
       if (result[i] === 0x16) {
         rowCount++;
-        i += 1 + device450.bytesPerRow;
+        i += 1 + 84;
       } else {
         i++;
       }
@@ -205,7 +208,7 @@ describe('encodeLabel', () => {
     while (i < result.length) {
       if (result[i] === 0x16) {
         rowCount++;
-        i += 1 + device450.bytesPerRow;
+        i += 1 + 84;
       } else {
         i++;
       }
@@ -221,7 +224,7 @@ describe('encodeLabel', () => {
     while (i < result.length) {
       if (result[i] === 0x16) {
         rowCount++;
-        i += 1 + device450.bytesPerRow;
+        i += 1 + 84;
       } else {
         i++;
       }
@@ -246,16 +249,68 @@ describe('encodeLabel', () => {
     expect(hasCompressed).toBe(true);
   });
 
-  it('Twin Turbo: roll select command present when roll option given', () => {
-    const bm = makeBitmap(672, 10);
-    const result = encodeLabel(DEVICES.LW_450_TWIN_TURBO, bm, { roll: 1 });
-    let found = false;
-    for (let i = 0; i < result.length - 2; i++) {
-      if (result[i] === 0x1b && result[i + 1] === 0x71 && result[i + 2] === 1) {
-        found = true;
-        break;
+  function findEscQByte(bytes: Uint8Array): number | undefined {
+    for (let i = 0; i < bytes.length - 2; i++) {
+      if (bytes[i] === 0x1b && bytes[i + 1] === 0x71) {
+        return bytes[i + 2];
       }
     }
-    expect(found).toBe(true);
+    return undefined;
+  }
+
+  it("Twin Turbo: explicit engine 'right' emits 0x32 (ASCII '2')", () => {
+    const bm = makeBitmap(672, 10);
+    const result = encodeLabel(DEVICES.LW_450_TWIN_TURBO, bm, { engine: 'right' });
+    expect(findEscQByte(result)).toBe(0x32);
+  });
+
+  it("Twin Turbo: explicit engine 'left' emits 0x31 (ASCII '1')", () => {
+    const bm = makeBitmap(672, 10);
+    const result = encodeLabel(DEVICES.LW_450_TWIN_TURBO, bm, { engine: 'left' });
+    expect(findEscQByte(result)).toBe(0x31);
+  });
+
+  it("Twin Turbo: engine 'auto' emits 0x30 (ASCII '0')", () => {
+    const bm = makeBitmap(672, 10);
+    const result = encodeLabel(DEVICES.LW_450_TWIN_TURBO, bm, { engine: 'auto' });
+    expect(findEscQByte(result)).toBe(0x30);
+  });
+
+  it('Twin Turbo: omitted engine defaults to auto (0x30)', () => {
+    const bm = makeBitmap(672, 10);
+    const result = encodeLabel(DEVICES.LW_450_TWIN_TURBO, bm);
+    expect(findEscQByte(result)).toBe(0x30);
+  });
+
+  it('single-engine device: no ESC q on the wire even with engine: auto', () => {
+    const bm = makeBitmap(672, 10);
+    const result = encodeLabel(device450, bm, { engine: 'auto' });
+    expect(findEscQByte(result)).toBeUndefined();
+  });
+
+  it('single-engine device: no ESC q on the wire when engine omitted', () => {
+    const bm = makeBitmap(672, 10);
+    const result = encodeLabel(device450, bm);
+    expect(findEscQByte(result)).toBeUndefined();
+  });
+
+  it('Duo: no ESC q (Duo uses interface routing, not address byte)', () => {
+    const bm = makeBitmap(672, 10);
+    const result = encodeLabel(DEVICES.LW_450_DUO, bm);
+    expect(findEscQByte(result)).toBeUndefined();
+  });
+
+  it('throws when engine role does not exist on device', () => {
+    const bm = makeBitmap(672, 10);
+    expect(() => encodeLabel(DEVICES.LW_450_TWIN_TURBO, bm, { engine: 'middle' })).toThrow(
+      /no engine with role "middle"/,
+    );
+  });
+
+  it("throws UnsupportedOperationError on Duo's tape engine (d1-tape protocol)", () => {
+    const bm = makeBitmap(128, 10);
+    expect(() => encodeLabel(DEVICES.LW_450_DUO, bm, { engine: 'tape' })).toThrow(
+      /protocol "d1-tape"/,
+    );
   });
 });
