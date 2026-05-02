@@ -2,6 +2,7 @@ import type {
   DeviceEntry,
   MediaDescriptor,
   PrintEngine,
+  PrinterStatus,
   PrintOptions,
 } from '@thermal-label/contracts';
 import type { RawImageData } from '@mbtech-nl/bitmap';
@@ -49,6 +50,35 @@ export interface LabelWriterMedia extends MediaDescriptor {
   lengthDots?: number;
 }
 
+/** D1 tape widths the LabelWriter Duo supports (PDF Appendix B p.23). */
+export type DuoTapeWidth = 6 | 9 | 12 | 19 | 24;
+
+/**
+ * Duo tape-cassette media descriptor.
+ *
+ * Tape is continuous along its length, so `heightMm` is omitted —
+ * `widthMm` is the tape width (6, 9, 12, 19, or 24 mm). `tapeColour`
+ * is the `ESC C` selector (0..12 per PDF p.24) identifying which
+ * cassette is loaded; defaults to 0 (black on white/clear) when
+ * omitted.
+ *
+ * Parallel to (not a variant of) `LabelWriterMedia`: the tape engine
+ * has its own protocol module and doesn't share the die-cut/continuous
+ * length-dots plumbing. Routed via discrimination on `type`.
+ */
+export interface LabelWriterTapeMedia extends MediaDescriptor {
+  type: 'tape';
+  tapeWidthMm: DuoTapeWidth;
+  /** ESC C selector 0..12; defaults to 0 (black on white) when omitted. */
+  tapeColour?: number;
+}
+
+/**
+ * Any LabelWriter-family media. The label engines accept
+ * `LabelWriterMedia`; the Duo tape engine accepts `LabelWriterTapeMedia`.
+ */
+export type LabelWriterAnyMedia = LabelWriterMedia | LabelWriterTapeMedia;
+
 /**
  * Protocol-internal print options.
  *
@@ -73,6 +103,18 @@ export interface LabelWriterPrintOptions extends PrintOptions {
   mode?: 'text' | 'graphics';
   compress?: boolean;
   /**
+   * 550-only print speed. `'normal'` (the firmware default) prints
+   * with the standard duty cycle; `'high'` engages the high-speed
+   * path documented on LW 550 / 550 Turbo (not on 5XL — which simply
+   * ignores the byte). Per spec, not all label rolls have the
+   * high-speed feature; on rolls that don't, the printer falls back
+   * to normal speed silently.
+   *
+   * Omitted → encoder doesn't emit `ESC T` and the firmware default
+   * (Normal Speed) is used.
+   */
+  speed?: 'normal' | 'high';
+  /**
    * Engine selector for multi-engine devices. `'auto'` is the special
    * routing mode (firmware-auto byte on Twin Turbo); any other string
    * is matched against `engines[].role`. Single-engine devices ignore
@@ -91,10 +133,16 @@ export interface LabelWriterPrintOptions extends PrintOptions {
  * forwards to the parent adapter's `print()`. Use it to route a job
  * explicitly: `printer.engines.left.print(image, media)`.
  *
- * Adapters expose only engines whose protocol the labelwriter encoder
- * handles (`lw-330` / `lw-450` / `lw-550`). The Duo's tape engine
- * (`d1-tape`) is intentionally absent until a tape protocol module
- * lands.
+ * `getStatus()` queries the engine over its own transport — relevant
+ * on the Duo, where the tape engine has its own status response shape
+ * (8 bytes via `parseDuoTapeStatus`) on a different USB interface
+ * than the label engine (1 byte via `parseStatus`).
+ *
+ * Adapters expose engines whose protocol either the labelwriter
+ * encoder handles (`lw-330` / `lw-450` / `lw-550`) or the duo-tape
+ * encoder handles (`d1-tape`). Tape engines only appear when a tape
+ * transport is provided to the adapter — without one, the engine is
+ * declared in the registry but unreachable.
  */
 export interface LabelWriterEngineHandle {
   readonly role: string;
@@ -104,4 +152,6 @@ export interface LabelWriterEngineHandle {
     media?: MediaDescriptor,
     options?: Omit<LabelWriterPrintOptions, 'engine'>,
   ): Promise<void>;
+  /** Query just this engine's status — useful on multi-engine devices. */
+  getStatus?(): Promise<PrinterStatus>;
 }

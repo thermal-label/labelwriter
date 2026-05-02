@@ -4,6 +4,14 @@
   family: 'labelwriter',
   transports: {
     usb: { vid: '0x0922', pid: '0x0029' },
+    // mDNS instance-name pattern per LW 550 Tech Ref p.10:
+    //   DYMOLW550T<6-hex MAC Address>E
+    // Service type unknown (spec doesn't say) — likely
+    // `_pdl-datastream._tcp` (port 9100 raw). Captured here for the
+    // future mDNS-discovery work; no code reads it today. Will move
+    // to a structured `tcp.mdns.hostnamePattern` field once the
+    // contracts shape is extended (see contracts/plans/backlog/
+    // mdns-hostname-pattern.md).
     tcp: { port: 9100 },
   },
   engines: [

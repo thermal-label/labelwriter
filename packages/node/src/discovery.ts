@@ -1,6 +1,6 @@
 import { DEVICES, findDevice, type DeviceEntry } from '@thermal-label/labelwriter-core';
 import type { DiscoveredPrinter, OpenOptions, PrinterDiscovery } from '@thermal-label/contracts';
-import { TcpTransport, UsbTransport } from '@thermal-label/transport/node';
+import { SerialTransport, TcpTransport, UsbTransport } from '@thermal-label/transport/node';
 import * as usb from 'usb';
 import { LabelWriterPrinter } from './printer.js';
 
@@ -69,11 +69,12 @@ export class LabelWriterDiscovery implements PrinterDiscovery {
   }
 
   async openPrinter(options: OpenOptions = {}): Promise<LabelWriterPrinter> {
+    if (options.serialPath !== undefined) {
+      return openSerial(options);
+    }
+
     if (options.host !== undefined) {
-      const transport = await TcpTransport.connect(options.host, options.port);
-      const descriptor = Object.values(DEVICES).find(d => d.transports.tcp !== undefined);
-      if (!descriptor) throw new Error('No network-capable LabelWriter descriptor found.');
-      return new LabelWriterPrinter(descriptor, transport, 'tcp');
+      return openTcp(options);
     }
 
     const found = await enumerateUsbDevices();
@@ -91,9 +92,125 @@ export class LabelWriterDiscovery implements PrinterDiscovery {
 
     const matchUsb = match.descriptor.transports.usb;
     if (!matchUsb) throw new Error(`Device ${match.descriptor.key} has no USB transport.`);
-    const transport = await UsbTransport.open(parseHex(matchUsb.vid), parseHex(matchUsb.pid));
+    const vid = parseHex(matchUsb.vid);
+    const pid = parseHex(matchUsb.pid);
+
+    const labelBind = match.descriptor.engines.find(e => e.role === 'label')?.bind?.usb;
+    const labelInterface = labelBind?.bInterfaceNumber;
+    const transport =
+      labelInterface !== undefined
+        ? await UsbTransport.open(vid, pid, { bInterfaceNumber: labelInterface })
+        : await UsbTransport.open(vid, pid);
+
+    // Composite-USB devices (Duo) declare a second engine with its own
+    // `bInterfaceNumber`. Open it as a sibling transport so the tape
+    // engine becomes drivable. The shared device cache in
+    // `@thermal-label/transport` reference-counts the underlying libusb
+    // handle so closing one transport does not invalidate the other.
+    const tapeBind = match.descriptor.engines.find(e => e.role === 'tape')?.bind?.usb;
+    if (tapeBind?.bInterfaceNumber !== undefined) {
+      const tapeTransport = await UsbTransport.open(vid, pid, {
+        bInterfaceNumber: tapeBind.bInterfaceNumber,
+      });
+      return new LabelWriterPrinter(match.descriptor, transport, 'usb', {
+        engineTransports: { tape: tapeTransport },
+      });
+    }
+
     return new LabelWriterPrinter(match.descriptor, transport, 'usb');
   }
+}
+
+/**
+ * Open a printer over TCP.
+ *
+ * TCP, like serial, has no transport-level model signal — multiple
+ * LabelWriter generations (450 wireless, 550 Turbo, 5XL) all answer
+ * on port 9100 with their own protocol dialect. The caller must
+ * declare which model is on the other end via `deviceKey`.
+ *
+ * Pre-fix behaviour silently picked the first registry entry with a
+ * TCP transport (`LW_WIRELESS`, a 450-protocol device), so a real
+ * 550 Turbo / 5XL opened by `host` got dispatched to the 450
+ * encoder and produced a corrupt job stream. Failing loudly here
+ * is correct.
+ */
+async function openTcp(opts: OpenOptions): Promise<LabelWriterPrinter> {
+  if (opts.host === undefined) {
+    throw new Error('openTcp requires `host`.');
+  }
+  if (opts.deviceKey === undefined) {
+    const tcpKeys = Object.values(DEVICES)
+      .filter(d => d.transports.tcp !== undefined)
+      .map(d => d.key)
+      .sort();
+    throw new Error(
+      `TCP open requires \`deviceKey\` — port 9100 carries no model signal, so the model must be declared. ` +
+        `Available TCP-capable LabelWriter keys: ${tcpKeys.join(', ')}.`,
+    );
+  }
+
+  const descriptor = (DEVICES as Record<string, DeviceEntry | undefined>)[opts.deviceKey];
+  if (!descriptor) {
+    throw new Error(
+      `Unknown deviceKey "${opts.deviceKey}". Available LabelWriter keys: ${Object.keys(DEVICES).sort().join(', ')}.`,
+    );
+  }
+
+  if (!descriptor.transports.tcp) {
+    throw new Error(
+      `Device ${descriptor.key} has no TCP transport — it cannot be opened over \`host\`.`,
+    );
+  }
+
+  const transport = await TcpTransport.connect(opts.host, opts.port);
+  return new LabelWriterPrinter(descriptor, transport, 'tcp');
+}
+
+/**
+ * Open a printer over a serial port.
+ *
+ * RS-232 has no enumeration, so the caller must declare which model is
+ * on the other end via `deviceKey`. Trying to probe blindly would mean
+ * writing arbitrary bytes to an unidentified UART, which is rude and
+ * not always reversible — fail loudly instead.
+ *
+ * The baud rate falls back to the descriptor's `transports.serial.defaultBaud`
+ * (per the plan, 115 200 for 300/330/Turbo, 19 200 for EL40/EL60,
+ * 9 600 for SE450). Pass `baudRate` to override.
+ */
+async function openSerial(opts: OpenOptions): Promise<LabelWriterPrinter> {
+  if (opts.serialPath === undefined) {
+    throw new Error('openSerial requires `serialPath`.');
+  }
+  if (opts.deviceKey === undefined) {
+    const serialKeys = Object.values(DEVICES)
+      .filter(d => d.transports.serial !== undefined)
+      .map(d => d.key)
+      .sort();
+    throw new Error(
+      `Serial open requires \`deviceKey\` — RS-232 has no enumeration, so the model must be declared. ` +
+        `Available serial-capable LabelWriter keys: ${serialKeys.join(', ')}.`,
+    );
+  }
+
+  const descriptor = (DEVICES as Record<string, DeviceEntry | undefined>)[opts.deviceKey];
+  if (!descriptor) {
+    throw new Error(
+      `Unknown deviceKey "${opts.deviceKey}". Available LabelWriter keys: ${Object.keys(DEVICES).sort().join(', ')}.`,
+    );
+  }
+
+  const serialT = descriptor.transports.serial;
+  if (!serialT) {
+    throw new Error(
+      `Device ${descriptor.key} has no serial transport — it cannot be opened over \`serialPath\`.`,
+    );
+  }
+
+  const baudRate = opts.baudRate ?? serialT.defaultBaud;
+  const transport = await SerialTransport.open(opts.serialPath, baudRate);
+  return new LabelWriterPrinter(descriptor, transport, 'serial');
 }
 
 /**

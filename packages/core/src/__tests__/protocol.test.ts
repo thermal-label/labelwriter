@@ -12,7 +12,6 @@ import {
   buildDensity,
   buildMode,
   buildSelectRoll,
-  buildStatusRequest,
   encodeLabel,
 } from '../protocol.js';
 import { DEVICES } from '../devices.js';
@@ -94,12 +93,6 @@ describe('buildShortFormFeed', () => {
   });
 });
 
-describe('buildStatusRequest', () => {
-  it('produces [0x1B, 0x41]', () => {
-    expect(Array.from(buildStatusRequest())).toEqual([0x1b, 0x41]);
-  });
-});
-
 describe('buildDensity', () => {
   it('light → 0x63', () => {
     expect(buildDensity('light')[1]).toBe(0x63);
@@ -163,14 +156,24 @@ describe('encodeLabel', () => {
     expect(result[1]).toBe(0x40);
   });
 
-  it('550 device: starts with job header before reset', () => {
+  it('550 device: dispatched to 550 protocol module — no ESC @ in the stream', () => {
+    // The 550 spec defines ESC @ as "Restart Print Engine" (destructive).
+    // Detailed 550 encoder behaviour is asserted in protocol-550.test.ts;
+    // this is the dispatch-side guarantee that encodeLabel never falls
+    // through to the 450 path for an lw-550 engine.
     const bm = makeBitmap(672, 100);
     const result = encodeLabel(device550, bm);
     expect(result[0]).toBe(0x1b);
     expect(result[1]).toBe(0x73);
-    const jobHeaderEnd = 6;
-    expect(result[jobHeaderEnd]).toBe(0x1b);
-    expect(result[jobHeaderEnd + 1]).toBe(0x40);
+    // Ends with ESC Q (job trailer), not ESC E (form feed) like the 450.
+    expect(result.at(-2)).toBe(0x1b);
+    expect(result.at(-1)).toBe(0x51);
+    // No ESC @ reboot anywhere in the stream.
+    for (let i = 0; i < result.length - 1; i++) {
+      if (result[i] === 0x1b && result[i + 1] === 0x40) {
+        throw new Error(`ESC @ found at offset ${String(i)} — would reboot the print engine`);
+      }
+    }
   });
 
   it('correct row count matches bitmap height after rotation', () => {
@@ -312,5 +315,58 @@ describe('encodeLabel', () => {
     expect(() => encodeLabel(DEVICES.LW_450_DUO, bm, { engine: 'tape' })).toThrow(
       /protocol "d1-tape"/,
     );
+  });
+
+  // Per LW SE450 Tech Ref p.9: ESC G (short form feed) and ESC q (roll
+  // select) are rejected by the SE450 and the 300-series firmware. The
+  // encoder must never emit them for any single-roll device in this
+  // family; this is a regression-guard against accidentally enabling
+  // them via a future code path.
+  describe('300-series + SE450: never emits ESC G or ESC q', () => {
+    function findEscByte(bytes: Uint8Array, opcode: number): number | undefined {
+      for (let i = 0; i < bytes.length - 1; i++) {
+        if (bytes[i] === 0x1b && bytes[i + 1] === opcode) return i;
+      }
+      return undefined;
+    }
+
+    const singleRollKeys = [
+      'LW_300',
+      'LW_310',
+      'LW_330',
+      'LW_330_TURBO',
+      'LW_TURBO',
+      'LW_EL40',
+      'LW_EL60',
+      'LW_SE450',
+    ] as const;
+
+    for (const key of singleRollKeys) {
+      it(`${key}: no ESC G (0x1b 0x47)`, () => {
+        const dev = DEVICES[key];
+        const headDots = dev.engines[0]!.headDots;
+        const bm = makeBitmap(headDots, 8);
+        const out = encodeLabel(dev, bm, { copies: 2 });
+        expect(findEscByte(out, 0x47)).toBeUndefined();
+      });
+
+      it(`${key}: no ESC q (0x1b 0x71)`, () => {
+        const dev = DEVICES[key];
+        const headDots = dev.engines[0]!.headDots;
+        const bm = makeBitmap(headDots, 8);
+        const out = encodeLabel(dev, bm);
+        expect(findEscByte(out, 0x71)).toBeUndefined();
+      });
+
+      it(`${key}: ESC D byte matches headDots / 8`, () => {
+        const dev = DEVICES[key];
+        const headDots = dev.engines[0]!.headDots;
+        const bm = makeBitmap(headDots, 4);
+        const out = encodeLabel(dev, bm);
+        const escD = findEscByte(out, 0x44);
+        expect(escD).toBeDefined();
+        expect(out[escD! + 2]).toBe(headDots / 8);
+      });
+    }
   });
 });

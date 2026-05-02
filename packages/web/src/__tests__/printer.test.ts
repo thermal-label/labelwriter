@@ -65,15 +65,19 @@ describe('WebLabelWriterPrinter', () => {
     expect(status.errors).toEqual([]);
   });
 
-  it('getStatus reads 32 bytes on the 550 and detects media', async () => {
+  it('getStatus reads 32 bytes on the 550 and parses bay/head/voltage health', async () => {
+    // 550 status no longer carries media dimensions — that's ESC U
+    // (NFC SKU dump). The status response only signals printer health.
     const bytes = new Uint8Array(32);
-    bytes[4] = 28;
-    bytes[6] = 89;
+    bytes[10] = 8; // main bay status: media present, ok
+    bytes[30] = 1; // head voltage: ok
     const device = createMockUSBDevice(LW_550.vid, LW_550.pid, bytes);
     const printer = await fromUSBDevice(device);
     const status = await printer.getStatus();
     expect(status.rawBytes.length).toBe(32);
-    expect(status.detectedMedia).toEqual(MEDIA.ADDRESS_STANDARD);
+    expect(status.ready).toBe(true);
+    expect(status.mediaLoaded).toBe(true);
+    expect(status.detectedMedia).toBeUndefined();
   });
 
   it('close() closes the transport', async () => {
@@ -100,16 +104,20 @@ describe('WebLabelWriterPrinter', () => {
     expect(preview.assumed).toBe(false);
   });
 
-  it('createPreview() reuses detected media from a prior getStatus (550)', async () => {
+  it('createPreview() falls back to DEFAULT_MEDIA on the 550 too — status carries no media', async () => {
+    // Pre-rewrite this test asserted the 550 createPreview path picked
+    // up media auto-detected from status. The 550 status response in
+    // fact carries no media dimensions (those live in the ESC U NFC
+    // dump), so the fallback path is the same as the 450.
     const bytes = new Uint8Array(32);
-    bytes[4] = 28;
-    bytes[6] = 89;
+    bytes[10] = 8;
+    bytes[30] = 1;
     const device = createMockUSBDevice(LW_550.vid, LW_550.pid, bytes);
     const printer = await fromUSBDevice(device);
     await printer.getStatus();
     const preview = await printer.createPreview(solidRgba(8, 8));
-    expect(preview.assumed).toBe(false);
-    expect(preview.media).toEqual(MEDIA.ADDRESS_STANDARD);
+    expect(preview.assumed).toBe(true);
+    expect(preview.media).toBe(MEDIA.ADDRESS_STANDARD);
   });
 
   it('createPreview() falls back to DEFAULT_MEDIA with assumed=true', async () => {
@@ -120,13 +128,23 @@ describe('WebLabelWriterPrinter', () => {
     expect(preview.media).toBe(MEDIA.ADDRESS_STANDARD);
   });
 
-  it('recover() writes the error-recovery sequence and drains the status response', async () => {
+  it('recover() writes the legacy 87-byte sync-flush on a 450 device', async () => {
     const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);
     const before = device.__transfers.length;
     await printer.recover();
     expect(device.__transfers.length).toBeGreaterThan(before);
     expect(device.__transfers[before]!.data.length).toBe(87);
+  });
+
+  it('recover() writes ESC Q on a 550 device (release pending job + lock)', async () => {
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid);
+    const printer = await fromUSBDevice(device);
+    const before = device.__transfers.length;
+    await printer.recover();
+    const sent = device.__transfers[before]!.data;
+    expect(sent.length).toBe(2);
+    expect(Array.from(sent)).toEqual([0x1b, 0x51]);
   });
 });
 

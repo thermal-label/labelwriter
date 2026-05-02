@@ -1,0 +1,16 @@
+{
+  key: 'LW_TURBO',
+  name: 'LabelWriter Turbo',
+  family: 'labelwriter',
+  // DYMO part #90737 (~2001 vintage). USB PID unknown — predates the
+  // open CUPS driver. Open via serial only:
+  //   discovery.openPrinter({ serialPath: '/dev/ttyUSB0', deviceKey: 'LW_TURBO' })
+  // 203 dpi / 56 mm head — same head class as the SE450 (448 dots / 56
+  // bytes). Estimate from inch-rounding math; confirm via real hardware
+  // before promoting `support.status` past "untested".
+  transports: {
+    serial: { defaultBaud: 115200, supportedBauds: [115200] },
+  },
+  engines: [{ role: 'primary', protocol: 'lw-330', dpi: 203, headDots: 448 }],
+  support: { status: 'untested' },
+}

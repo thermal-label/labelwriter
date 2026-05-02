@@ -261,6 +261,12 @@ class per the manual). Adaptations:
   head-aligned padding; this 30-line helper is a reasonable copy
   candidate. (If we extract Option C later, this is the first
   function to move.)
+- Parameterise the print-head dot count (96 or 128). Per PDF
+  page 23, `LW_DUO_96` has a 96-dot head with bytes-per-line max
+  12; `LW_DUO_128` and `LW_450_DUO` have a 128-dot head with max
+  16. `buildDuoBytesPerLine` and `encodeDuoTapeLabel` take the
+  head size as input; clamp `bytesPerLine` to `(headDots / 8)`.
+  The adapter sources this from `engine.headDots`.
 
 ### 5.3 Tape status parser
 
@@ -278,11 +284,20 @@ Bit layout per PDF p.25:
 - Bit 2 (GE) → general error / motor stall / tape jam
 - Other bits ignored
 
-Map cassette-absent to `errors.no_media`, CJ to `errors.paper_jam`
-with a `cutter` flag (proposing a small extension to `PrinterError`
-in `@thermal-label/contracts` — the cutter-jam state is genuinely
-distinct from a paper jam because of the safety caveat the PDF
-calls out).
+Map cassette-absent to `{ code: 'no_media', ... }`, CJ to
+`{ code: 'cutter_jam', ... }`, GE to `{ code: 'printer_error', ... }`.
+No contracts change required — `PrinterError.code` is already a
+free-form string and `'cutter_jam'` is literally one of the
+worked examples in `contracts/src/status.ts:53`. The cutter-jam
+state warrants its own code (rather than collapsing into
+`paper_jam`) because of the safety caveat the PDF calls out on
+page 25: *"the cutter blade is not retracted and may present a
+very sharp, dangerous edge. Use caution when clearing any sort
+of printer jam."* That hazard warrants distinct UI treatment.
+
+Per PDF page 25, the parser only interprets byte 0; bytes 1-7 are
+reserved-for-future-use on current Duo firmware. Capture all 8
+bytes in `rawBytes` for forward compat, but only branch on byte 0.
 
 ### 5.4 Tape media descriptors
 
@@ -368,26 +383,40 @@ Twin).
 
 ## 6. Open questions to resolve before coding
 
-1. **Composite USB interface numbers**: the data files assume
-   `bInterfaceNumber: 0` (label) / `1` (tape). Confirm on real
-   hardware via `lsusb -v` before the protocol module ships; if
-   reversed, only the JSON5 entries need editing.
-2. **Status byte 0 only?** PDF says "the LabelWriter Duo printer
-   only uses the first byte" out of the 8-byte status response,
-   but bytes 2-7 are reserved. Worth a short empirical check —
-   if newer Duo firmware populates additional bytes, we should
-   surface them in `rawBytes` from day one.
-3. **Cut vs feed semantics**: the manual says ESC E **must** be
-   sent at the end of every label. There is no "feed without
-   cut" command on the tape side. That implies one tape job =
-   one cut. Confirm — if there's a way to chain multiple labels
-   between cuts via dot-line skips, the encoder needs to model
-   it, and the LabelManager's `FEED_MARGIN_PX = 57` comment
-   might be transferable.
-4. **Tape colour palette**: the 13-entry palette in the PDF is
-   for *tape* identification (what's loaded), not for *ink*
-   selection — D1 tape ink is determined by the cassette. We
-   should store the palette index on the media descriptor, not
-   pass it as a print option, and the `Set Tape Type` command
-   should be derived from `media.tapeColour` rather than
-   exposed to callers.
+1. **Composite USB interface numbers** — *unresolved*. The PDF
+   (page 14) confirms the Duo "is implemented as a Composite USB
+   interface" and "will enumerate twice, as two different
+   printers", but assigns no `bInterfaceNumber` to either side.
+   The data files assume `bInterfaceNumber: 0` (label) / `1`
+   (tape). Confirm on real hardware via `lsusb -v` before the
+   protocol module ships; if reversed, only the JSON5 entries
+   need editing. Note also that there is only one PID (`0x0023`)
+   for the Duo — both interfaces share `vid:pid`, so transport-
+   layer disambiguation must happen on `bInterfaceNumber`, not
+   PID.
+2. ~~**Status byte 0 only?**~~ — *resolved by PDF page 25*: "the
+   LabelWriter Duo printer only uses the first byte" of the
+   8-byte status response, and "bytes 2-7 are reserved for
+   future use". The status parser only needs to interpret
+   byte 0; capture bytes 1-7 in `rawBytes` for forward compat
+   but do not parse them.
+3. ~~**Cut vs feed semantics**~~ — *resolved by PDF page 25*:
+   `<esc> E` "must be sent at the end of every label". No
+   feed-without-cut command exists on the tape side. One tape
+   job = one cut. The encoder does **not** need to model
+   chained labels with dot-line skips between cuts.
+4. **Tape colour palette**: the 13-entry palette in the PDF
+   (page 24) is for *tape* identification (what's loaded), not
+   for *ink* selection — D1 tape ink is determined by the
+   cassette. We should store the palette index on the media
+   descriptor, not pass it as a print option, and the `Set Tape
+   Type` command should be derived from `media.tapeColour`
+   rather than exposed to callers.
+5. **96-dot vs 128-dot Duo variants**: the PDF (page 23) and
+   the existing registry both confirm two Duo head sizes —
+   96-dot (`LW_DUO_96`) with bytes-per-line max of 12, and
+   128-dot (`LW_DUO_128` / `LW_450_DUO`) with max of 16. The
+   `buildDuoBytesPerLine` helper and `encodeDuoTapeLabel` must
+   take the head size as a parameter (not hard-code 16) and
+   clamp accordingly. Sourced from `engine.headDots` at the
+   adapter layer.

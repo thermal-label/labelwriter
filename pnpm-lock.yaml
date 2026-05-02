@@ -38,9 +38,6 @@ importers:
       vitest:
         specifier: ^2.0.0
         version: 2.1.9(@types/node@22.19.17)(jsdom@26.1.0)
-      yaml:
-        specifier: ^2.8.3
-        version: 2.8.3
 
   packages/core:
     dependencies:
@@ -48,8 +45,8 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       '@thermal-label/contracts':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.1
+        version: 0.3.1
     devDependencies:
       '@mbtech-nl/tsconfig':
         specifier: ^1.0.1
@@ -73,14 +70,14 @@ importers:
   packages/node:
     dependencies:
       '@thermal-label/contracts':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.1
+        version: 0.3.1
       '@thermal-label/labelwriter-core':
         specifier: workspace:*
         version: link:../core
       '@thermal-label/transport':
-        specifier: ^0.2.1
-        version: 0.2.1(usb@2.17.0)
+        specifier: ^0.3.0
+        version: 0.3.0(usb@2.17.0)
       usb:
         specifier: ^2.0.0
         version: 2.17.0
@@ -108,8 +105,8 @@ importers:
   packages/web:
     dependencies:
       '@thermal-label/contracts':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.1
+        version: 0.3.1
       '@thermal-label/labelwriter-core':
         specifier: workspace:*
         version: link:../core
@@ -756,11 +753,26 @@ packages:
   '@thermal-label/contracts@0.1.2':
     resolution: {integrity: sha512-p3Fj9PjGrTdCtNoMHcQNbCSfVffFd0E42okIAjIyoCNRsTM+L2qR7AAVIL6EX33EFxV7A7F5ziGpNZxz9yNU7w==}
 
-  '@thermal-label/contracts@0.3.0':
-    resolution: {integrity: sha512-6aopYfVbDiOBRLv3SdE9ygBK/abftGjecmL0cwn4zcWNT54NpzSZV8fIyABzL5oPs8LBK5az8Bunkto5jfr3TA==}
+  '@thermal-label/contracts@0.2.0':
+    resolution: {integrity: sha512-EqruuizBc8bgZwthZYir9f4t9YWWajMncTOn2+qkWPyxq/z3vU8giIcB4oYfQy7KYcltK0t8L5HKQJrCyvO5zw==}
+
+  '@thermal-label/contracts@0.3.1':
+    resolution: {integrity: sha512-cssi68nEG2chXTjkI1r9sHMLeK9sW6cHJiNWYuF9hwsgHglPSIEa+pUchCEGzZC/KOAsvirD2H1+IDJiSKyqJg==}
 
   '@thermal-label/transport@0.2.1':
     resolution: {integrity: sha512-2rHBfDXQMA+9P9tpCcG7WqlbYrrqMxar4wdYL9ao3LMXla3R/iyeztuorm5JR3w41yRp4CSXOEKnTfBL1PE90A==}
+    engines: {node: '>=24.0.0'}
+    peerDependencies:
+      serialport: '>=12.0.0'
+      usb: '>=2.14.0'
+    peerDependenciesMeta:
+      serialport:
+        optional: true
+      usb:
+        optional: true
+
+  '@thermal-label/transport@0.3.0':
+    resolution: {integrity: sha512-SU7NXxMr3/97fR8IHpnggD2yvnf7imLTzobfggGVAip3qdsGLSGkZb8A7wPfiAB7OavfLKDJ/PmyYNckf4VZZQ==}
     engines: {node: '>=24.0.0'}
     peerDependencies:
       serialport: '>=12.0.0'
@@ -2824,13 +2836,23 @@ snapshots:
     dependencies:
       '@mbtech-nl/bitmap': 1.2.1
 
-  '@thermal-label/contracts@0.3.0':
+  '@thermal-label/contracts@0.2.0':
+    dependencies:
+      '@mbtech-nl/bitmap': 1.2.1
+
+  '@thermal-label/contracts@0.3.1':
     dependencies:
       '@mbtech-nl/bitmap': 1.2.1
 
   '@thermal-label/transport@0.2.1(usb@2.17.0)':
     dependencies:
       '@thermal-label/contracts': 0.1.2
+    optionalDependencies:
+      usb: 2.17.0
+
+  '@thermal-label/transport@0.3.0(usb@2.17.0)':
+    dependencies:
+      '@thermal-label/contracts': 0.2.0
     optionalDependencies:
       usb: 2.17.0
 

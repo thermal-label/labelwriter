@@ -37,6 +37,11 @@ stream — the printer simply ignores it.
 If you see a print job sent without errors but no label comes out, check that you are using genuine
 Dymo labels and that the NFC tag on the roll is intact.
 
+**Hardware workaround (unofficial):** the [free-dmo-stm32](https://github.com/free-dmo/free-dmo-stm32)
+project replaces the printer's STM32 firmware to remove the NFC check. This is a third-party
+firmware mod — flashing the wrong build or interrupting the flash can brick the printer, and it
+voids your warranty. Not endorsed by this project; linked here only because users keep asking.
+
 ## Protocol Generations
 
 ### 450 Series Protocol

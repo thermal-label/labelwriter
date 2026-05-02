@@ -23,8 +23,9 @@
       role: 'tape',
       protocol: 'd1-tape',
       dpi: 180,
-      // 128-dot head per the LW Duo PDF Appendix B.
-      headDots: 128,
+      // 96-dot tape head — bytes-per-line max 12 per LW 450 Series
+      // Tech Ref Appendix B p.23.
+      headDots: 96,
       mediaCompatibility: ['d1'],
       capabilities: { autocut: true },
       bind: { usb: { bInterfaceNumber: 1 } },

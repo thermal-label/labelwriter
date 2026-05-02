@@ -1,0 +1,16 @@
+{
+  key: 'LW_EL40',
+  name: 'LabelWriter EL40',
+  family: 'labelwriter',
+  // DYMO part #90644 (~2001 vintage). USB PID unknown — predates the
+  // open CUPS driver. Lower baud than the rest of the family. Open via
+  // serial only:
+  //   discovery.openPrinter({ serialPath: '/dev/ttyUSB0', deviceKey: 'LW_EL40' })
+  // Narrow head: 203 dpi / 40 mm = ~320 dots / 40 bytes (estimate from
+  // inch-rounding math; confirm against real hardware).
+  transports: {
+    serial: { defaultBaud: 19200, supportedBauds: [19200] },
+  },
+  engines: [{ role: 'primary', protocol: 'lw-330', dpi: 203, headDots: 320 }],
+  support: { status: 'untested' },
+}

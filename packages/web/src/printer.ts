@@ -2,15 +2,23 @@ import {
   DEFAULT_MEDIA,
   DEVICES,
   ROTATE_DIRECTION,
-  STATUS_REQUEST,
+  SKU_INFO_BYTE_COUNT,
+  build550GetSku,
+  build550Recovery,
+  build550StatusRequest,
+  PRINT_STATUS_LOCK_NOT_GRANTED,
+  STATUS_BYTE_COUNT_550,
   buildErrorRecovery,
+  buildStatusRequest,
   createPreviewOffline,
   encodeLabel,
   findDevice,
   isEngineDrivable,
+  parseSkuInfo,
   parseStatus,
   pickRotation,
   renderImage,
+  skuInfoToMedia,
   statusByteCount,
   type DeviceEntry,
   type LabelWriterEngineHandle,
@@ -22,9 +30,10 @@ import {
   type PrinterAdapter,
   type PrinterStatus,
   type RawImageData,
+  type SkuInfo,
   type Transport,
 } from '@thermal-label/labelwriter-core';
-import { MediaNotSpecifiedError } from '@thermal-label/contracts';
+import { MediaNotSpecifiedError, UnsupportedOperationError } from '@thermal-label/contracts';
 import { WebUsbTransport } from '@thermal-label/transport/web';
 
 export interface RequestOptions {
@@ -65,7 +74,27 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     media?: MediaDescriptor,
     options?: LabelWriterPrintOptions,
   ): Promise<void> {
-    const resolvedMedia = (media ?? this.lastStatus?.detectedMedia) as LabelWriterMedia | undefined;
+    // 550 family: acquire the print lock and check printer health
+    // before sending the job. See the node driver for the full
+    // contract. Released by `ESC Q` in the job trailer.
+    if (this.device.engines[0]?.protocol === 'lw-550') {
+      await this.acquire550Lock();
+    }
+
+    let resolvedMedia = (media ?? this.lastStatus?.detectedMedia) as LabelWriterMedia | undefined;
+
+    // 550 status doesn't carry media dimensions — those live in the
+    // NFC SKU dump (ESC U). Best-effort fetch when no explicit media
+    // was passed and no prior `getMedia()` populated the cache.
+    if (!resolvedMedia && this.device.engines[0]?.protocol === 'lw-550') {
+      try {
+        const sku = await this.getMedia();
+        if (sku) resolvedMedia = skuInfoToMedia(sku);
+      } catch {
+        // Best-effort — fall through to MediaNotSpecifiedError below.
+      }
+    }
+
     if (!resolvedMedia) {
       throw new MediaNotSpecifiedError();
     }
@@ -73,6 +102,63 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     const bitmap = renderImage(image, { dither: true, rotate });
     const bytes = encodeLabel(this.device, bitmap, options);
     await this.transport.write(bytes);
+  }
+
+  private async acquire550Lock(): Promise<void> {
+    await this.transport.write(build550StatusRequest(1));
+    const bytes = await this.transport.read(STATUS_BYTE_COUNT_550);
+    const status = parseStatus(this.device, bytes);
+    if (bytes[0] === PRINT_STATUS_LOCK_NOT_GRANTED) {
+      throw new Error(
+        `Print lock on ${this.device.key} is held by another host. ` +
+          `Wait for the active job to finish, then retry.`,
+      );
+    }
+    if (this.lastStatus?.detectedMedia && !status.detectedMedia) {
+      this.lastStatus = { ...status, detectedMedia: this.lastStatus.detectedMedia };
+    } else {
+      this.lastStatus = status;
+    }
+    const firstError = status.errors[0];
+    if (firstError) {
+      throw new Error(
+        `Cannot print on ${this.device.key}: ${firstError.message} (${firstError.code})`,
+      );
+    }
+  }
+
+  /**
+   * Fetch SKU info from the loaded consumable's NFC tag (550 only).
+   * Mirror of the node driver's `getMedia()` — see that JSDoc for the
+   * full contract.
+   */
+  async getMedia(): Promise<SkuInfo | undefined> {
+    if (this.device.engines[0]?.protocol !== 'lw-550') {
+      throw new UnsupportedOperationError(
+        `getMedia on ${this.device.key}`,
+        `ESC U (Get SKU Information) is only supported on lw-550 devices.`,
+      );
+    }
+    await this.transport.write(build550GetSku());
+    const bytes = await this.transport.read(SKU_INFO_BYTE_COUNT);
+    if (bytes.length < SKU_INFO_BYTE_COUNT) return undefined;
+    try {
+      const sku = parseSkuInfo(bytes);
+      if (sku.magic !== 0xcab6) return undefined;
+      const detected = skuInfoToMedia(sku);
+      this.lastStatus = {
+        ...(this.lastStatus ?? {
+          ready: true,
+          mediaLoaded: true,
+          errors: [],
+          rawBytes: new Uint8Array(0),
+        }),
+        detectedMedia: detected,
+      };
+      return sku;
+    } catch {
+      return undefined;
+    }
   }
 
   createPreview(image: RawImageData, options?: PreviewOptions): Promise<PreviewResult> {
@@ -87,20 +173,34 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
   }
 
   async getStatus(): Promise<PrinterStatus> {
-    await this.transport.write(STATUS_REQUEST);
+    await this.transport.write(buildStatusRequest(this.device));
     const bytes = await this.transport.read(statusByteCount(this.device));
     const status = parseStatus(this.device, bytes);
-    this.lastStatus = status;
-    return status;
+    if (this.lastStatus?.detectedMedia && !status.detectedMedia) {
+      this.lastStatus = { ...status, detectedMedia: this.lastStatus.detectedMedia };
+    } else {
+      this.lastStatus = status;
+    }
+    return this.lastStatus;
   }
 
   async close(): Promise<void> {
     await this.transport.close();
   }
 
-  /** Driver-specific recovery sequence — mirror of the node driver. */
+  /**
+   * Driver-specific recovery sequence — mirror of the node driver.
+   *
+   * 550 family sends `ESC Q` (release pending job + host lock); 450
+   * family sends the legacy 85×ESC + ESC A sync-flush. Drains the
+   * device-appropriate status response in either case.
+   */
   async recover(): Promise<void> {
-    await this.transport.write(buildErrorRecovery());
+    if (this.device.engines[0]?.protocol === 'lw-550') {
+      await this.transport.write(build550Recovery());
+    } else {
+      await this.transport.write(buildErrorRecovery());
+    }
     await this.transport.read(statusByteCount(this.device));
   }
 }

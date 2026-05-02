@@ -1,0 +1,17 @@
+{
+  key: 'LW_EL60',
+  name: 'LabelWriter EL60',
+  family: 'labelwriter',
+  // DYMO part #90645 (~2001 vintage). USB PID unknown — predates the
+  // open CUPS driver. Lower baud than the rest of the family. Open via
+  // serial only:
+  //   discovery.openPrinter({ serialPath: '/dev/ttyUSB0', deviceKey: 'LW_EL60' })
+  // 203 dpi / 56 mm head — same head class as the SE450 and LW Turbo
+  // (448 dots / 56 bytes). Estimate from inch-rounding math; confirm
+  // against real hardware.
+  transports: {
+    serial: { defaultBaud: 19200, supportedBauds: [19200] },
+  },
+  engines: [{ role: 'primary', protocol: 'lw-330', dpi: 203, headDots: 448 }],
+  support: { status: 'untested' },
+}

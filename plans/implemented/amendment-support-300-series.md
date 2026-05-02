@@ -8,15 +8,18 @@
 > The work is mostly schema, descriptors, transport plumbing, and
 > hardware-confirmation steps — not new protocol code.
 >
-> **Schema work + first three descriptors landed via
-> [migrate-to-contracts-shape.md](./migrate-to-contracts-shape.md).**
-> `LW_300`, `LW_310`, and `LW_330` are now in the registry with
-> `transports.serial.defaultBaud: 115200` and `engines[0].dpi: 300`.
-> The SE450's head metrics are corrected (448 dots / 203 dpi) and
-> `transports.serial` added. Residual work: the four pre-CUPS-driver
-> models with unknown PIDs (`LW_TURBO`, `LW_330_TURBO`, `LW_EL40`,
-> `LW_EL60`), the serial-discovery wiring in the node driver
-> (§4.5 below), and the host-side DPI scaling audit (§4.4).
+> **Implemented.** Schema + first three descriptors landed via
+> [migrate-to-contracts-shape.md](./migrate-to-contracts-shape.md).
+> The four pre-CUPS-driver models with unknown PIDs (`LW_TURBO`,
+> `LW_330_TURBO`, `LW_EL40`, `LW_EL60`) are now in the registry as
+> **serial-only** descriptors (no `transports.usb` entry). The DPI
+> scaling audit (§4.4) found nothing to fix — the driver doesn't do
+> mm→dot conversion, the bitmap height is sent through verbatim.
+> Serial discovery wiring (§4.5) is in `discovery.ts` behind
+> `openPrinter({ serialPath, deviceKey })`; consumes `OpenOptions.deviceKey`
+> from `@thermal-label/contracts@^0.3.1`. Open community-driven
+> follow-up: confirm USB PIDs for the four pre-CUPS models so they
+> can also be opened over USB.
 
 ---
 
@@ -190,18 +193,21 @@ the 203 | 300 union the original draft proposed — accepts both).
 in use across the registry; no `LabelWriterDevice` interface
 extension is needed.
 
-### 4.3 Add 300-series descriptors — PARTIALLY DONE
+### 4.3 Add 300-series descriptors — DONE
 
-Three confirmed-PID descriptors now live in
-`packages/core/data/devices/`: `LW_300.json5`, `LW_310.json5`,
-`LW_330.json5`. The four pre-CUPS-driver models below remain
-unimplemented because their PIDs are still unknown — the
-`compile-data.mjs` validator rejects entries without a real
-`transports.usb.pid`, so a placeholder `0x0000` would fail the build.
+All seven descriptors live in `packages/core/data/devices/`:
 
-When community datapoints land (PR with `lsusb -v` output), add the
-matching JSON5 file under `data/devices/` using the head metrics from
-the table below.
+- **USB+serial**: `LW_300.json5` (PID `0x0009`), `LW_310.json5` (PID
+  `0x0009`, shares with 300), `LW_330.json5` (PID `0x0007`).
+- **Serial-only**: `LW_330_TURBO.json5`, `LW_TURBO.json5`,
+  `LW_EL40.json5`, `LW_EL60.json5`. PIDs unknown; the validator
+  accepts entries without `transports.usb` (re-checked
+  `compile-data.mjs:48` — the USB-field constraint is `if (usb !==
+  undefined)`, not "must be present"). When a `lsusb -v` datapoint
+  arrives, add the `usb` block to the same entry — no code touches
+  needed.
+
+Reference values used:
 
 ```ts
 LW_300:        { pid: 0x0009, headDots: 464, bytesPerRow: 58, dpi: 300, serialBaud: 115200, ... }, // PID ≈, head ✓
@@ -237,47 +243,42 @@ Notes from the research:
 `transports: ['usb', 'webusb', 'serial']` for all seven
 (300/310/330/330 Turbo/Turbo/EL40/EL60). `vid: 0x0922` everywhere.
 
-### 4.4 Encoder adjustments
+### 4.4 Encoder adjustments — DONE (no fix needed)
 
-Audit `encodeLabel` in `protocol.ts` for any implicit-300-dpi
-assumptions. There shouldn't be any — the encoder is byte-for-byte
-neutral on DPI; the rasterizer above it owns dimensional scaling.
-But verify: `buildSetLabelLength` takes `dots` (300ths-of-an-inch
-on the 450 manual; the SE450 manual confirms it's "dot lines" and
-the dot-line resolution is whatever the head's native DPI is).
-On a 203-dpi head, dots-per-inch in the feed direction is 203, so
-the same `n1 n2` value means a different physical length. The
-driver layer (`LabelWriterPrinter.print`) needs to convert
-`media.heightMm` → `dots` using `device.dpi`, not a hard-coded 300.
+Audit found nothing to change. The driver does **not** convert
+`media.heightMm` → dots — it sends `bitmap.heightPx` straight
+through to `buildSetLabelLength`, treating the input image's pixel
+height as the dot-line count. Caller is responsible for sizing the
+input image to the right physical length for the device's native
+DPI. `engine.dpi` is informational metadata used by external
+consumers (docs site, future preview-with-physical-dims feature),
+not a runtime branching key.
 
-`packages/core/src/preview.ts` likely has the same scaling
-assumption — sweep it.
+`preview.ts` and `orientation.ts` likewise have no hardcoded `300`.
+A defensive regression test (`protocol.test.ts` "ESC D byte matches
+headDots / 8") confirms the encoder produces `bytesPerLine` from
+the descriptor's `headDots` for every 300-series + SE450 entry.
 
-### 4.5 Driver — wire serial into discovery
+### 4.5 Driver — wire serial into discovery — DONE
 
-`packages/node/src/discovery.ts`:
+`packages/node/src/discovery.ts` gained an `openSerial()` branch:
 
-- `listPrinters()` keeps walking USB, no change in shape.
-- `openPrinter()` gains a serial branch:
-  ```ts
-  if (options.serialPath !== undefined) {
-    const transport = await SerialTransport.open(options.serialPath, {
-      baudRate: options.baudRate ?? descriptor.serialBaud ?? 115200,
-      ...rs232Defaults, // 8 data bits, no parity, 1 stop, hardware flow
-    });
-    return new LabelWriterPrinter(descriptor, transport, 'serial');
-  }
-  ```
-  The caller has to pass `pid` (or `name`) as a hint, since serial
-  has no enumeration. If they pass nothing, default to `LW_330`
-  (the most common surviving 300-series model) with a console
-  warning, OR throw — preference: throw, force the caller to be
-  explicit. The error message should suggest the descriptor keys
-  and document why ("RS-232 has no enumeration; pass `model:` to
-  declare which descriptor to use").
-- `OpenOptions` (in `@thermal-label/contracts`) needs
-  `serialPath?` and `baudRate?` fields. This is a contracts-level
-  change but a strictly additive one.
+- `listPrinters()` unchanged — RS-232 has no enumeration story.
+- `openPrinter({ serialPath, deviceKey, baudRate? })` resolves the
+  descriptor from `deviceKey`, falls back to
+  `descriptor.transports.serial.defaultBaud` when `baudRate` is
+  omitted, opens `SerialTransport`, and constructs the printer
+  with `transportType: 'serial'`.
+- Required-field rule (per the contracts plan §3): missing
+  `deviceKey` throws with a list of the seven serial-capable
+  registry keys. Unknown `deviceKey` throws with the full key
+  list. A descriptor without `transports.serial` (e.g. `LW_4XL`)
+  also throws — opening over serial requires the descriptor to
+  declare it.
+
+`OpenOptions.serialPath`, `.baudRate`, and `.deviceKey` all live in
+`@thermal-label/contracts@^0.3.1`. The labelwriter packages pin to
+that version.
 
 ### 4.6 PID discovery
 
@@ -315,20 +316,19 @@ them on USB, but the explicit `openPrinter({ serialPath, model:
 'LW_EL60' })` path works regardless. **The serial path is the
 robustness lever** — it works without USB enumeration.
 
-### 4.7 Tests
+### 4.7 Tests — DONE
 
-- `devices.test.ts` — assert each new descriptor has correct
-  `dpi`, `headDots`, `bytesPerRow`, `serialBaud` values; assert
-  `LW_SE450` has the corrected head metrics.
-- `protocol.test.ts` — golden-bytes test for a 56-byte (`ESC D 56`)
-  emission to verify the encoder respects narrow `bytesPerRow`.
-  Also assert that no `ESC G` or `ESC q` ever appears in encoder
-  output for these descriptors (per SE450 tech ref — the firmware
-  rejects them on this family).
-- `discovery.test.ts` — mock a `SerialTransport.open` and assert
-  `openPrinter({ serialPath: '/dev/ttyUSB0', model: 'LW_330' })`
-  routes correctly. Mock `usb.getDeviceList()` to return the (yet
-  unknown) PIDs once they land.
+- `devices.test.ts` — head/dpi/baud assertions for the 300-series
+  group, serial-only invariant for the four pre-CUPS models.
+- `protocol.test.ts` — for each of the eight single-roll keys
+  (`LW_300`, `LW_310`, `LW_330`, `LW_330_TURBO`, `LW_TURBO`,
+  `LW_EL40`, `LW_EL60`, `LW_SE450`): asserts no `ESC G` (`0x1b
+  0x47`), no `ESC q` (`0x1b 0x71`), and `ESC D` byte equals
+  `headDots / 8` (covers narrow heads at 40 / 56 / 58 bytes).
+- `discovery.test.ts` — `serialOpen` mock; covers default-baud
+  fallback, explicit-baud override, missing-`deviceKey` error,
+  unknown-`deviceKey` error, descriptor-has-no-serial error, and
+  the serial-only-descriptor open path.
 
 ### 4.8 Documentation
 
@@ -385,8 +385,10 @@ the `// unconfirmed` comment in step 4.1.
 Status after research:
 - ✓ LW 330 = `0x0007`, LW 310/300 = `0x0009` (linux-usb.org).
 - ✗ LW 330 Turbo, LW Turbo (90737), EL40, EL60: still unknown.
-  Not blocking for the serial path — the user opens by
-  `serialPath` + model name.
+  Not blocking — the descriptors are in the registry as
+  serial-only, and `openPrinter({ serialPath, deviceKey })` works
+  today. When a community `lsusb -v` datapoint lands, add the
+  `usb` block to the matching JSON5 file; no code touches needed.
 
 ### 6.3 Exact narrow-head dot counts — RESOLVED for the
 common cases

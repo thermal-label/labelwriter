@@ -36,12 +36,12 @@ export type { DeviceEntry };
  * after parsing.
  */
 export function findDevice(vid: number, pid: number): DeviceEntry | undefined {
-  // Every entry in REGISTRY happens to declare a USB transport today,
-  // but the contracts shape allows network-only devices, so the guard
-  // stays for forward-compatibility.
+  // Some entries are serial-only (pre-CUPS-driver-era models with
+  // unknown USB PIDs) and have no `usb` member on `transports`. The
+  // generated type is a discriminated union; cast to the contracts
+  // shape (where `usb` is optional) for uniform access.
   return REGISTRY.devices.find(d => {
-    const usb = d.transports.usb;
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- see comment above
+    const usb = (d.transports as { usb?: { vid: string; pid: string } }).usb;
     if (!usb) return false;
     return parseHex(usb.vid) === vid && parseHex(usb.pid) === pid;
   });

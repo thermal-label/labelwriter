@@ -4,6 +4,10 @@
   family: 'labelwriter',
   transports: {
     usb: { vid: '0x0922', pid: '0x002a' },
+    // mDNS instance-name pattern per LW 550 Tech Ref p.10:
+    //   DYMOLW5XL<6-hex MAC Address>E
+    // See LW_550_TURBO.json5 for the rationale on why this lives in
+    // a comment rather than a structured field today.
     tcp: { port: 9100 },
   },
   engines: [

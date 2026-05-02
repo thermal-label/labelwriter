@@ -38,21 +38,67 @@ export {
   buildShortFormFeed,
   buildSelectRoll,
   buildJobHeader,
-  buildStatusRequest,
   buildErrorRecovery,
   buildRasterRow,
   encodeLabel,
   ROLL_BYTE_AUTO,
 } from './protocol.js';
-export { STATUS_REQUEST, parseStatus, statusByteCount } from './status.js';
+export { STATUS_REQUEST, buildStatusRequest, parseStatus, statusByteCount } from './status.js';
+export {
+  build550JobHeader,
+  build550Mode,
+  build550Density,
+  build550ResetDensity,
+  build550ContentType,
+  build550LabelIndex,
+  build550LabelHeader,
+  build550ShortFormFeed,
+  build550FormFeed,
+  build550EndJob,
+  build550StatusRequest,
+  build550GetSku,
+  build550GetVersion,
+  build550Restart,
+  build550Recovery,
+  build550FactoryReset,
+  build550SetLabelCount,
+  PRINT_STATUS_LOCK_NOT_GRANTED,
+  density550Percent,
+  encode550Label,
+  parseEngineVersion,
+  parseSkuInfo,
+  skuInfoToMedia,
+  withDetectedMedia,
+  ENGINE_VERSION_BYTE_COUNT,
+  SKU_INFO_BYTE_COUNT,
+  STATUS_BYTE_COUNT_550,
+} from './protocol-550.js';
+export type { EngineVersion, SkuInfo } from './protocol-550.js';
 export { createPreviewOffline } from './preview.js';
 export type {
   Density,
+  DuoTapeWidth,
+  LabelWriterAnyMedia,
   LabelWriterDevice,
   LabelWriterEngineCapabilities,
   LabelWriterEngineHandle,
   LabelWriterMedia,
   LabelWriterPrintOptions,
+  LabelWriterTapeMedia,
 } from './types.js';
 
 export { isEngineDrivable } from './protocol.js';
+
+export {
+  buildDuoReset,
+  buildDuoSetTapeType,
+  buildDuoBytesPerLine,
+  buildDuoCutTape,
+  buildDuoStatusRequest,
+  buildDuoRasterRow,
+  encodeDuoTapeLabel,
+  isDuoTapeEngine,
+} from './duo-tape.js';
+export type { DuoTapePrintOptions } from './duo-tape.js';
+export { DUO_TAPE_STATUS_BYTE_COUNT, parseDuoTapeStatus } from './duo-tape-status.js';
+export { DUO_TAPE_MEDIA, findTapeMediaByWidth } from './duo-tape-media.js';

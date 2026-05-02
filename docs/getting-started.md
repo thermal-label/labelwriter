@@ -112,10 +112,15 @@ list. The 450 series and older models do not have this restriction.
 
 ### Can it be bypassed?
 
-**No.** The NFC check is performed entirely within the printer's own
-firmware, independent of the host software. There is no command or
-sequence that disables it. Using genuine Dymo-certified label rolls is
-the only solution.
+**Not from software.** The NFC check is performed entirely within the
+printer's own firmware, independent of the host software. There is no
+command or sequence that disables it. Using genuine Dymo-certified
+label rolls is the supported solution.
+
+A third-party firmware mod — [free-dmo-stm32](https://github.com/free-dmo/free-dmo-stm32) —
+replaces the printer's STM32 firmware to remove the NFC check.
+**Warning:** flashing custom firmware can brick the printer and voids
+your warranty. Not endorsed by this project.
 
 ### What does the error look like?
 

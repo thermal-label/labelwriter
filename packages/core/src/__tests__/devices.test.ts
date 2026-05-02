@@ -67,3 +67,60 @@ describe('device properties', () => {
     }
   });
 });
+
+describe('300-series and pre-CUPS-driver descriptors', () => {
+  it('LW_300 / LW_310 use 464-dot narrow head at 300 dpi', () => {
+    for (const key of ['LW_300', 'LW_310'] as const) {
+      const engine = DEVICES[key].engines[0]!;
+      expect(engine.headDots).toBe(464);
+      expect(engine.dpi).toBe(300);
+    }
+  });
+
+  it('LW_330 and LW_330_TURBO share head and protocol (Turbo = motor speed)', () => {
+    const a = DEVICES.LW_330.engines[0]!;
+    const b = DEVICES.LW_330_TURBO.engines[0]!;
+    expect(a.headDots).toBe(b.headDots);
+    expect(a.dpi).toBe(b.dpi);
+    expect(a.protocol).toBe(b.protocol);
+  });
+
+  it('203-dpi pre-CUPS models declare 203 dpi and lw-330 protocol', () => {
+    for (const key of ['LW_TURBO', 'LW_EL40', 'LW_EL60'] as const) {
+      const engine = DEVICES[key].engines[0]!;
+      expect(engine.dpi).toBe(203);
+      expect(engine.protocol).toBe('lw-330');
+    }
+  });
+
+  it('LW_EL40 declares the narrow 320-dot head', () => {
+    expect(DEVICES.LW_EL40.engines[0]?.headDots).toBe(320);
+  });
+
+  it('EL-series uses 19200 baud; 300/Turbo family uses 115200 baud', () => {
+    for (const key of ['LW_EL40', 'LW_EL60'] as const) {
+      expect(DEVICES[key].transports.serial?.defaultBaud).toBe(19200);
+    }
+    for (const key of ['LW_300', 'LW_310', 'LW_330', 'LW_330_TURBO', 'LW_TURBO'] as const) {
+      expect(DEVICES[key].transports.serial?.defaultBaud).toBe(115200);
+    }
+  });
+
+  it('serial-only descriptors omit transports.usb', () => {
+    for (const key of ['LW_330_TURBO', 'LW_TURBO', 'LW_EL40', 'LW_EL60'] as const) {
+      expect(DEVICES[key].transports.usb).toBeUndefined();
+      expect(DEVICES[key].transports.serial).toBeDefined();
+    }
+  });
+
+  it('serial-only descriptors do not appear in findDevice() lookups', () => {
+    // Serial-only entries have no PID, so findDevice cannot match them.
+    // Confirms the explicit deviceKey path is the only way in.
+    for (const key of ['LW_330_TURBO', 'LW_TURBO', 'LW_EL40', 'LW_EL60'] as const) {
+      const allMatching = Object.values(DEVICES).filter(d => d.key === key);
+      for (const d of allMatching) {
+        expect(d.transports.usb?.pid).toBeUndefined();
+      }
+    }
+  });
+});

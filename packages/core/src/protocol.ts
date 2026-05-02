@@ -2,6 +2,7 @@ import { padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitm
 import type { DeviceEntry, PrintEngine } from '@thermal-label/contracts';
 import { UnsupportedOperationError } from '@thermal-label/contracts';
 import type { LabelWriterPrintOptions, Density } from './types.js';
+import { encode550Label } from './protocol-550.js';
 
 /**
  * Wire byte for `ESC q 0x30` — automatic roll selection on the Twin
@@ -11,19 +12,22 @@ import type { LabelWriterPrintOptions, Density } from './types.js';
 export const ROLL_BYTE_AUTO = 0x30;
 
 /**
- * Engine protocols this encoder produces correct byte streams for.
- * `lw-330` matches `lw-450` byte-for-byte minus the `ESC G` / `ESC q`
- * commands the 300-series firmware rejects (per SE450 Tech Ref); the
- * encoder never emits those for single-engine 300-series devices.
- * `d1-tape` (Duo's tape side) requires a separate protocol module —
- * see plans/backlog/duo-tape-support.md.
+ * Engine protocols this encoder + dispatch path produces correct byte
+ * streams for. `lw-330` matches `lw-450` byte-for-byte minus the
+ * `ESC G` / `ESC q` commands the 300-series firmware rejects (per
+ * SE450 Tech Ref); the encoder never emits those for single-engine
+ * 300-series devices. `lw-550` is dispatched to `protocol-550.ts`
+ * — a fundamentally different print job structure (ESC s / ESC n /
+ * ESC D 12-byte header / ESC Q) that does not share bytes with the
+ * 450 family. `d1-tape` (Duo's tape side) is handled by `duo-tape.ts`
+ * and routed via `isDuoTapeEngine` rather than `isEngineDrivable` here.
  */
 const SUPPORTED_PROTOCOLS = new Set(['lw-330', 'lw-450', 'lw-550']);
 
 /**
- * Whether the labelwriter encoder produces a correct byte stream for
- * a given engine. Adapters use this to filter `printer.engines` down
- * to the engines a caller can usefully drive today.
+ * Whether *this module's* `encodeLabel` produces a correct byte stream
+ * for a given engine. Adapters use this together with `isDuoTapeEngine`
+ * to route engines to the right encoder (label vs tape).
  */
 export function isEngineDrivable(engine: PrintEngine): boolean {
   return SUPPORTED_PROTOCOLS.has(engine.protocol);
@@ -83,10 +87,6 @@ export function buildJobHeader(jobId: number): Uint8Array {
     (jobId >> 16) & 0xff,
     (jobId >> 24) & 0xff,
   ]);
-}
-
-export function buildStatusRequest(): Uint8Array {
-  return new Uint8Array([0x1b, 0x41]);
 }
 
 export function buildErrorRecovery(): Uint8Array {
@@ -208,21 +208,23 @@ export function encodeLabel(
   bitmap: LabelBitmap,
   options: LabelWriterPrintOptions = {},
 ): Uint8Array {
-  const { density = 'normal', mode = 'text', compress = false, copies = 1, jobId } = options;
+  const { density = 'normal', mode = 'text', compress = false, copies = 1 } = options;
 
   const { engine, selectRollByte } = resolveEngine(device, options.engine);
   assertEncoderSupports(engine, device.key);
+
+  // 550 family uses a fundamentally different job structure (job
+  // header / per-label header / job trailer), so dispatch out before
+  // the 450-shaped path.
+  if (engine.protocol === 'lw-550') {
+    return encode550Label(device, bitmap, options);
+  }
 
   const headDots = engine.headDots;
   const bytesPerRow = headDots / 8;
   const fitted = fitBitmapWidth(bitmap, headDots);
 
   const parts: Uint8Array[] = [];
-
-  if (engine.protocol === 'lw-550') {
-    const id = jobId ?? Date.now() & 0xffffffff;
-    parts.push(buildJobHeader(id));
-  }
 
   parts.push(buildReset());
   parts.push(buildSetBytesPerLine(bytesPerRow));
