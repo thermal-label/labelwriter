@@ -1,0 +1,575 @@
+{
+  "schemaVersion": 1,
+  "driver": "labelwriter",
+  "media": [
+    {
+      "key": "RETURN_ADDRESS",
+      "id": "return-address",
+      "name": "19×51mm Return Address",
+      "category": "address",
+      "widthMm": 19,
+      "heightMm": 51,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 602,
+      "skus": [
+        "30330",
+        "30578"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "ADDRESS_STANDARD",
+      "id": "address-standard",
+      "name": "89×28mm Address",
+      "category": "address",
+      "widthMm": 28,
+      "heightMm": 89,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 1051,
+      "skus": [
+        "30251",
+        "30252",
+        "30254",
+        "30320",
+        "30340"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "ADDRESS_LARGE",
+      "id": "address-large",
+      "name": "89×36mm Large Address",
+      "category": "address",
+      "widthMm": 36,
+      "heightMm": 89,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 1051,
+      "skus": [
+        "30321"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "SHIPPING_STANDARD",
+      "id": "shipping-standard",
+      "name": "102×54mm Shipping",
+      "category": "shipping",
+      "widthMm": 54,
+      "heightMm": 102,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 1205,
+      "skus": [
+        "30323"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "SHIPPING_LARGE",
+      "id": "shipping-large",
+      "name": "102×59mm Large Shipping",
+      "category": "shipping",
+      "widthMm": 59,
+      "heightMm": 102,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 1205,
+      "skus": [
+        "30256",
+        "1763982",
+        "1933088"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "SHIPPING_4X6",
+      "id": "shipping-4x6",
+      "name": "152×102mm Extra Large Shipping (4×6)",
+      "category": "shipping",
+      "widthMm": 102,
+      "heightMm": 152,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 1795,
+      "skus": [
+        "1744907",
+        "1933086"
+      ],
+      "targetModels": [
+        "lw-wide"
+      ]
+    },
+    {
+      "key": "LEVER_ARCH",
+      "id": "lever-arch",
+      "name": "190×59mm Lever Arch / Confirmation",
+      "category": "shipping",
+      "widthMm": 59,
+      "heightMm": 190,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 2244,
+      "skus": [
+        "1933087"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "FILE_FOLDER",
+      "id": "file-folder",
+      "name": "87×14mm File Folder",
+      "category": "file-folder",
+      "widthMm": 14,
+      "heightMm": 87,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 1027,
+      "skus": [
+        "30327"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "MULTI_PURPOSE_EXTRA_SMALL",
+      "id": "multi-purpose-extra-small",
+      "name": "25×13mm Extra Small (2-up)",
+      "category": "multi-purpose",
+      "widthMm": 13,
+      "heightMm": 25,
+      "type": "die-cut",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 295,
+      "skus": [
+        "30333"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "MULTI_PURPOSE_SQUARE",
+      "id": "multi-purpose-square",
+      "name": "25×25mm Square",
+      "category": "multi-purpose",
+      "widthMm": 25,
+      "heightMm": 25,
+      "type": "die-cut",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 295,
+      "skus": [
+        "30332",
+        "1933083"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "MULTI_PURPOSE_SMALL",
+      "id": "multi-purpose-small",
+      "name": "54×25mm Small",
+      "category": "multi-purpose",
+      "widthMm": 25,
+      "heightMm": 54,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 638,
+      "skus": [
+        "30336",
+        "1976411"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "MULTI_PURPOSE_MEDIUM",
+      "id": "multi-purpose-medium",
+      "name": "57×32mm Medium",
+      "category": "multi-purpose",
+      "widthMm": 32,
+      "heightMm": 57,
+      "type": "die-cut",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 673,
+      "skus": [
+        "30334",
+        "1933084"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "MULTI_PURPOSE_LARGE",
+      "id": "multi-purpose-large",
+      "name": "70×54mm Large",
+      "category": "multi-purpose",
+      "widthMm": 54,
+      "heightMm": 70,
+      "type": "die-cut",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 827,
+      "skus": [
+        "30324"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "MULTI_PURPOSE_VIDEO_TOP",
+      "id": "multi-purpose-video-top",
+      "name": "79×46mm Video Top",
+      "category": "multi-purpose",
+      "widthMm": 46,
+      "heightMm": 79,
+      "type": "die-cut",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 933,
+      "skus": [
+        "30326"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "REMOVABLE",
+      "id": "removable",
+      "name": "59×51mm Removable",
+      "category": "multi-purpose",
+      "widthMm": 51,
+      "heightMm": 59,
+      "type": "die-cut",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 697,
+      "skus": [
+        "30370"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "SHELVING",
+      "id": "shelving",
+      "name": "89×25mm Shelving",
+      "category": "multi-purpose",
+      "widthMm": 25,
+      "heightMm": 89,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 1051,
+      "skus": [
+        "1933081"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "APPOINTMENT_CARD",
+      "id": "appointment-card",
+      "name": "89×51mm Appointment / Business Card",
+      "category": "multi-purpose",
+      "widthMm": 51,
+      "heightMm": 89,
+      "type": "die-cut",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 1051,
+      "skus": [
+        "30374"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "BOOK_SPINE",
+      "id": "book-spine",
+      "name": "38×25mm Book Spine",
+      "category": "multi-purpose",
+      "widthMm": 25,
+      "heightMm": 38,
+      "type": "die-cut",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 449,
+      "skus": [
+        "30347"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "BARCODE_DYMO_FILE",
+      "id": "barcode-dymo-file",
+      "name": "64×19mm Barcode / DYMO File",
+      "category": "barcode",
+      "widthMm": 19,
+      "heightMm": 64,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 756,
+      "skus": [
+        "1933085"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "NAME_BADGE",
+      "id": "name-badge",
+      "name": "102×57mm Name Badge",
+      "category": "name-badge",
+      "widthMm": 57,
+      "heightMm": 102,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 1205,
+      "skus": [
+        "30857",
+        "30911"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "NAME_BADGE_NON_ADHESIVE",
+      "id": "name-badge-non-adhesive",
+      "name": "106×62mm Name Badge Non-Adhesive",
+      "category": "name-badge",
+      "widthMm": 62,
+      "heightMm": 106,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 1252,
+      "skus": [
+        "30856"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "PRICE_TAG",
+      "id": "price-tag",
+      "name": "24×22mm Price Tag",
+      "category": "price-tag",
+      "widthMm": 24,
+      "heightMm": 22,
+      "type": "die-cut",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 260,
+      "skus": [
+        "30373"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "PRICE_TAG_2UP",
+      "id": "price-tag-2up",
+      "name": "19×10mm Price Tag (2-up)",
+      "category": "price-tag",
+      "widthMm": 10,
+      "heightMm": 19,
+      "type": "die-cut",
+      "defaultOrientation": "horizontal",
+      "cornerRadiusMm": 3,
+      "printMargins": {
+        "leftMm": 1.5,
+        "rightMm": 1.5,
+        "topMm": 1.5,
+        "bottomMm": 1.5
+      },
+      "lengthDots": 224,
+      "skus": [
+        "30299"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    },
+    {
+      "key": "CONTINUOUS_57MM",
+      "id": "continuous-57",
+      "name": "57mm Continuous Non-Adhesive",
+      "category": "continuous",
+      "widthMm": 57,
+      "type": "continuous",
+      "skus": [
+        "30270"
+      ],
+      "targetModels": [
+        "lw"
+      ]
+    }
+  ]
+}
