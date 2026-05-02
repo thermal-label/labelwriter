@@ -14,5 +14,12 @@
   engines: [
     { role: 'primary', protocol: 'lw-450', dpi: 300, headDots: 672, mediaCompatibility: ['lw'] },
   ],
-  support: { status: 'untested' },
+  // USB-printed against on real hardware (May 2026, lever-arch SKU 99019):
+  // discovery, status read, encoder bytes accepted end-to-end, ink lays
+  // down. Marked 'partial' rather than 'verified' because the print
+  // exposed two registry-data bugs (chassis offset unmodelled, lengthDots
+  // = label-only height vs. ESC L expecting label-pitch) that affect
+  // output fidelity — see plans/backlog/chassis-offset-and-pitch-semantics.md.
+  // Promote to 'verified' once that lands.
+  support: { status: 'partial', transports: { usb: 'verified' } },
 }

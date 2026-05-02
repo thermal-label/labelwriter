@@ -128,7 +128,10 @@ export const REGISTRY = {
         }
       ],
       "support": {
-        "status": "untested"
+        "status": "partial",
+        "transports": {
+          "usb": "verified"
+        }
       }
     },
     {
