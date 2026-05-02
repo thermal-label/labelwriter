@@ -13,9 +13,9 @@ export type Density = 'light' | 'medium' | 'normal' | 'high';
  * Dymo LabelWriter device descriptor.
  *
  * Alias of the cross-driver `DeviceEntry` shape; LabelWriter entries
- * declare `family: 'labelwriter'` and use protocol tags `'lw-330'`,
- * `'lw-450'`, `'lw-550'`, or `'d1-tape'` (Duo tape engine) on each
- * `engines[]` element.
+ * declare `family: 'labelwriter'` and use protocol tags `'lw-450'`,
+ * `'lw-550'`, or `'d1-tape'` (Duo tape engine) on each `engines[]`
+ * element.
  */
 export type LabelWriterDevice = DeviceEntry;
 
@@ -167,8 +167,8 @@ export interface LabelWriterPrintOptions extends PrintOptions {
  * than the label engine (1 byte via `parseStatus`).
  *
  * Adapters expose engines whose protocol either the labelwriter
- * encoder handles (`lw-330` / `lw-450` / `lw-550`) or the duo-tape
- * encoder handles (`d1-tape`). Tape engines only appear when a tape
+ * encoder handles (`lw-450` / `lw-550`) or the duo-tape encoder
+ * handles (`d1-tape`). Tape engines only appear when a tape
  * transport is provided to the adapter — without one, the engine is
  * declared in the registry but unreachable.
  */

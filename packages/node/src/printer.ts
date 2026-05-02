@@ -322,7 +322,7 @@ export class LabelWriterPrinter implements PrinterAdapter {
    * Driver-specific escape hatch — not on `PrinterAdapter`.
    *
    * Protocol-aware:
-   * - **450 family** (`lw-330` / `lw-450`): the documented 85×ESC +
+   * - **450 family** (`lw-450`): the documented 85×ESC +
    *   ESC A sequence to flush a wedged sync state. Reads back the
    *   1-byte status response.
    * - **550 family**: `ESC Q` to release any pending job state and

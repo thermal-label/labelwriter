@@ -55,15 +55,21 @@ describe('device properties', () => {
     expect(DEVICES.LW_4XL.engines[0]?.headDots).toBe(1248);
   });
 
-  it('lw-450 / lw-550 single-roll devices use a 672-dot head', () => {
-    const skip = new Set(['LW_5XL', 'LW_4XL', 'LW_300', 'LW_310', 'LW_SE450']);
-    for (const [key, device] of Object.entries(DEVICES)) {
-      if (skip.has(key)) continue;
-      const primary = device.engines.find(e => e.role === 'primary' || e.role === 'label');
-      if (!primary) continue;
-      if (primary.protocol === 'lw-450' || primary.protocol === 'lw-550') {
-        expect(primary.headDots).toBe(672);
-      }
+  it('standard 672-dot single-roll devices declare the 672-dot head', () => {
+    const standard672 = [
+      'LW_330',
+      'LW_330_TURBO',
+      'LW_400',
+      'LW_400_TURBO',
+      'LW_450',
+      'LW_450_TURBO',
+      'LW_550',
+      'LW_550_TURBO',
+      'LW_WIRELESS',
+    ] as const;
+    for (const key of standard672) {
+      const primary = DEVICES[key].engines.find(e => e.role === 'primary' || e.role === 'label');
+      expect(primary?.headDots).toBe(672);
     }
   });
 });
@@ -85,11 +91,10 @@ describe('300-series and pre-CUPS-driver descriptors', () => {
     expect(a.protocol).toBe(b.protocol);
   });
 
-  it('203-dpi pre-CUPS models declare 203 dpi and lw-330 protocol', () => {
+  it('203-dpi pre-CUPS models declare 203 dpi', () => {
     for (const key of ['LW_TURBO', 'LW_EL40', 'LW_EL60'] as const) {
       const engine = DEVICES[key].engines[0]!;
       expect(engine.dpi).toBe(203);
-      expect(engine.protocol).toBe('lw-330');
     }
   });
 

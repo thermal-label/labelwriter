@@ -13,16 +13,24 @@ export const ROLL_BYTE_AUTO = 0x30;
 
 /**
  * Engine protocols this encoder + dispatch path produces correct byte
- * streams for. `lw-330` matches `lw-450` byte-for-byte minus the
- * `ESC G` / `ESC q` commands the 300-series firmware rejects (per
- * SE450 Tech Ref); the encoder never emits those for single-engine
- * 300-series devices. `lw-550` is dispatched to `protocol-550.ts`
- * — a fundamentally different print job structure (ESC s / ESC n /
- * ESC D 12-byte header / ESC Q) that does not share bytes with the
- * 450 family. `d1-tape` (Duo's tape side) is handled by `duo-tape.ts`
- * and routed via `isDuoTapeEngine` rather than `isEngineDrivable` here.
+ * streams for. `lw-450` covers the entire pre-CUPS / 300-series /
+ * 400-series / 450-series / EL family — the byte streams `encodeLabel`
+ * emits are accepted by all of them. The 300-series firmware is known
+ * to reject `ESC G` (short form feed) and unconditional `ESC q`
+ * (select roll); the encoder never emits either for single-engine
+ * devices, so the distinction does not surface here. If a future
+ * code path needs to emit one of those bytes selectively, model the
+ * firmware quirk as an `engine.capabilities` flag (see
+ * `LabelWriterEngineCapabilities`) rather than reintroducing a
+ * separate protocol tag.
+ *
+ * `lw-550` is dispatched to `protocol-550.ts` — a fundamentally
+ * different print job structure (ESC s / ESC n / ESC D 12-byte header
+ * / ESC Q) that does not share bytes with the 450 family. `d1-tape`
+ * (Duo's tape side) is handled by `duo-tape.ts` and routed via
+ * `isDuoTapeEngine` rather than `isEngineDrivable` here.
  */
-const SUPPORTED_PROTOCOLS = new Set(['lw-330', 'lw-450', 'lw-550']);
+const SUPPORTED_PROTOCOLS = new Set(['lw-450', 'lw-550']);
 
 /**
  * Whether *this module's* `encodeLabel` produces a correct byte stream

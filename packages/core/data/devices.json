@@ -21,7 +21,7 @@
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 300,
           "headDots": 464,
           "mediaCompatibility": [
@@ -52,7 +52,7 @@
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 300,
           "headDots": 464,
           "mediaCompatibility": [
@@ -83,7 +83,7 @@
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
           "mediaCompatibility": [
@@ -114,7 +114,7 @@
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
           "mediaCompatibility": [
@@ -547,7 +547,7 @@
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 203,
           "headDots": 320,
           "mediaCompatibility": [
@@ -574,7 +574,7 @@
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 203,
           "headDots": 448,
           "mediaCompatibility": [
@@ -633,7 +633,7 @@
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 203,
           "headDots": 448,
           "mediaCompatibility": [

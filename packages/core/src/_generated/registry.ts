@@ -26,7 +26,7 @@ export const REGISTRY = {
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 300,
           "headDots": 464,
           "mediaCompatibility": [
@@ -57,7 +57,7 @@ export const REGISTRY = {
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 300,
           "headDots": 464,
           "mediaCompatibility": [
@@ -88,7 +88,7 @@ export const REGISTRY = {
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
           "mediaCompatibility": [
@@ -119,7 +119,7 @@ export const REGISTRY = {
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
           "mediaCompatibility": [
@@ -552,7 +552,7 @@ export const REGISTRY = {
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 203,
           "headDots": 320,
           "mediaCompatibility": [
@@ -579,7 +579,7 @@ export const REGISTRY = {
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 203,
           "headDots": 448,
           "mediaCompatibility": [
@@ -638,7 +638,7 @@ export const REGISTRY = {
       "engines": [
         {
           "role": "primary",
-          "protocol": "lw-330",
+          "protocol": "lw-450",
           "dpi": 203,
           "headDots": 448,
           "mediaCompatibility": [

@@ -13,7 +13,7 @@
     serial: { defaultBaud: 19200, supportedBauds: [19200] },
   },
   engines: [
-    { role: 'primary', protocol: 'lw-330', dpi: 203, headDots: 448, mediaCompatibility: ['lw'] },
+    { role: 'primary', protocol: 'lw-450', dpi: 203, headDots: 448, mediaCompatibility: ['lw'] },
   ],
   support: { status: 'untested' },
 }
