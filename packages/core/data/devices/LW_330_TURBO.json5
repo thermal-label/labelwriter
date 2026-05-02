@@ -12,7 +12,34 @@
     serial: { defaultBaud: 115200, supportedBauds: [115200] },
   },
   engines: [
-    { role: 'primary', protocol: 'lw-450', dpi: 300, headDots: 672, mediaCompatibility: ['lw'] },
+    {
+      role: 'primary',
+      protocol: 'lw-450',
+      dpi: 300,
+      headDots: 672,
+      mediaCompatibility: ['lw'],
+      // Chassis-physical printable-area offsets, measured against
+      // 99019 lever-arch via packages/node/scripts/calibrate-330-turbo.mjs
+      // (May 2026):
+      //   - leadingEdgeOffsetMm: ~6 mm before y=0 in the buffer hits paper.
+      //   - trailingEdgeOffsetMm: ~4.2 mm at the tail can't be printed
+      //     (last visible row is ~50 dots above labelHeight at 300 dpi).
+      //   - left/right offsets: 0 — the head fires the full 672 dots,
+      //     and the 25-dot label overhang on each side (label = 59 mm
+      //     = 697 dots vs head 672) is unreachable but symmetric, not
+      //     a chassis-x offset within the buffer.
+      // Lives under `capabilities` (open index per contracts) until the
+      // chassis-offset plan promotes the fields onto PrintEngine itself
+      // — see plans/backlog/chassis-offset-and-pitch-semantics.md.
+      // Single data point so far; values may need re-baselining once a
+      // second device (Twin Turbo / 4XL / 5XL / 550) is measured.
+      capabilities: {
+        leadingEdgeOffsetMm: 6,
+        trailingEdgeOffsetMm: 4.2,
+        leftEdgeOffsetMm: 0,
+        rightEdgeOffsetMm: 0,
+      },
+    },
   ],
   // USB-printed against on real hardware (May 2026, lever-arch SKU 99019):
   // discovery, status read, encoder bytes accepted end-to-end, ink lays

@@ -221,6 +221,30 @@ Sequencing rationale: step 2 is the urgent fix (real misprints today);
 step 4 is polish that needs more data than we have. Steps 1 & 3 are
 cheap and unblock 2.
 
+## Measurements (LW 330 Turbo, 99019 lever-arch, May 2026)
+
+Captured via `packages/node/scripts/calibrate-330-turbo.mjs` — prints a
+nested-tick pattern at 10-dot intervals along all four edges; the user
+reads off the smallest visible tick to get the offset.
+
+| Edge     | Offset      | Notes                                               |
+| -------- | ----------- | --------------------------------------------------- |
+| Leading  | **~6 mm**   | ~71 dots @ 300 dpi. White strip above buffer y=0.   |
+| Trailing | **~4.2 mm** | ~50 dots. Last visible buffer row, no margin under. |
+| Left     | **0**       | Head fires the full 672 dots from x=0.              |
+| Right    | **0**       | Head fires through x=671.                           |
+
+The label-vs-head-width difference (59 mm label vs 56.9 mm head) shows
+up as a ~12-dot symmetric un-reachable strip on each side of the
+_physical label_, but that's geometry, not a chassis-x offset within
+the printable buffer.
+
+Stashed in `LW_330_TURBO.json5` under `engines[].capabilities` as
+`leadingEdgeOffsetMm` / `trailingEdgeOffsetMm` / `leftEdgeOffsetMm` /
+`rightEdgeOffsetMm`. The encoder doesn't read these yet; once §3 of
+this plan lands the fields can either stay under capabilities or
+graduate to top-level engine fields per a contracts shape change.
+
 ## Open questions
 
 - **Is the trailing-edge offset symmetrical with the leading-edge

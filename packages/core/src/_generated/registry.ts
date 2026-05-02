@@ -124,7 +124,13 @@ export const REGISTRY = {
           "headDots": 672,
           "mediaCompatibility": [
             "lw"
-          ]
+          ],
+          "capabilities": {
+            "leadingEdgeOffsetMm": 6,
+            "trailingEdgeOffsetMm": 4.2,
+            "leftEdgeOffsetMm": 0,
+            "rightEdgeOffsetMm": 0
+          }
         }
       ],
       "support": {
