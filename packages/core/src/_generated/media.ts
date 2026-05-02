@@ -518,7 +518,7 @@ export const MEDIA = {
     ],
     "category": "cartridge",
     "tapeWidthMm": 12,
-    "tapeColour": 0,
+    "tapeColour": 4,
     "targetModels": [
       "d1"
     ]
@@ -556,7 +556,7 @@ export const MEDIA = {
     ],
     "category": "cartridge",
     "tapeWidthMm": 12,
-    "tapeColour": 0,
+    "tapeColour": 6,
     "targetModels": [
       "d1"
     ]
@@ -575,7 +575,7 @@ export const MEDIA = {
     ],
     "category": "cartridge",
     "tapeWidthMm": 12,
-    "tapeColour": 0,
+    "tapeColour": 2,
     "targetModels": [
       "d1"
     ]
@@ -594,7 +594,7 @@ export const MEDIA = {
     ],
     "category": "cartridge",
     "tapeWidthMm": 12,
-    "tapeColour": 0,
+    "tapeColour": 9,
     "targetModels": [
       "d1"
     ]
@@ -613,7 +613,7 @@ export const MEDIA = {
     ],
     "category": "cartridge",
     "tapeWidthMm": 12,
-    "tapeColour": 0,
+    "tapeColour": 10,
     "targetModels": [
       "d1"
     ]
@@ -631,7 +631,7 @@ export const MEDIA = {
     ],
     "category": "cartridge",
     "tapeWidthMm": 12,
-    "tapeColour": 0,
+    "tapeColour": 11,
     "targetModels": [
       "d1"
     ]
@@ -725,7 +725,7 @@ export const MEDIA = {
     ],
     "category": "cartridge",
     "tapeWidthMm": 24,
-    "tapeColour": 0,
+    "tapeColour": 4,
     "targetModels": [
       "d1-wide"
     ]
@@ -798,7 +798,7 @@ export const MEDIA = {
     ],
     "category": "cartridge",
     "tapeWidthMm": 12,
-    "tapeColour": 0,
+    "tapeColour": 10,
     "targetModels": [
       "d1"
     ]

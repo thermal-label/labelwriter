@@ -67,6 +67,36 @@ describe('D1 tape cassettes (MEDIA tape slice)', () => {
   });
 });
 
+describe('tapeColourFor — LW 400 Series Tech Ref p.24 spec table', () => {
+  it('matches every (background, text) pair documented in the spec', () => {
+    // (background, text) → selector. Spec entries 3 (silver), 5 (gold),
+    // 7 (fluorescent green), 8 (fluorescent red) are not in
+    // D1TapeColor today and are omitted here.
+    expect(tapeColourFor('white', 'black')).toBe(0);
+    expect(tapeColourFor('clear', 'black')).toBe(0);
+    expect(tapeColourFor('blue', 'black')).toBe(1);
+    expect(tapeColourFor('red', 'black')).toBe(2);
+    expect(tapeColourFor('yellow', 'black')).toBe(4);
+    expect(tapeColourFor('green', 'black')).toBe(6);
+    expect(tapeColourFor('clear', 'white')).toBe(9);
+    expect(tapeColourFor('black', 'white')).toBe(10);
+    expect(tapeColourFor('white', 'blue')).toBe(11);
+    expect(tapeColourFor('clear', 'blue')).toBe(11);
+    expect(tapeColourFor('white', 'red')).toBe(12);
+    expect(tapeColourFor('clear', 'red')).toBe(12);
+  });
+
+  it('falls back to 0 for combinations outside the spec table', () => {
+    // 'orange' is not in the LW 400 spec table at all — DURABLE_BLACK_ON_ORANGE_12
+    // is a real cassette but the firmware has no dedicated strobe profile
+    // for it; 0 is the documented safe default.
+    expect(tapeColourFor('orange', 'black')).toBe(0);
+    // Reverse-print combos the spec doesn't enumerate (e.g. white on red)
+    // also fall back to 0.
+    expect(tapeColourFor('red', 'white')).toBe(0);
+  });
+});
+
 describe('Wide-tier convention (D1)', () => {
   it('every cartridge tags exactly one of "d1" or "d1-wide"', () => {
     for (const m of ALL) {

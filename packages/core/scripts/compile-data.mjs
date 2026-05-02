@@ -49,14 +49,29 @@ const D1_TAPE_COLORS = new Set([
 ]);
 const D1_TAPE_WIDTHS = new Set([6, 9, 12, 19, 24]);
 
-// Mirror of `tapeColourFor` in src/duo-tape-media.ts. Source-of-truth
-// for the symbolic-colour → ESC C selector mapping lives there;
-// duplicating the small table here lets the generator bake the wire
-// byte into the generated descriptor so callers don't recompute.
+// Mirror of `tapeColourFor` in src/duo-tape-media.ts — keep in sync.
+// Source-of-truth + JSDoc + spec citation live there; this duplicate
+// lets the generator bake the wire byte into each D1 descriptor at
+// compile time so runtime callers don't recompute. Per LW 400 Series
+// Tech Ref p.24.
 function tapeColourFor(background, text) {
-  if (text === 'black' && (background === 'white' || background === 'clear')) return 0;
-  if (text === 'black' && background === 'blue') return 1;
-  if (text === 'red' && background === 'white') return 12;
+  if (text === 'black') {
+    if (background === 'white' || background === 'clear') return 0;
+    if (background === 'blue') return 1;
+    if (background === 'red') return 2;
+    if (background === 'yellow') return 4;
+    if (background === 'green') return 6;
+    return 0;
+  }
+  if (text === 'white') {
+    if (background === 'clear') return 9;
+    if (background === 'black') return 10;
+    return 0;
+  }
+  if (background === 'white' || background === 'clear') {
+    if (text === 'blue') return 11;
+    if (text === 'red') return 12;
+  }
   return 0;
 }
 
