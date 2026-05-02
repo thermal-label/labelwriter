@@ -6,7 +6,14 @@
 
 # Function: findDevice()
 
-> **findDevice**(`vid`, `pid`): [`LabelWriterDevice`](../interfaces/LabelWriterDevice.md) \| `undefined`
+> **findDevice**(`vid`, `pid`): `DeviceEntry` \| `undefined`
+
+Find a registry entry by USB VID and PID.
+
+VIDs and PIDs in the registry are stored as hex strings (`'0x0922'`)
+matching what every datasheet, lsusb output, and forum post uses.
+Callers passing JS numbers (e.g. `usbDevice.vendorId`) are matched
+after parsing.
 
 ## Parameters
 
@@ -20,4 +27,4 @@
 
 ## Returns
 
-[`LabelWriterDevice`](../interfaces/LabelWriterDevice.md) \| `undefined`
+`DeviceEntry` \| `undefined`

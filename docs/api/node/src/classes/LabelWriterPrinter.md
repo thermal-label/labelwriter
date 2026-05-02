@@ -13,11 +13,15 @@ Implements the shared `PrinterAdapter` interface. Takes any
 USB-attached printers, `TcpTransport` for the networked 550 Turbo /
 5XL / Wireless.
 
-Orientation is auto-decided via `pickRotation`: rectangular die-cut
-media declares `defaultOrientation: 'horizontal'`, so the driver
-rotates landscape input 90° CW. Pre-retrofit, landscape input was
-silently cropped to head width — the auto-rotate path fixes that.
-Override per-call with `options.rotate`.
+Multi-engine devices (Twin Turbo, Duo) expose per-engine handles via
+`engines`. The Twin Turbo's two label engines share the primary
+transport (firmware-level routing by `ESC q`); the Duo's tape engine
+needs its own transport on `bInterfaceNumber: 1`, passed via
+`options.engineTransports.tape`.
+
+Orientation for label engines is auto-decided via `pickRotation`;
+tape engines emit head-aligned bitmaps without rotation logic for
+now (the tape encoder does its own width-fit).
 
 ## Implements
 
@@ -27,13 +31,13 @@ Override per-call with `options.rotate`.
 
 ### Constructor
 
-> **new LabelWriterPrinter**(`device`, `transport`, `transportType`): `LabelWriterPrinter`
+> **new LabelWriterPrinter**(`device`, `transport`, `transportType`, `options?`): `LabelWriterPrinter`
 
 #### Parameters
 
 ##### device
 
-`LabelWriterDevice`
+`DeviceEntry`
 
 ##### transport
 
@@ -43,6 +47,10 @@ Override per-call with `options.rotate`.
 
 `TransportType`
 
+##### options?
+
+`LabelWriterPrinterOptions` = `{}`
+
 #### Returns
 
 `LabelWriterPrinter`
@@ -51,9 +59,9 @@ Override per-call with `options.rotate`.
 
 ### device
 
-> `readonly` **device**: `LabelWriterDevice`
+> `readonly` **device**: `DeviceEntry`
 
-The device descriptor for the connected printer.
+The device entry for the connected printer.
 
 Useful for logging, diagnostics, and displaying VID/PID. Undefined
 if the connection was established without device matching (e.g. a
@@ -62,6 +70,12 @@ raw TCP connection to a known IP).
 #### Implementation of
 
 `PrinterAdapter.device`
+
+***
+
+### engines
+
+> `readonly` **engines**: `Readonly`\<`Record`\<`string`, `LabelWriterEngineHandle`\>\>
 
 ***
 
@@ -179,6 +193,40 @@ For offline preview without a live connection, use the static
 
 ***
 
+### getEngineVersion()
+
+> **getEngineVersion**(): `Promise`\<`EngineVersion` \| `undefined`\>
+
+Fetch the print engine identity (HW / FW / PID) via `ESC V` (550 only).
+
+Returns the parsed 34-byte structure on success. Throws
+`UnsupportedOperationError` on non-550 devices. Useful as a sanity
+check after USB enumeration ("did we open the right device?") or
+for surfacing FW version in diagnostics.
+
+#### Returns
+
+`Promise`\<`EngineVersion` \| `undefined`\>
+
+***
+
+### getMedia()
+
+> **getMedia**(): `Promise`\<`SkuInfo` \| `undefined`\>
+
+Fetch the SKU info from the loaded consumable's NFC tag (550 only).
+
+Returns the parsed 63-byte structure on success. Throws
+`UnsupportedOperationError` on non-550 devices. Returns `undefined`
+if the response is shorter than expected or the magic-number check
+fails (no media present, counterfeit, or comm failure).
+
+#### Returns
+
+`Promise`\<`SkuInfo` \| `undefined`\>
+
+***
+
 ### getStatus()
 
 > **getStatus**(): `Promise`\<`PrinterStatus`\>
@@ -263,9 +311,18 @@ MediaNotSpecifiedError if no media is known.
 > **recover**(): `Promise`\<`void`\>
 
 Send the error-recovery byte sequence and drain the response.
+Driver-specific escape hatch — not on `PrinterAdapter`.
 
-Driver-specific escape hatch — not on `PrinterAdapter`. Useful after
-a paper jam / label-too-long condition to resume normal operation.
+Protocol-aware:
+- **450 family** (`lw-450`): the documented 85×ESC +
+  ESC A sequence to flush a wedged sync state. Reads back the
+  1-byte status response.
+- **550 family**: `ESC Q` to release any pending job state and
+  the host print lock (per `LW 550 Technical Reference.pdf`
+  p.13). Reads back the 32-byte status response.
+
+The 550 path is the soft recovery; for a destructive reboot
+use `build550Restart()` directly with `transport.write()`.
 
 #### Returns
 

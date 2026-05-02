@@ -32,7 +32,7 @@ printers are opened by explicit `openPrinter({ host, port })`.
 
 > `readonly` **family**: `"labelwriter"` = `'labelwriter'`
 
-Driver family identifier — matches `DeviceDescriptor.family`.
+Driver family identifier — matches `DeviceEntry.family`.
 
 #### Implementation of
 

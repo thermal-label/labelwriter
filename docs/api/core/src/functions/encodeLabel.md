@@ -12,7 +12,7 @@
 
 ### device
 
-[`LabelWriterDevice`](../interfaces/LabelWriterDevice.md)
+`DeviceEntry`
 
 ### bitmap
 

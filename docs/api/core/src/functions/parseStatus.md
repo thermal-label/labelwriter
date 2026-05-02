@@ -17,7 +17,7 @@ the transport. The two protocols differ — 450 is one byte, 550 is 32.
 
 ### device
 
-[`LabelWriterDevice`](../interfaces/LabelWriterDevice.md)
+`DeviceEntry`
 
 ### bytes
 

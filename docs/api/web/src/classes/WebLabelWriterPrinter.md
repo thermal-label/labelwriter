@@ -26,7 +26,7 @@ landscape input via the media's `defaultOrientation` hint.
 
 ##### device
 
-`LabelWriterDevice`
+`DeviceEntry`
 
 ##### transport
 
@@ -40,9 +40,9 @@ landscape input via the media's `defaultOrientation` hint.
 
 ### device
 
-> `readonly` **device**: `LabelWriterDevice`
+> `readonly` **device**: `DeviceEntry`
 
-The device descriptor for the connected printer.
+The device entry for the connected printer.
 
 Useful for logging, diagnostics, and displaying VID/PID. Undefined
 if the connection was established without device matching (e.g. a
@@ -51,6 +51,12 @@ raw TCP connection to a known IP).
 #### Implementation of
 
 `PrinterAdapter.device`
+
+***
+
+### engines
+
+> `readonly` **engines**: `Readonly`\<`Record`\<`string`, `LabelWriterEngineHandle`\>\>
 
 ***
 
@@ -162,6 +168,20 @@ For offline preview without a live connection, use the static
 
 ***
 
+### getMedia()
+
+> **getMedia**(): `Promise`\<`SkuInfo` \| `undefined`\>
+
+Fetch SKU info from the loaded consumable's NFC tag (550 only).
+Mirror of the node driver's `getMedia()` — see that JSDoc for the
+full contract.
+
+#### Returns
+
+`Promise`\<`SkuInfo` \| `undefined`\>
+
+***
+
 ### getStatus()
 
 > **getStatus**(): `Promise`\<`PrinterStatus`\>
@@ -246,6 +266,10 @@ MediaNotSpecifiedError if no media is known.
 > **recover**(): `Promise`\<`void`\>
 
 Driver-specific recovery sequence — mirror of the node driver.
+
+550 family sends `ESC Q` (release pending job + host lock); 450
+family sends the legacy 85×ESC + ESC A sync-flush. Drains the
+device-appropriate status response in either case.
 
 #### Returns
 

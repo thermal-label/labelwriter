@@ -42,15 +42,15 @@ importers:
   packages/core:
     dependencies:
       '@mbtech-nl/bitmap':
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.3.0
+        version: 1.3.0
       '@thermal-label/contracts':
         specifier: ^0.3.1
         version: 0.3.1
     devDependencies:
       '@mbtech-nl/tsconfig':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       '@types/node':
         specifier: ^22.0.0
         version: 22.19.17
@@ -87,8 +87,8 @@ importers:
         version: 0.1.99
     devDependencies:
       '@mbtech-nl/tsconfig':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       '@types/node':
         specifier: ^22.0.0
         version: 22.19.17
@@ -111,12 +111,12 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@thermal-label/transport':
-        specifier: ^0.2.1
-        version: 0.2.1(usb@2.17.0)
+        specifier: ^0.3.0
+        version: 0.3.0(usb@2.17.0)
     devDependencies:
       '@mbtech-nl/tsconfig':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       '@types/w3c-web-usb':
         specifier: ^1.0.0
         version: 1.0.14
@@ -497,9 +497,9 @@ packages:
   '@manypkg/get-packages@1.1.3':
     resolution: {integrity: sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A==}
 
-  '@mbtech-nl/bitmap@1.2.1':
-    resolution: {integrity: sha512-pHpKkKwHMjZToF6+f/65nX+yOQJ1Ig+SLr/H2OX51yQJ87eDZl6hC8yuiMXIIaiFPUvqrFgaTl+Cxw+AshCoDQ==}
-    engines: {node: '>=24.0.0', pnpm: '>=9.0.0'}
+  '@mbtech-nl/bitmap@1.3.0':
+    resolution: {integrity: sha512-vkYfGg3oLsl5o7W2kTTlivfP4HJL7Q1C08TDpMBd4SykD0vOiA7Fzgim9ctMRH4bU09i204traTSAFyhJw1AnQ==}
+    engines: {node: '>=20.9.0', pnpm: '>=9.0.0'}
 
   '@mbtech-nl/eslint-config@1.0.1':
     resolution: {integrity: sha512-YXjxS8qC8zl4zC8TD5pD/XLMY3eYldt04lq5YeczLtljBDsvWbqXBmeEbTCQtWFNkDWGwtScbF9G5PHzvIYOCQ==}
@@ -517,6 +517,10 @@ packages:
   '@mbtech-nl/tsconfig@1.0.1':
     resolution: {integrity: sha512-Mc/vaKUen783dDhBa7oeDfECsuOaWducWQYS0qiJta/2FgTOk7yoEPFimTFoNl/lL4WQ924bxSpA3MsBI/FubQ==}
     engines: {node: '>=24.0.0'}
+
+  '@mbtech-nl/tsconfig@1.1.0':
+    resolution: {integrity: sha512-CkJ+OsqKaotPsG1U2qGpq5u4vSYzcam4leYJSp7H1SrOxORGkCSf6+mjcOU1FiLEoH50zxjaA863Tnh8QGopVA==}
+    engines: {node: '>=20.9.0'}
 
   '@napi-rs/canvas-android-arm64@0.1.99':
     resolution: {integrity: sha512-9OCRt8VVxA17m32NWZKyNC2qamdaS/SC5CEOIQwFngRq0DIeVm4PDal+6Ljnhqm2whZiC63DNuKZ4xSp2nbj9w==}
@@ -750,26 +754,11 @@ packages:
   '@shikijs/vscode-textmate@10.0.2':
     resolution: {integrity: sha512-83yeghZ2xxin3Nj8z1NMd/NCuca+gsYXswywDy5bHvwlWL8tpTQmzGeUuHd9FC3E/SBEMvzJRwWEOz5gGes9Qg==}
 
-  '@thermal-label/contracts@0.1.2':
-    resolution: {integrity: sha512-p3Fj9PjGrTdCtNoMHcQNbCSfVffFd0E42okIAjIyoCNRsTM+L2qR7AAVIL6EX33EFxV7A7F5ziGpNZxz9yNU7w==}
-
   '@thermal-label/contracts@0.2.0':
     resolution: {integrity: sha512-EqruuizBc8bgZwthZYir9f4t9YWWajMncTOn2+qkWPyxq/z3vU8giIcB4oYfQy7KYcltK0t8L5HKQJrCyvO5zw==}
 
   '@thermal-label/contracts@0.3.1':
     resolution: {integrity: sha512-cssi68nEG2chXTjkI1r9sHMLeK9sW6cHJiNWYuF9hwsgHglPSIEa+pUchCEGzZC/KOAsvirD2H1+IDJiSKyqJg==}
-
-  '@thermal-label/transport@0.2.1':
-    resolution: {integrity: sha512-2rHBfDXQMA+9P9tpCcG7WqlbYrrqMxar4wdYL9ao3LMXla3R/iyeztuorm5JR3w41yRp4CSXOEKnTfBL1PE90A==}
-    engines: {node: '>=24.0.0'}
-    peerDependencies:
-      serialport: '>=12.0.0'
-      usb: '>=2.14.0'
-    peerDependenciesMeta:
-      serialport:
-        optional: true
-      usb:
-        optional: true
 
   '@thermal-label/transport@0.3.0':
     resolution: {integrity: sha512-SU7NXxMr3/97fR8IHpnggD2yvnf7imLTzobfggGVAip3qdsGLSGkZb8A7wPfiAB7OavfLKDJ/PmyYNckf4VZZQ==}
@@ -2644,7 +2633,7 @@ snapshots:
       globby: 11.1.0
       read-yaml-file: 1.1.0
 
-  '@mbtech-nl/bitmap@1.2.1': {}
+  '@mbtech-nl/bitmap@1.3.0': {}
 
   '@mbtech-nl/eslint-config@1.0.1(@typescript-eslint/utils@8.59.0(eslint@9.39.4)(typescript@5.5.4))(eslint@9.39.4)(typescript@5.5.4)':
     dependencies:
@@ -2664,6 +2653,8 @@ snapshots:
       prettier: 3.8.3
 
   '@mbtech-nl/tsconfig@1.0.1': {}
+
+  '@mbtech-nl/tsconfig@1.1.0': {}
 
   '@napi-rs/canvas-android-arm64@0.1.99':
     optional: true
@@ -2832,23 +2823,13 @@ snapshots:
 
   '@shikijs/vscode-textmate@10.0.2': {}
 
-  '@thermal-label/contracts@0.1.2':
-    dependencies:
-      '@mbtech-nl/bitmap': 1.2.1
-
   '@thermal-label/contracts@0.2.0':
     dependencies:
-      '@mbtech-nl/bitmap': 1.2.1
+      '@mbtech-nl/bitmap': 1.3.0
 
   '@thermal-label/contracts@0.3.1':
     dependencies:
-      '@mbtech-nl/bitmap': 1.2.1
-
-  '@thermal-label/transport@0.2.1(usb@2.17.0)':
-    dependencies:
-      '@thermal-label/contracts': 0.1.2
-    optionalDependencies:
-      usb: 2.17.0
+      '@mbtech-nl/bitmap': 1.3.0
 
   '@thermal-label/transport@0.3.0(usb@2.17.0)':
     dependencies:
