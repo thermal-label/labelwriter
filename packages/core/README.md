@@ -13,7 +13,7 @@ pnpm add @thermal-label/labelwriter-core
 
 ## Requirements
 
-- Node.js >= 24.0.0 (or any modern browser)
+- Node.js >= 20.9.0 (Node 24 LTS recommended) — or any modern browser
 
 ## Key Exports
 

@@ -30,6 +30,9 @@
     "dist",
     "README.md"
   ],
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "typecheck": "tsc --project tsconfig.json --noEmit",

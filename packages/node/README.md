@@ -10,7 +10,7 @@ pnpm add @thermal-label/labelwriter-node
 
 ## Requirements
 
-- Node.js >= 24.0.0
+- Node.js >= 20.9.0 (Node 24 LTS recommended)
 - Linux: udev rule required for raw USB access without `sudo` — see below
 
 > **LabelWriter 550 / 5XL:** These models enforce an NFC label lock. Only genuine Dymo labels
