@@ -165,6 +165,9 @@
   {
     // Listed under both "Large Lever Arch (Durable)" and
     // "Confirmation (Durable)" in the LW PDF — same physical SKU.
+    // 99019 is the DYMO EU SKU for the same product (the LW PDF only
+    // catalogues US SKUs); confirmed via the physical roll used to
+    // verify LW_330_TURBO.
     key: 'LEVER_ARCH',
     id: 'lever-arch',
     name: '190×59mm Lever Arch / Confirmation',
@@ -175,7 +178,7 @@
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
     lengthDots: 2244,
-    skus: ['1933087'],
+    skus: ['1933087', '99019'],
     targetModels: ['lw'],
   },
 
