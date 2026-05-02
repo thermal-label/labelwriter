@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { MediaNotSpecifiedError } from '@thermal-label/contracts';
+import { MediaNotSpecifiedError, UnsupportedOperationError } from '@thermal-label/contracts';
 import { DEVICES, MEDIA } from '@thermal-label/labelwriter-core';
 import { fromUSBDevice, requestPrinter } from '../printer.js';
 import { createMockUSBDevice } from './webusb-mock.js';
@@ -145,6 +145,128 @@ describe('WebLabelWriterPrinter', () => {
     const sent = device.__transfers[before]!.data;
     expect(sent.length).toBe(2);
     expect(Array.from(sent)).toEqual([0x1b, 0x51]);
+  });
+
+  it('print() acquires the lock and prepends the job header on 550', async () => {
+    const status = new Uint8Array(32);
+    status[10] = 8; // bay ok
+    status[30] = 1; // head voltage ok
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, status);
+    const printer = await fromUSBDevice(device);
+    const before = device.__transfers.length;
+    await printer.print(solidRgba(672, 4), MEDIA.ADDRESS_STANDARD);
+    const writes = device.__transfers.slice(before).map(t => t.data);
+    expect(Array.from(writes[0]!)).toEqual([0x1b, 0x41, 0x01]);
+    expect(writes[1]![0]).toBe(0x1b);
+    expect(writes[1]![1]).toBe(0x73);
+  });
+
+  it('print() throws when the 550 reports the lock is held by another host', async () => {
+    const status = new Uint8Array(32);
+    status[0] = 5; // PRINT_STATUS_LOCK_NOT_GRANTED
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, status);
+    const printer = await fromUSBDevice(device);
+    await expect(printer.print(solidRgba(672, 4), MEDIA.ADDRESS_STANDARD)).rejects.toThrow(/lock/i);
+  });
+
+  it('print() auto-fetches SKU on 550 when no media is provided', async () => {
+    const status = new Uint8Array(32);
+    status[10] = 8;
+    status[30] = 1;
+    const sku = new Uint8Array(63);
+    sku[0] = 0xb6;
+    sku[1] = 0xca;
+    new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
+    sku[23] = 0x01;
+    sku[40] = 89;
+    sku[42] = 28;
+    const buf = new Uint8Array(status.length + sku.length);
+    buf.set(status, 0);
+    buf.set(sku, status.length);
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, buf);
+    const printer = await fromUSBDevice(device);
+    const before = device.__transfers.length;
+    await printer.print(solidRgba(672, 4));
+    const writes = device.__transfers.slice(before).map(t => t.data);
+    expect(Array.from(writes[0]!)).toEqual([0x1b, 0x41, 0x01]);
+    expect(Array.from(writes[1]!)).toEqual([0x1b, 0x55]);
+    expect(writes[2]![0]).toBe(0x1b);
+    expect(writes[2]![1]).toBe(0x73);
+  });
+
+  it('print() still throws MediaNotSpecifiedError on 550 when ESC U returns no SKU', async () => {
+    const status = new Uint8Array(32);
+    status[10] = 8;
+    status[30] = 1;
+    const sku = new Uint8Array(63); // bad magic → undefined
+    const buf = new Uint8Array(status.length + sku.length);
+    buf.set(status, 0);
+    buf.set(sku, status.length);
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, buf);
+    const printer = await fromUSBDevice(device);
+    await expect(printer.print(solidRgba(672, 4))).rejects.toBeInstanceOf(MediaNotSpecifiedError);
+  });
+
+  it('getMedia() throws UnsupportedOperationError on non-550 devices', async () => {
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
+    const printer = await fromUSBDevice(device);
+    await expect(printer.getMedia()).rejects.toBeInstanceOf(UnsupportedOperationError);
+  });
+
+  it('getMedia() writes ESC U, reads 63 bytes, and returns parsed SKU on 550', async () => {
+    const sku = new Uint8Array(63);
+    sku[0] = 0xb6;
+    sku[1] = 0xca;
+    new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
+    sku[23] = 0x01;
+    sku[40] = 89;
+    sku[42] = 28;
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, sku);
+    const printer = await fromUSBDevice(device);
+    const before = device.__transfers.length;
+    const result = await printer.getMedia();
+    const sent = device.__transfers[before]!.data;
+    expect(Array.from(sent)).toEqual([0x1b, 0x55]);
+    expect(result?.sku).toBe('30252');
+    expect(result?.labelWidthMm).toBe(28);
+  });
+
+  it('getMedia() returns undefined when the SKU magic is wrong', async () => {
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, new Uint8Array(63));
+    const printer = await fromUSBDevice(device);
+    expect(await printer.getMedia()).toBeUndefined();
+  });
+
+  it('getStatus() preserves cached detectedMedia when a follow-up status omits it', async () => {
+    const sku = new Uint8Array(63);
+    sku[0] = 0xb6;
+    sku[1] = 0xca;
+    new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
+    sku[23] = 0x01;
+    sku[40] = 89;
+    sku[42] = 28;
+    const status = new Uint8Array(32);
+    status[10] = 8;
+    status[30] = 1;
+    const buf = new Uint8Array(sku.length + status.length);
+    buf.set(sku, 0);
+    buf.set(status, sku.length);
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, buf);
+    const printer = await fromUSBDevice(device);
+    await printer.getMedia();
+    const after = await printer.getStatus();
+    expect(after.detectedMedia).toBeDefined();
+  });
+
+  it('exposes a primary engine handle whose print() routes back through the adapter', async () => {
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
+    const printer = await fromUSBDevice(device);
+    expect(Object.keys(printer.engines)).toEqual(['primary']);
+    const before = device.__transfers.length;
+    await printer.engines.primary!.print(solidRgba(672, 10), MEDIA.ADDRESS_STANDARD);
+    expect(device.__transfers.length).toBeGreaterThan(before);
+    expect(device.__transfers[before]!.data[0]).toBe(0x1b);
+    expect(device.__transfers[before]!.data[1]).toBe(0x40);
   });
 });
 

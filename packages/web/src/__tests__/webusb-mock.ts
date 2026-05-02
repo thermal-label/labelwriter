@@ -12,6 +12,7 @@ export function createMockUSBDevice(
 ): MockUSBDevice {
   const transfers: { endpointNumber: number; data: Uint8Array }[] = [];
   let opened = false;
+  let readOffset = 0;
 
   const endpoints = [
     { endpointNumber: 1, direction: 'out' },
@@ -64,7 +65,9 @@ export function createMockUSBDevice(
     }),
     transferIn: vi.fn((_endpointNumber: number, length: number) => {
       const out = new Uint8Array(length);
-      out.set(device.__statusBytes.subarray(0, length));
+      const slice = device.__statusBytes.subarray(readOffset, readOffset + length);
+      out.set(slice);
+      readOffset += slice.length;
       return Promise.resolve({
         data: new DataView(out.buffer),
         status: 'ok' as const,

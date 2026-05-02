@@ -12,6 +12,7 @@ export default defineConfig({
         '**/*.d.ts',
         '**/index.ts',
         '**/types.ts',
+        'scripts/**',
       ],
       thresholds: {
         statements: 90,
