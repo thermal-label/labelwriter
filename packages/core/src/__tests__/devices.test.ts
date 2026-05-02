@@ -107,7 +107,9 @@ describe('300-series and pre-CUPS-driver descriptors', () => {
   });
 
   it('serial-only descriptors omit transports.usb', () => {
-    for (const key of ['LW_330_TURBO', 'LW_TURBO', 'LW_EL40', 'LW_EL60'] as const) {
+    // LW_330_TURBO had `usb` added once 0x0008 was confirmed via lsusb;
+    // it now reaches over both transports and is no longer serial-only.
+    for (const key of ['LW_TURBO', 'LW_EL40', 'LW_EL60'] as const) {
       expect(DEVICES[key].transports.usb).toBeUndefined();
       expect(DEVICES[key].transports.serial).toBeDefined();
     }
@@ -116,7 +118,7 @@ describe('300-series and pre-CUPS-driver descriptors', () => {
   it('serial-only descriptors do not appear in findDevice() lookups', () => {
     // Serial-only entries have no PID, so findDevice cannot match them.
     // Confirms the explicit deviceKey path is the only way in.
-    for (const key of ['LW_330_TURBO', 'LW_TURBO', 'LW_EL40', 'LW_EL60'] as const) {
+    for (const key of ['LW_TURBO', 'LW_EL40', 'LW_EL60'] as const) {
       const allMatching = Object.values(DEVICES).filter(d => d.key === key);
       for (const d of allMatching) {
         expect(d.transports.usb?.pid).toBeUndefined();

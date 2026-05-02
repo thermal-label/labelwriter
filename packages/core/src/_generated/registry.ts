@@ -105,6 +105,10 @@ export const REGISTRY = {
       "name": "LabelWriter 330 Turbo",
       "family": "labelwriter",
       "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0008"
+        },
         "serial": {
           "defaultBaud": 115200,
           "supportedBauds": [

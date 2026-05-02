@@ -2,14 +2,13 @@
   key: 'LW_330_TURBO',
   name: 'LabelWriter 330 Turbo',
   family: 'labelwriter',
-  // DYMO part #90793. USB PID unknown — pre-CUPS-driver era; community
-  // datapoint via `lsusb -v` would close the gap. Until then, open via
-  // serial only:
-  //   discovery.openPrinter({ serialPath: '/dev/ttyUSB0', deviceKey: 'LW_330_TURBO' })
+  // DYMO part #90793. USB PID 0x0008 confirmed via lsusb on a real unit:
+  //   Bus 003 Device 005: ID 0922:0008 Dymo-CoStar Corp. DYMO LabelWriter 330 Turbo
   // Same head as LW_330 (672 dots / 84 bytes per dymo-cups-drivers
   // lw330t.ppd); the "Turbo" in the name refers to motor speed, not
   // print width.
   transports: {
+    usb: { vid: '0x0922', pid: '0x0008' },
     serial: { defaultBaud: 115200, supportedBauds: [115200] },
   },
   engines: [
