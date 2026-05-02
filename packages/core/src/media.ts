@@ -12,16 +12,25 @@ export { MEDIA, type MediaKey };
 export const DEFAULT_MEDIA: LabelWriterMedia = MEDIA.ADDRESS_STANDARD;
 
 /**
- * Match a 550-series status response against the media registry.
+ * Match a 550-series status response against the paper portion of the
+ * media registry.
  *
- * The response carries media dimensions in mm — a simple filter over
- * `MEDIA` is enough. Returns undefined for sizes outside the registry;
- * callers can still surface `rawBytes` for unknown roll diagnostics.
+ * The status response carries paper roll dimensions in mm — a simple
+ * filter is enough. Tape cassettes (`type: 'tape'`) are excluded since
+ * the 550 doesn't have a tape head. Returns undefined for sizes
+ * outside the registry; callers can still surface `rawBytes` for
+ * unknown-roll diagnostics.
  */
 export function findMediaByDimensions(
   widthMm: number,
   heightMm: number,
 ): LabelWriterMedia | undefined {
-  const entries = Object.values(MEDIA) as LabelWriterMedia[];
-  return entries.find(m => m.widthMm === widthMm && (m.heightMm ?? 0) === heightMm);
+  for (const m of Object.values(MEDIA)) {
+    if (m.type === 'tape') continue;
+    const lwm = m as LabelWriterMedia;
+    if (lwm.widthMm === widthMm && (lwm.heightMm ?? 0) === heightMm) {
+      return lwm;
+    }
+  }
+  return undefined;
 }

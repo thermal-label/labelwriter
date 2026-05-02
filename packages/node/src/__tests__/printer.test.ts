@@ -1,11 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { MediaNotSpecifiedError, type Transport } from '@thermal-label/contracts';
-import {
-  DEVICES,
-  DUO_TAPE_MEDIA,
-  MEDIA,
-  buildErrorRecovery,
-} from '@thermal-label/labelwriter-core';
+import { DEVICES, MEDIA, buildErrorRecovery } from '@thermal-label/labelwriter-core';
 import { LabelWriterPrinter } from '../printer.js';
 
 function makeTransport(statusBytes: Uint8Array = new Uint8Array([0x00])): {
@@ -454,10 +449,7 @@ describe('LabelWriterPrinter', () => {
       const printer = new LabelWriterPrinter(DEVICES.LW_450_DUO, labelT, 'usb', {
         engineTransports: { tape: tapeT },
       });
-      await printer.engines.tape!.print(
-        solidRgba(128, 8),
-        DUO_TAPE_MEDIA.STANDARD_BLACK_ON_WHITE_12,
-      );
+      await printer.engines.tape!.print(solidRgba(128, 8), MEDIA.STANDARD_BLACK_ON_WHITE_12);
       expect(labelWritten).toHaveLength(0);
       expect(tapeWritten).toHaveLength(1);
       // Tape stream starts with ESC @ (reset) per duo-tape encoder
@@ -475,7 +467,7 @@ describe('LabelWriterPrinter', () => {
       const printer = new LabelWriterPrinter(DEVICES.LW_450_DUO, labelT, 'usb', {
         engineTransports: { tape: tapeT },
       });
-      const colouredTape = { ...DUO_TAPE_MEDIA.STANDARD_BLACK_ON_WHITE_12, tapeColour: 5 };
+      const colouredTape = { ...MEDIA.STANDARD_BLACK_ON_WHITE_12, tapeColour: 5 };
       await printer.engines.tape!.print(solidRgba(128, 4), colouredTape);
       // Wire layout: ESC @, ESC C n, ESC D ...
       expect(written[0]![4]).toBe(0x05);
@@ -521,7 +513,7 @@ describe('LabelWriterPrinter', () => {
       const { transport: labelT } = makeTransport();
       const printer = new LabelWriterPrinter(DEVICES.LW_450_DUO, labelT, 'usb');
       await expect(
-        printer.print(solidRgba(128, 4), DUO_TAPE_MEDIA.STANDARD_BLACK_ON_WHITE_12, {
+        printer.print(solidRgba(128, 4), MEDIA.STANDARD_BLACK_ON_WHITE_12, {
           engine: 'tape',
         }),
       ).rejects.toThrow(/has no transport/);

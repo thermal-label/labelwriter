@@ -38,9 +38,32 @@
 // `cornerRadiusMm` is informational; previews use it to render the
 // actual paper outline.
 //
+// ─── D1 tape (`type: 'tape'`) ─────────────────────────────────────
+//
+// One entry per catalogued cassette variant from `dymo-labels-lm.pdf`
+// (Dymo's LabelManager compatibility matrix — same D1 product line
+// as the LabelWriter Duo's tape head), cross-checked against the
+// 450 Duo column in `dymo-labels-lw.pdf`. SKU formats: 5-digit
+// (`45013`), 7-digit (`1978364`), or EU S-numbers (`S0720780`).
+//
+// Tape is continuous along its length, so `heightMm` / `lengthDots`
+// are intentionally omitted. Source declares `widthMm` (one of
+// 6 / 9 / 12 / 19 / 24), `material`, `background`, `text`, and `skus`.
+// The compile script fills:
+//   - `category: 'cartridge'`
+//   - `tapeWidthMm = widthMm`
+//   - `tapeColour` via the symbolic-colour → ESC C selector mapping
+//     mirrored from `tapeColourFor` in `duo-tape-media.ts` (source-
+//     of-truth lives there; the script duplicates the table)
+//   - `targetModels = widthMm === 24 ? ['d1-wide'] : ['d1']`
+// Override `targetModels` in source if the default doesn't fit.
+//
+// ─── Lookup ──────────────────────────────────────────────────────
+//
 // `key` on each entry is the lookup name exposed via `MEDIA[key]` —
-// e.g. `MEDIA.ADDRESS_STANDARD`. The compile-data script folds this
-// array into a keyed-by-`key` map at build time.
+// e.g. `MEDIA.ADDRESS_STANDARD` (paper) or `MEDIA.STANDARD_BLACK_ON_WHITE_12`
+// (tape). The compile-data script folds this array into a
+// keyed-by-`key` map at build time.
 
 [
   // ─── address ──────────────────────────────────────────────────────
@@ -386,5 +409,283 @@
     type: 'continuous',
     skus: ['30270'],
     targetModels: ['lw'],
+  },
+
+  // ═══ D1 tape cassettes (Duo) ══════════════════════════════════════
+
+  // ─── Standard ─────────────────────────────────────────────── 6 mm ─
+  {
+    key: 'STANDARD_BLACK_ON_WHITE_6',
+    id: 'd1-standard-bw-6',
+    name: '6mm Black on White',
+    type: 'tape',
+    widthMm: 6,
+    material: 'standard',
+    background: 'white',
+    text: 'black',
+    skus: ['43613', 'S0720780'],
+  },
+
+  // ─── Standard ─────────────────────────────────────────────── 9 mm ─
+  {
+    key: 'STANDARD_BLACK_ON_CLEAR_9',
+    id: 'd1-standard-bc-9',
+    name: '9mm Black on Clear',
+    type: 'tape',
+    widthMm: 9,
+    material: 'standard',
+    background: 'clear',
+    text: 'black',
+    skus: ['40910', 'S0720670'],
+  },
+  {
+    key: 'STANDARD_BLACK_ON_WHITE_9',
+    id: 'd1-standard-bw-9',
+    name: '9mm Black on White',
+    type: 'tape',
+    widthMm: 9,
+    material: 'standard',
+    background: 'white',
+    text: 'black',
+    skus: ['41913'],
+  },
+
+  // ─── Standard ────────────────────────────────────────────── 12 mm ─
+  {
+    key: 'STANDARD_BLACK_ON_WHITE_12',
+    id: 'd1-standard-bw-12',
+    name: '12mm Black on White',
+    type: 'tape',
+    widthMm: 12,
+    material: 'standard',
+    background: 'white',
+    text: 'black',
+    skus: ['45013'],
+  },
+  {
+    key: 'STANDARD_BLACK_ON_CLEAR_12',
+    id: 'd1-standard-bc-12',
+    name: '12mm Black on Clear',
+    type: 'tape',
+    widthMm: 12,
+    material: 'standard',
+    background: 'clear',
+    text: 'black',
+    skus: ['45010'],
+  },
+  {
+    key: 'STANDARD_BLACK_ON_YELLOW_12',
+    id: 'd1-standard-by-12',
+    name: '12mm Black on Yellow',
+    type: 'tape',
+    widthMm: 12,
+    material: 'standard',
+    background: 'yellow',
+    text: 'black',
+    skus: ['45018'],
+  },
+  {
+    key: 'STANDARD_BLACK_ON_BLUE_12',
+    id: 'd1-standard-bbl-12',
+    name: '12mm Black on Blue',
+    type: 'tape',
+    widthMm: 12,
+    material: 'standard',
+    background: 'blue',
+    text: 'black',
+    skus: ['45016', 'S0720560'],
+  },
+  {
+    key: 'STANDARD_BLACK_ON_GREEN_12',
+    id: 'd1-standard-bg-12',
+    name: '12mm Black on Green',
+    type: 'tape',
+    widthMm: 12,
+    material: 'standard',
+    background: 'green',
+    text: 'black',
+    skus: ['45019', 'S0720590'],
+  },
+  {
+    key: 'STANDARD_BLACK_ON_RED_12',
+    id: 'd1-standard-br-12',
+    name: '12mm Black on Red',
+    type: 'tape',
+    widthMm: 12,
+    material: 'standard',
+    background: 'red',
+    text: 'black',
+    skus: ['45017', 'S0720570'],
+  },
+  {
+    key: 'STANDARD_WHITE_ON_CLEAR_12',
+    id: 'd1-standard-wc-12',
+    name: '12mm White on Clear',
+    type: 'tape',
+    widthMm: 12,
+    material: 'standard',
+    background: 'clear',
+    text: 'white',
+    skus: ['45020', 'S0720600'],
+  },
+  {
+    key: 'STANDARD_WHITE_ON_BLACK_12',
+    id: 'd1-standard-wbk-12',
+    name: '12mm White on Black',
+    type: 'tape',
+    widthMm: 12,
+    material: 'standard',
+    background: 'black',
+    text: 'white',
+    skus: ['45021', 'S0720610'],
+  },
+  {
+    key: 'STANDARD_BLUE_ON_WHITE_12',
+    id: 'd1-standard-blw-12',
+    name: '12mm Blue on White',
+    type: 'tape',
+    widthMm: 12,
+    material: 'standard',
+    background: 'white',
+    text: 'blue',
+    skus: ['45014'],
+  },
+  {
+    key: 'STANDARD_RED_ON_WHITE_12',
+    id: 'd1-standard-rw-12',
+    name: '12mm Red on White',
+    type: 'tape',
+    widthMm: 12,
+    material: 'standard',
+    background: 'white',
+    text: 'red',
+    skus: ['45015', 'S0720550'],
+  },
+
+  // ─── Standard ────────────────────────────────────────────── 19 mm ─
+  // 19 mm SKU labelling is contested between LW PDF and LM PDF — see
+  // expand-media-registry.md §5.4. Treating LW PDF as authoritative:
+  // 45800 = Black on White, 45803 = Black on Clear (LW 450 Series Tech
+  // Ref). The LM PDF disagrees; verify against Dymo product pages.
+  {
+    key: 'STANDARD_BLACK_ON_WHITE_19',
+    id: 'd1-standard-bw-19',
+    name: '19mm Black on White',
+    type: 'tape',
+    widthMm: 19,
+    material: 'standard',
+    background: 'white',
+    text: 'black',
+    skus: ['45800'],
+  },
+  {
+    key: 'STANDARD_BLACK_ON_CLEAR_19',
+    id: 'd1-standard-bc-19',
+    name: '19mm Black on Clear',
+    type: 'tape',
+    widthMm: 19,
+    material: 'standard',
+    background: 'clear',
+    text: 'black',
+    skus: ['45803', 'S0720820'],
+  },
+
+  // ─── Standard (24 mm — wide tier) ──────────────────────────────────
+  {
+    key: 'STANDARD_BLACK_ON_WHITE_24',
+    id: 'd1-standard-bw-24',
+    name: '24mm Black on White',
+    type: 'tape',
+    widthMm: 24,
+    material: 'standard',
+    background: 'white',
+    text: 'black',
+    skus: ['53713', 'S0720930'],
+  },
+  {
+    key: 'STANDARD_BLACK_ON_YELLOW_24',
+    id: 'd1-standard-by-24',
+    name: '24mm Black on Yellow',
+    type: 'tape',
+    widthMm: 24,
+    material: 'standard',
+    background: 'yellow',
+    text: 'black',
+    skus: ['53718', 'S0720980'],
+  },
+
+  // ─── Permanent Polyester ───────────────────────────────────────────
+  {
+    // LM 280 lists this as 1978364 (the Durable Black on White SKU) —
+    // almost certainly a copy-paste error in the source PDF. 16955
+    // (per LW PDF and LM 360D) is treated as authoritative.
+    key: 'PERMANENT_BLACK_ON_WHITE_12',
+    id: 'd1-permanent-bw-12',
+    name: '12mm Permanent Black on White',
+    type: 'tape',
+    widthMm: 12,
+    material: 'permanent-polyester',
+    background: 'white',
+    text: 'black',
+    skus: ['16955'],
+  },
+
+  // ─── Flexible Nylon ───────────────────────────────────────────────
+  {
+    key: 'FLEXIBLE_BLACK_ON_WHITE_12',
+    id: 'd1-flexible-bw-12',
+    name: '12mm Flexible Black on White',
+    type: 'tape',
+    widthMm: 12,
+    material: 'flexible-nylon',
+    background: 'white',
+    text: 'black',
+    skus: ['16953', 'S0718040'],
+  },
+
+  // ─── Durable (industrial) ─────────────────────────────────────────
+  {
+    key: 'DURABLE_BLACK_ON_WHITE_12',
+    id: 'd1-durable-bw-12',
+    name: '12mm Durable Black on White',
+    type: 'tape',
+    widthMm: 12,
+    material: 'durable',
+    background: 'white',
+    text: 'black',
+    skus: ['1978364'],
+  },
+  {
+    key: 'DURABLE_WHITE_ON_BLACK_12',
+    id: 'd1-durable-wbk-12',
+    name: '12mm Durable White on Black',
+    type: 'tape',
+    widthMm: 12,
+    material: 'durable',
+    background: 'black',
+    text: 'white',
+    skus: ['1978365'],
+  },
+  {
+    key: 'DURABLE_WHITE_ON_RED_12',
+    id: 'd1-durable-wr-12',
+    name: '12mm Durable White on Red',
+    type: 'tape',
+    widthMm: 12,
+    material: 'durable',
+    background: 'red',
+    text: 'white',
+    skus: ['1978366'],
+  },
+  {
+    key: 'DURABLE_BLACK_ON_ORANGE_12',
+    id: 'd1-durable-bo-12',
+    name: '12mm Durable Black on Orange',
+    type: 'tape',
+    widthMm: 12,
+    material: 'durable',
+    background: 'orange',
+    text: 'black',
+    skus: ['1978367'],
   },
 ]

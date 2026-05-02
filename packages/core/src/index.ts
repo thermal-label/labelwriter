@@ -105,7 +105,7 @@ export type { DuoTapePrintOptions } from './duo-tape.js';
 export { DUO_TAPE_STATUS_BYTE_COUNT, parseDuoTapeStatus } from './duo-tape-status.js';
 export {
   D1_TAPE_COLOR_HEX,
-  DUO_TAPE_MEDIA,
+  allTapeMedia,
   findTapeMediaByWidth,
   findTapeMediaByWidthAll,
   tapeColourFor,

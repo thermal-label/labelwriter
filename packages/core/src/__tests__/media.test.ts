@@ -5,10 +5,15 @@ import { DEFAULT_MEDIA, MEDIA, findMediaByDimensions } from '../media.js';
 import { DEVICES } from '../devices.js';
 import type { LabelWriterMedia } from '../types.js';
 
-// Object.values returns a union over literal types from the `as const`
-// registry, which loses the `heightMm?` field on continuous entries.
-// Widen to the base type when iterating/inspecting the values.
-const ALL_MEDIA: LabelWriterMedia[] = Object.values(MEDIA);
+// `MEDIA` carries paper rolls and D1 tape cassettes side by side
+// (discriminated by `type`). The paper-focused tests in this file
+// iterate the paper slice; tape coverage lives in
+// `duo-tape-media.test.ts`. Cast widens the literal types so
+// optional `heightMm` is reachable across die-cut/continuous
+// entries; the runtime filter rules out tape.
+const ALL_MEDIA: LabelWriterMedia[] = (Object.values(MEDIA) as { type: string }[]).filter(
+  m => m.type !== 'tape',
+) as LabelWriterMedia[];
 
 const ALL_LW_PAPER_ENGINES: PrintEngine[] = Object.values(DEVICES).flatMap(d =>
   d.engines.filter(e => e.protocol !== 'd1-tape'),

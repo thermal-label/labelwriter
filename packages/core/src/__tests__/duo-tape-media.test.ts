@@ -2,17 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { mediaCompatibleWith } from '@thermal-label/contracts';
 import {
   D1_TAPE_COLOR_HEX,
-  DUO_TAPE_MEDIA,
+  allTapeMedia,
   findTapeMediaByWidth,
   findTapeMediaByWidthAll,
   tapeColourFor,
 } from '../duo-tape-media.js';
+import { MEDIA } from '../media.js';
 import { DEVICES } from '../devices.js';
 import type { D1TapeColor, LabelWriterTapeMedia } from '../types.js';
 
-const ALL: LabelWriterTapeMedia[] = Object.values(DUO_TAPE_MEDIA);
+const ALL: readonly LabelWriterTapeMedia[] = allTapeMedia();
 
-describe('DUO_TAPE_MEDIA', () => {
+describe('D1 tape cassettes (MEDIA tape slice)', () => {
   it('covers every Duo-supported tape width', () => {
     const widths = new Set(ALL.map(m => m.tapeWidthMm));
     expect(widths).toEqual(new Set([6, 9, 12, 19, 24]));
@@ -104,8 +105,8 @@ describe('Wide-tier convention (D1)', () => {
 describe('mediaCompatibleWith — D1 gating', () => {
   const wideTape = DEVICES.LW_450_DUO.engines.find(e => e.protocol === 'd1-tape')!;
   const narrowTape = DEVICES.LW_DUO_96.engines.find(e => e.protocol === 'd1-tape')!;
-  const tape24 = DUO_TAPE_MEDIA.STANDARD_BLACK_ON_WHITE_24;
-  const tape12 = DUO_TAPE_MEDIA.STANDARD_BLACK_ON_WHITE_12;
+  const tape24 = MEDIA.STANDARD_BLACK_ON_WHITE_24;
+  const tape12 = MEDIA.STANDARD_BLACK_ON_WHITE_12;
 
   it('24 mm cartridge is incompatible with the 96-dot Duo (no d1-wide)', () => {
     expect(mediaCompatibleWith(tape24, narrowTape)).toBe(false);
