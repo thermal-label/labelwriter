@@ -1,5 +1,5 @@
 import type { D1TapeColor, DuoTapeWidth, LabelWriterTapeMedia } from './types.js';
-import { MEDIA } from './_generated/media.js';
+import { MEDIA } from './media.generated.js';
 
 /**
  * Symbolic-colour → wire-format ESC C selector.

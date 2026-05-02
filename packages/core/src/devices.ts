@@ -1,5 +1,5 @@
 import type { DeviceEntry, DeviceRegistry } from '@thermal-label/contracts';
-import { DEVICES, REGISTRY, type DeviceKey } from './_generated/registry.js';
+import { DEVICES, REGISTRY, type DeviceKey } from './devices.generated.js';
 
 /**
  * Aggregated LabelWriter device registry.
@@ -7,7 +7,7 @@ import { DEVICES, REGISTRY, type DeviceKey } from './_generated/registry.js';
  * The data is authored as one `data/devices/<KEY>.json5` file per
  * device; `scripts/compile-data.mjs` validates and aggregates them
  * into the build artifact `data/devices.json` and the typed
- * `src/_generated/registry.ts` re-exported here.
+ * `src/devices.generated.ts` re-exported here.
  */
 export const REGISTRY_LW: DeviceRegistry = REGISTRY;
 

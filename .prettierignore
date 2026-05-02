@@ -8,4 +8,4 @@ docs/api/
 # typecheck/test run without prettier-roundtripping the result.
 packages/core/data/devices.json
 packages/core/data/media.json
-packages/core/src/_generated/
+packages/core/src/*.generated.ts

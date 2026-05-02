@@ -1,5 +1,5 @@
 import type { LabelWriterMedia } from './types.js';
-import { MEDIA, type MediaKey } from './_generated/media.js';
+import { MEDIA, type MediaKey } from './media.generated.js';
 
 export { MEDIA, type MediaKey };
 
