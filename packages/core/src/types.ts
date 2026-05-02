@@ -54,6 +54,24 @@ export interface LabelWriterMedia extends MediaDescriptor {
 export type DuoTapeWidth = 6 | 9 | 12 | 19 | 24;
 
 /**
+ * Symbolic colour names for D1 cartridges. Drives docs / preview
+ * rendering via `D1_TAPE_COLOR_HEX`. Wire-format colour selection
+ * remains the numeric `tapeColour` (ESC C selector).
+ */
+export type D1TapeColor =
+  | 'white'
+  | 'clear'
+  | 'yellow'
+  | 'blue'
+  | 'green'
+  | 'red'
+  | 'black'
+  | 'orange';
+
+/** D1 cartridge material families per `dymo-labels-lm.pdf`. */
+export type D1Material = 'standard' | 'permanent-polyester' | 'flexible-nylon' | 'durable';
+
+/**
  * Duo tape-cassette media descriptor.
  *
  * Tape is continuous along its length, so `heightMm` is omitted —
@@ -65,12 +83,22 @@ export type DuoTapeWidth = 6 | 9 | 12 | 19 | 24;
  * Parallel to (not a variant of) `LabelWriterMedia`: the tape engine
  * has its own protocol module and doesn't share the die-cut/continuous
  * length-dots plumbing. Routed via discrimination on `type`.
+ *
+ * Catalogue metadata (`material`, `background`, `text`) is optional
+ * to keep the type compatible with user-constructed descriptors;
+ * `DUO_TAPE_MEDIA` entries declare all three.
  */
 export interface LabelWriterTapeMedia extends MediaDescriptor {
   type: 'tape';
   tapeWidthMm: DuoTapeWidth;
   /** ESC C selector 0..12; defaults to 0 (black on white) when omitted. */
   tapeColour?: number;
+  /** Cartridge material family — drives docs grouping + UI. */
+  material?: D1Material;
+  /** Background colour of the tape — drives preview rendering. */
+  background?: D1TapeColor;
+  /** Print colour. */
+  text?: D1TapeColor;
 }
 
 /**

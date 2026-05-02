@@ -13,7 +13,9 @@
         },
         "serial": {
           "defaultBaud": 115200,
-          "supportedBauds": [115200]
+          "supportedBauds": [
+            115200
+          ]
         }
       },
       "engines": [
@@ -21,7 +23,10 @@
           "role": "primary",
           "protocol": "lw-330",
           "dpi": 300,
-          "headDots": 464
+          "headDots": 464,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -39,7 +44,9 @@
         },
         "serial": {
           "defaultBaud": 115200,
-          "supportedBauds": [115200]
+          "supportedBauds": [
+            115200
+          ]
         }
       },
       "engines": [
@@ -47,7 +54,10 @@
           "role": "primary",
           "protocol": "lw-330",
           "dpi": 300,
-          "headDots": 464
+          "headDots": 464,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -65,7 +75,9 @@
         },
         "serial": {
           "defaultBaud": 115200,
-          "supportedBauds": [115200]
+          "supportedBauds": [
+            115200
+          ]
         }
       },
       "engines": [
@@ -73,7 +85,10 @@
           "role": "primary",
           "protocol": "lw-330",
           "dpi": 300,
-          "headDots": 672
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -87,7 +102,9 @@
       "transports": {
         "serial": {
           "defaultBaud": 115200,
-          "supportedBauds": [115200]
+          "supportedBauds": [
+            115200
+          ]
         }
       },
       "engines": [
@@ -95,7 +112,10 @@
           "role": "primary",
           "protocol": "lw-330",
           "dpi": 300,
-          "headDots": 672
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -117,7 +137,10 @@
           "role": "primary",
           "protocol": "lw-450",
           "dpi": 300,
-          "headDots": 672
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -139,7 +162,10 @@
           "role": "primary",
           "protocol": "lw-450",
           "dpi": 300,
-          "headDots": 672
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -161,7 +187,10 @@
           "role": "primary",
           "protocol": "lw-450",
           "dpi": 300,
-          "headDots": 672
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -184,7 +213,9 @@
           "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
-          "mediaCompatibility": ["standard"],
+          "mediaCompatibility": [
+            "lw"
+          ],
           "bind": {
             "usb": {
               "bInterfaceNumber": 0
@@ -196,7 +227,10 @@
           "protocol": "d1-tape",
           "dpi": 180,
           "headDots": 128,
-          "mediaCompatibility": ["d1"],
+          "mediaCompatibility": [
+            "d1",
+            "d1-wide"
+          ],
           "capabilities": {
             "autocut": true
           },
@@ -226,7 +260,10 @@
           "role": "primary",
           "protocol": "lw-450",
           "dpi": 300,
-          "headDots": 672
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -249,6 +286,9 @@
           "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
           "bind": {
             "address": 49
           }
@@ -258,6 +298,9 @@
           "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
           "bind": {
             "address": 50
           }
@@ -282,7 +325,11 @@
           "role": "primary",
           "protocol": "lw-450",
           "dpi": 300,
-          "headDots": 1248
+          "headDots": 1248,
+          "mediaCompatibility": [
+            "lw",
+            "lw-wide"
+          ]
         }
       ],
       "support": {
@@ -305,7 +352,9 @@
           "protocol": "lw-550",
           "dpi": 300,
           "headDots": 672,
-          "mediaCompatibility": ["standard"],
+          "mediaCompatibility": [
+            "lw"
+          ],
           "capabilities": {
             "mediaDetection": true,
             "genuineMediaRequired": true
@@ -336,7 +385,9 @@
           "protocol": "lw-550",
           "dpi": 300,
           "headDots": 672,
-          "mediaCompatibility": ["standard"],
+          "mediaCompatibility": [
+            "lw"
+          ],
           "capabilities": {
             "mediaDetection": true,
             "genuineMediaRequired": true
@@ -367,7 +418,10 @@
           "protocol": "lw-550",
           "dpi": 300,
           "headDots": 1248,
-          "mediaCompatibility": ["standard"],
+          "mediaCompatibility": [
+            "lw",
+            "lw-wide"
+          ],
           "capabilities": {
             "mediaDetection": true,
             "genuineMediaRequired": true
@@ -395,7 +449,9 @@
           "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
-          "mediaCompatibility": ["standard"],
+          "mediaCompatibility": [
+            "lw"
+          ],
           "bind": {
             "usb": {
               "bInterfaceNumber": 0
@@ -407,7 +463,10 @@
           "protocol": "d1-tape",
           "dpi": 180,
           "headDots": 128,
-          "mediaCompatibility": ["d1"],
+          "mediaCompatibility": [
+            "d1",
+            "d1-wide"
+          ],
           "capabilities": {
             "autocut": true
           },
@@ -438,7 +497,9 @@
           "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
-          "mediaCompatibility": ["standard"],
+          "mediaCompatibility": [
+            "lw"
+          ],
           "bind": {
             "usb": {
               "bInterfaceNumber": 0
@@ -450,7 +511,9 @@
           "protocol": "d1-tape",
           "dpi": 180,
           "headDots": 96,
-          "mediaCompatibility": ["d1"],
+          "mediaCompatibility": [
+            "d1"
+          ],
           "capabilities": {
             "autocut": true
           },
@@ -472,7 +535,9 @@
       "transports": {
         "serial": {
           "defaultBaud": 19200,
-          "supportedBauds": [19200]
+          "supportedBauds": [
+            19200
+          ]
         }
       },
       "engines": [
@@ -480,7 +545,10 @@
           "role": "primary",
           "protocol": "lw-330",
           "dpi": 203,
-          "headDots": 320
+          "headDots": 320,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -494,7 +562,9 @@
       "transports": {
         "serial": {
           "defaultBaud": 19200,
-          "supportedBauds": [19200]
+          "supportedBauds": [
+            19200
+          ]
         }
       },
       "engines": [
@@ -502,7 +572,10 @@
           "role": "primary",
           "protocol": "lw-330",
           "dpi": 203,
-          "headDots": 448
+          "headDots": 448,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -520,7 +593,9 @@
         },
         "serial": {
           "defaultBaud": 9600,
-          "supportedBauds": [9600]
+          "supportedBauds": [
+            9600
+          ]
         }
       },
       "engines": [
@@ -528,7 +603,10 @@
           "role": "primary",
           "protocol": "lw-450",
           "dpi": 203,
-          "headDots": 448
+          "headDots": 448,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "hardwareQuirks": "Single-roll embedded variant. Firmware does not accept ESC G (short form feed) or ESC q (roll select); both are roll-related and not relevant to the SE450.",
@@ -543,7 +621,9 @@
       "transports": {
         "serial": {
           "defaultBaud": 115200,
-          "supportedBauds": [115200]
+          "supportedBauds": [
+            115200
+          ]
         }
       },
       "engines": [
@@ -551,7 +631,10 @@
           "role": "primary",
           "protocol": "lw-330",
           "dpi": 203,
-          "headDots": 448
+          "headDots": 448,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {
@@ -574,6 +657,9 @@
           "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
           "bind": {
             "address": 49
           }
@@ -583,6 +669,9 @@
           "protocol": "lw-450",
           "dpi": 300,
           "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
           "bind": {
             "address": 50
           }
@@ -610,7 +699,10 @@
           "role": "primary",
           "protocol": "lw-450",
           "dpi": 300,
-          "headDots": 672
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
         }
       ],
       "support": {

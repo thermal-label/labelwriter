@@ -11,7 +11,7 @@
       protocol: 'lw-450',
       dpi: 300,
       headDots: 672,
-      mediaCompatibility: ['standard'],
+      mediaCompatibility: ['lw'],
       bind: { usb: { bInterfaceNumber: 0 } },
     },
     {
@@ -19,7 +19,7 @@
       protocol: 'd1-tape',
       dpi: 180,
       headDots: 128,
-      mediaCompatibility: ['d1'],
+      mediaCompatibility: ['d1', 'd1-wide'],
       capabilities: { autocut: true },
       bind: { usb: { bInterfaceNumber: 1 } },
     },

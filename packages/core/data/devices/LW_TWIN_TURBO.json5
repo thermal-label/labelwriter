@@ -18,6 +18,7 @@
       protocol: 'lw-450',
       dpi: 300,
       headDots: 672,
+      mediaCompatibility: ['lw'],
       bind: { address: 0x31 },
     },
     {
@@ -25,6 +26,7 @@
       protocol: 'lw-450',
       dpi: 300,
       headDots: 672,
+      mediaCompatibility: ['lw'],
       bind: { address: 0x32 },
     },
   ],

@@ -4,654 +4,720 @@
 import type { DeviceEntry, DeviceRegistry } from '@thermal-label/contracts';
 
 export const REGISTRY = {
-  schemaVersion: 1,
-  driver: 'labelwriter',
-  devices: [
+  "schemaVersion": 1,
+  "driver": "labelwriter",
+  "devices": [
     {
-      key: 'LW_300',
-      name: 'LabelWriter 300',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0009',
+      "key": "LW_300",
+      "name": "LabelWriter 300",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0009"
         },
-        serial: {
-          defaultBaud: 115200,
-          supportedBauds: [115200],
-        },
+        "serial": {
+          "defaultBaud": 115200,
+          "supportedBauds": [
+            115200
+          ]
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-330',
-          dpi: 300,
-          headDots: 464,
-        },
+          "role": "primary",
+          "protocol": "lw-330",
+          "dpi": 300,
+          "headDots": 464,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_310',
-      name: 'LabelWriter 310',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0009',
+      "key": "LW_310",
+      "name": "LabelWriter 310",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0009"
         },
-        serial: {
-          defaultBaud: 115200,
-          supportedBauds: [115200],
-        },
+        "serial": {
+          "defaultBaud": 115200,
+          "supportedBauds": [
+            115200
+          ]
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-330',
-          dpi: 300,
-          headDots: 464,
-        },
+          "role": "primary",
+          "protocol": "lw-330",
+          "dpi": 300,
+          "headDots": 464,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_330',
-      name: 'LabelWriter 330',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0007',
+      "key": "LW_330",
+      "name": "LabelWriter 330",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0007"
         },
-        serial: {
-          defaultBaud: 115200,
-          supportedBauds: [115200],
-        },
+        "serial": {
+          "defaultBaud": 115200,
+          "supportedBauds": [
+            115200
+          ]
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-330',
-          dpi: 300,
-          headDots: 672,
-        },
+          "role": "primary",
+          "protocol": "lw-330",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_330_TURBO',
-      name: 'LabelWriter 330 Turbo',
-      family: 'labelwriter',
-      transports: {
-        serial: {
-          defaultBaud: 115200,
-          supportedBauds: [115200],
-        },
+      "key": "LW_330_TURBO",
+      "name": "LabelWriter 330 Turbo",
+      "family": "labelwriter",
+      "transports": {
+        "serial": {
+          "defaultBaud": 115200,
+          "supportedBauds": [
+            115200
+          ]
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-330',
-          dpi: 300,
-          headDots: 672,
-        },
+          "role": "primary",
+          "protocol": "lw-330",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_400',
-      name: 'LabelWriter 400',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0019',
-        },
+      "key": "LW_400",
+      "name": "LabelWriter 400",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0019"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-        },
+          "role": "primary",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_400_TURBO',
-      name: 'LabelWriter 400 Turbo',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x001a',
-        },
+      "key": "LW_400_TURBO",
+      "name": "LabelWriter 400 Turbo",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x001a"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-        },
+          "role": "primary",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_450',
-      name: 'LabelWriter 450',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0020',
-        },
+      "key": "LW_450",
+      "name": "LabelWriter 450",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0020"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-        },
+          "role": "primary",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_450_DUO',
-      name: 'LabelWriter 450 Duo',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0023',
-        },
+      "key": "LW_450_DUO",
+      "name": "LabelWriter 450 Duo",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0023"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'label',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-          mediaCompatibility: ['standard'],
-          bind: {
-            usb: {
-              bInterfaceNumber: 0,
-            },
+          "role": "label",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
+          "bind": {
+            "usb": {
+              "bInterfaceNumber": 0
+            }
+          }
+        },
+        {
+          "role": "tape",
+          "protocol": "d1-tape",
+          "dpi": 180,
+          "headDots": 128,
+          "mediaCompatibility": [
+            "d1",
+            "d1-wide"
+          ],
+          "capabilities": {
+            "autocut": true
           },
-        },
-        {
-          role: 'tape',
-          protocol: 'd1-tape',
-          dpi: 180,
-          headDots: 128,
-          mediaCompatibility: ['d1'],
-          capabilities: {
-            autocut: true,
-          },
-          bind: {
-            usb: {
-              bInterfaceNumber: 1,
-            },
-          },
-        },
+          "bind": {
+            "usb": {
+              "bInterfaceNumber": 1
+            }
+          }
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_450_TURBO',
-      name: 'LabelWriter 450 Turbo',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0021',
-        },
+      "key": "LW_450_TURBO",
+      "name": "LabelWriter 450 Turbo",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0021"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-        },
+          "role": "primary",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_450_TWIN_TURBO',
-      name: 'LabelWriter 450 Twin Turbo',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0022',
-        },
+      "key": "LW_450_TWIN_TURBO",
+      "name": "LabelWriter 450 Twin Turbo",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0022"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'left',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-          bind: {
-            address: 49,
-          },
+          "role": "left",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
+          "bind": {
+            "address": 49
+          }
         },
         {
-          role: 'right',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-          bind: {
-            address: 50,
-          },
-        },
+          "role": "right",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
+          "bind": {
+            "address": 50
+          }
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_4XL',
-      name: 'LabelWriter 4XL',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x001f',
-        },
+      "key": "LW_4XL",
+      "name": "LabelWriter 4XL",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x001f"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 1248,
-        },
+          "role": "primary",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 1248,
+          "mediaCompatibility": [
+            "lw",
+            "lw-wide"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_550',
-      name: 'LabelWriter 550',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0028',
-        },
+      "key": "LW_550",
+      "name": "LabelWriter 550",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0028"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-550',
-          dpi: 300,
-          headDots: 672,
-          mediaCompatibility: ['standard'],
-          capabilities: {
-            mediaDetection: true,
-            genuineMediaRequired: true,
-          },
-        },
+          "role": "primary",
+          "protocol": "lw-550",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
+          "capabilities": {
+            "mediaDetection": true,
+            "genuineMediaRequired": true
+          }
+        }
       ],
-      hardwareQuirks:
-        'NFC-based roll authentication: refuses non-genuine rolls outright. On genuine rolls, the NFC-defined length is authoritative — host claims to print at a different length are silently overridden, manifesting as a misprint at NFC dimensions. Apps that compare detected vs selected media should warn the user before sending.',
-      support: {
-        status: 'untested',
-      },
+      "hardwareQuirks": "NFC-based roll authentication: refuses non-genuine rolls outright. On genuine rolls, the NFC-defined length is authoritative — host claims to print at a different length are silently overridden, manifesting as a misprint at NFC dimensions. Apps that compare detected vs selected media should warn the user before sending.",
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_550_TURBO',
-      name: 'LabelWriter 550 Turbo',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0029',
+      "key": "LW_550_TURBO",
+      "name": "LabelWriter 550 Turbo",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0029"
         },
-        tcp: {
-          port: 9100,
-        },
+        "tcp": {
+          "port": 9100
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-550',
-          dpi: 300,
-          headDots: 672,
-          mediaCompatibility: ['standard'],
-          capabilities: {
-            mediaDetection: true,
-            genuineMediaRequired: true,
-          },
-        },
+          "role": "primary",
+          "protocol": "lw-550",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
+          "capabilities": {
+            "mediaDetection": true,
+            "genuineMediaRequired": true
+          }
+        }
       ],
-      hardwareQuirks:
-        'NFC-based roll authentication: refuses non-genuine rolls outright. On genuine rolls, the NFC-defined length is authoritative — host claims to print at a different length are silently overridden, manifesting as a misprint at NFC dimensions. Apps that compare detected vs selected media should warn the user before sending.',
-      support: {
-        status: 'untested',
-      },
+      "hardwareQuirks": "NFC-based roll authentication: refuses non-genuine rolls outright. On genuine rolls, the NFC-defined length is authoritative — host claims to print at a different length are silently overridden, manifesting as a misprint at NFC dimensions. Apps that compare detected vs selected media should warn the user before sending.",
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_5XL',
-      name: 'LabelWriter 5XL',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x002a',
+      "key": "LW_5XL",
+      "name": "LabelWriter 5XL",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x002a"
         },
-        tcp: {
-          port: 9100,
-        },
+        "tcp": {
+          "port": 9100
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-550',
-          dpi: 300,
-          headDots: 1248,
-          mediaCompatibility: ['standard'],
-          capabilities: {
-            mediaDetection: true,
-            genuineMediaRequired: true,
-          },
-        },
+          "role": "primary",
+          "protocol": "lw-550",
+          "dpi": 300,
+          "headDots": 1248,
+          "mediaCompatibility": [
+            "lw",
+            "lw-wide"
+          ],
+          "capabilities": {
+            "mediaDetection": true,
+            "genuineMediaRequired": true
+          }
+        }
       ],
-      hardwareQuirks:
-        'NFC-based roll authentication: refuses non-genuine rolls outright. On genuine rolls, the NFC-defined length is authoritative — host claims to print at a different length are silently overridden, manifesting as a misprint at NFC dimensions. Apps that compare detected vs selected media should warn the user before sending.',
-      support: {
-        status: 'untested',
-      },
+      "hardwareQuirks": "NFC-based roll authentication: refuses non-genuine rolls outright. On genuine rolls, the NFC-defined length is authoritative — host claims to print at a different length are silently overridden, manifesting as a misprint at NFC dimensions. Apps that compare detected vs selected media should warn the user before sending.",
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_DUO_128',
-      name: 'LabelWriter Duo - 128',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x001d',
-        },
+      "key": "LW_DUO_128",
+      "name": "LabelWriter Duo - 128",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x001d"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'label',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-          mediaCompatibility: ['standard'],
-          bind: {
-            usb: {
-              bInterfaceNumber: 0,
-            },
-          },
+          "role": "label",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
+          "bind": {
+            "usb": {
+              "bInterfaceNumber": 0
+            }
+          }
         },
         {
-          role: 'tape',
-          protocol: 'd1-tape',
-          dpi: 180,
-          headDots: 128,
-          mediaCompatibility: ['d1'],
-          capabilities: {
-            autocut: true,
+          "role": "tape",
+          "protocol": "d1-tape",
+          "dpi": 180,
+          "headDots": 128,
+          "mediaCompatibility": [
+            "d1",
+            "d1-wide"
+          ],
+          "capabilities": {
+            "autocut": true
           },
-          bind: {
-            usb: {
-              bInterfaceNumber: 1,
-            },
-          },
-        },
+          "bind": {
+            "usb": {
+              "bInterfaceNumber": 1
+            }
+          }
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_DUO_96',
-      name: 'LabelWriter Duo - 96',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0017',
-        },
+      "key": "LW_DUO_96",
+      "name": "LabelWriter Duo - 96",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0017"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'label',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-          mediaCompatibility: ['standard'],
-          bind: {
-            usb: {
-              bInterfaceNumber: 0,
-            },
+          "role": "label",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
+          "bind": {
+            "usb": {
+              "bInterfaceNumber": 0
+            }
+          }
+        },
+        {
+          "role": "tape",
+          "protocol": "d1-tape",
+          "dpi": 180,
+          "headDots": 96,
+          "mediaCompatibility": [
+            "d1"
+          ],
+          "capabilities": {
+            "autocut": true
           },
-        },
-        {
-          role: 'tape',
-          protocol: 'd1-tape',
-          dpi: 180,
-          headDots: 96,
-          mediaCompatibility: ['d1'],
-          capabilities: {
-            autocut: true,
-          },
-          bind: {
-            usb: {
-              bInterfaceNumber: 1,
-            },
-          },
-        },
+          "bind": {
+            "usb": {
+              "bInterfaceNumber": 1
+            }
+          }
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_EL40',
-      name: 'LabelWriter EL40',
-      family: 'labelwriter',
-      transports: {
-        serial: {
-          defaultBaud: 19200,
-          supportedBauds: [19200],
-        },
+      "key": "LW_EL40",
+      "name": "LabelWriter EL40",
+      "family": "labelwriter",
+      "transports": {
+        "serial": {
+          "defaultBaud": 19200,
+          "supportedBauds": [
+            19200
+          ]
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-330',
-          dpi: 203,
-          headDots: 320,
-        },
+          "role": "primary",
+          "protocol": "lw-330",
+          "dpi": 203,
+          "headDots": 320,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_EL60',
-      name: 'LabelWriter EL60',
-      family: 'labelwriter',
-      transports: {
-        serial: {
-          defaultBaud: 19200,
-          supportedBauds: [19200],
-        },
+      "key": "LW_EL60",
+      "name": "LabelWriter EL60",
+      "family": "labelwriter",
+      "transports": {
+        "serial": {
+          "defaultBaud": 19200,
+          "supportedBauds": [
+            19200
+          ]
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-330',
-          dpi: 203,
-          headDots: 448,
-        },
+          "role": "primary",
+          "protocol": "lw-330",
+          "dpi": 203,
+          "headDots": 448,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_SE450',
-      name: 'LabelWriter SE450',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0400',
+      "key": "LW_SE450",
+      "name": "LabelWriter SE450",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0400"
         },
-        serial: {
-          defaultBaud: 9600,
-          supportedBauds: [9600],
-        },
+        "serial": {
+          "defaultBaud": 9600,
+          "supportedBauds": [
+            9600
+          ]
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-450',
-          dpi: 203,
-          headDots: 448,
-        },
+          "role": "primary",
+          "protocol": "lw-450",
+          "dpi": 203,
+          "headDots": 448,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      hardwareQuirks:
-        'Single-roll embedded variant. Firmware does not accept ESC G (short form feed) or ESC q (roll select); both are roll-related and not relevant to the SE450.',
-      support: {
-        status: 'untested',
-      },
+      "hardwareQuirks": "Single-roll embedded variant. Firmware does not accept ESC G (short form feed) or ESC q (roll select); both are roll-related and not relevant to the SE450.",
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_TURBO',
-      name: 'LabelWriter Turbo',
-      family: 'labelwriter',
-      transports: {
-        serial: {
-          defaultBaud: 115200,
-          supportedBauds: [115200],
-        },
+      "key": "LW_TURBO",
+      "name": "LabelWriter Turbo",
+      "family": "labelwriter",
+      "transports": {
+        "serial": {
+          "defaultBaud": 115200,
+          "supportedBauds": [
+            115200
+          ]
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-330',
-          dpi: 203,
-          headDots: 448,
-        },
+          "role": "primary",
+          "protocol": "lw-330",
+          "dpi": 203,
+          "headDots": 448,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_TWIN_TURBO',
-      name: 'LabelWriter Twin Turbo',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0018',
-        },
+      "key": "LW_TWIN_TURBO",
+      "name": "LabelWriter Twin Turbo",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0018"
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'left',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-          bind: {
-            address: 49,
-          },
+          "role": "left",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
+          "bind": {
+            "address": 49
+          }
         },
         {
-          role: 'right',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-          bind: {
-            address: 50,
-          },
-        },
+          "role": "right",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ],
+          "bind": {
+            "address": 50
+          }
+        }
       ],
-      support: {
-        status: 'untested',
-      },
+      "support": {
+        "status": "untested"
+      }
     },
     {
-      key: 'LW_WIRELESS',
-      name: 'LabelWriter Wireless',
-      family: 'labelwriter',
-      transports: {
-        usb: {
-          vid: '0x0922',
-          pid: '0x0031',
+      "key": "LW_WIRELESS",
+      "name": "LabelWriter Wireless",
+      "family": "labelwriter",
+      "transports": {
+        "usb": {
+          "vid": "0x0922",
+          "pid": "0x0031"
         },
-        tcp: {
-          port: 9100,
-        },
+        "tcp": {
+          "port": 9100
+        }
       },
-      engines: [
+      "engines": [
         {
-          role: 'primary',
-          protocol: 'lw-450',
-          dpi: 300,
-          headDots: 672,
-        },
+          "role": "primary",
+          "protocol": "lw-450",
+          "dpi": 300,
+          "headDots": 672,
+          "mediaCompatibility": [
+            "lw"
+          ]
+        }
       ],
-      support: {
-        status: 'untested',
-      },
-    },
-  ],
+      "support": {
+        "status": "untested"
+      }
+    }
+  ]
 } as const satisfies DeviceRegistry;
 
-export type DeviceKey =
-  | 'LW_300'
-  | 'LW_310'
-  | 'LW_330'
-  | 'LW_330_TURBO'
-  | 'LW_400'
-  | 'LW_400_TURBO'
-  | 'LW_450'
-  | 'LW_450_DUO'
-  | 'LW_450_TURBO'
-  | 'LW_450_TWIN_TURBO'
-  | 'LW_4XL'
-  | 'LW_550'
-  | 'LW_550_TURBO'
-  | 'LW_5XL'
-  | 'LW_DUO_128'
-  | 'LW_DUO_96'
-  | 'LW_EL40'
-  | 'LW_EL60'
-  | 'LW_SE450'
-  | 'LW_TURBO'
-  | 'LW_TWIN_TURBO'
-  | 'LW_WIRELESS';
+export type DeviceKey = 'LW_300' | 'LW_310' | 'LW_330' | 'LW_330_TURBO' | 'LW_400' | 'LW_400_TURBO' | 'LW_450' | 'LW_450_DUO' | 'LW_450_TURBO' | 'LW_450_TWIN_TURBO' | 'LW_4XL' | 'LW_550' | 'LW_550_TURBO' | 'LW_5XL' | 'LW_DUO_128' | 'LW_DUO_96' | 'LW_EL40' | 'LW_EL60' | 'LW_SE450' | 'LW_TURBO' | 'LW_TWIN_TURBO' | 'LW_WIRELESS';
 
 export const DEVICES: Record<DeviceKey, DeviceEntry> = {
   LW_300: REGISTRY.devices[0],

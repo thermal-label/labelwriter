@@ -8,6 +8,8 @@
     usb: { vid: '0x0922', pid: '0x0009' },
     serial: { defaultBaud: 115200, supportedBauds: [115200] },
   },
-  engines: [{ role: 'primary', protocol: 'lw-330', dpi: 300, headDots: 464 }],
+  engines: [
+    { role: 'primary', protocol: 'lw-330', dpi: 300, headDots: 464, mediaCompatibility: ['lw'] },
+  ],
   support: { status: 'untested' },
 }

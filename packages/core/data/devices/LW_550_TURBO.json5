@@ -20,7 +20,7 @@
       protocol: 'lw-550',
       dpi: 300,
       headDots: 672,
-      mediaCompatibility: ['standard'],
+      mediaCompatibility: ['lw'],
       capabilities: {
         mediaDetection: true,
         genuineMediaRequired: true,

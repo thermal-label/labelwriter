@@ -76,6 +76,8 @@ export {
 export type { EngineVersion, SkuInfo } from './protocol-550.js';
 export { createPreviewOffline } from './preview.js';
 export type {
+  D1Material,
+  D1TapeColor,
   Density,
   DuoTapeWidth,
   LabelWriterAnyMedia,
@@ -101,4 +103,10 @@ export {
 } from './duo-tape.js';
 export type { DuoTapePrintOptions } from './duo-tape.js';
 export { DUO_TAPE_STATUS_BYTE_COUNT, parseDuoTapeStatus } from './duo-tape-status.js';
-export { DUO_TAPE_MEDIA, findTapeMediaByWidth } from './duo-tape-media.js';
+export {
+  D1_TAPE_COLOR_HEX,
+  DUO_TAPE_MEDIA,
+  findTapeMediaByWidth,
+  findTapeMediaByWidthAll,
+  tapeColourFor,
+} from './duo-tape-media.js';

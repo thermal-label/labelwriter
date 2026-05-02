@@ -11,6 +11,8 @@
   transports: {
     serial: { defaultBaud: 19200, supportedBauds: [19200] },
   },
-  engines: [{ role: 'primary', protocol: 'lw-330', dpi: 203, headDots: 320 }],
+  engines: [
+    { role: 'primary', protocol: 'lw-330', dpi: 203, headDots: 320, mediaCompatibility: ['lw'] },
+  ],
   support: { status: 'untested' },
 }

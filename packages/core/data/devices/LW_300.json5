@@ -15,6 +15,7 @@
       dpi: 300,
       // 464 dots / 58 bytes per dymo-cups-drivers (clamps from 1.57" × 300 = 471).
       headDots: 464,
+      mediaCompatibility: ['lw'],
     },
   ],
   support: { status: 'untested' },
