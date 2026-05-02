@@ -48,15 +48,24 @@
 //
 // Tape is continuous along its length, so `heightMm` / `lengthDots`
 // are intentionally omitted. Source declares `widthMm` (one of
-// 6 / 9 / 12 / 19 / 24), `material`, `background`, `text`, and `skus`.
-// The compile script fills:
+// 6 / 9 / 12 / 19 / 24), `material`, `background`, `text`, `skus`,
+// and `targetModels`. The compile script fills:
 //   - `category: 'cartridge'`
 //   - `tapeWidthMm = widthMm`
 //   - `tapeColour` via the symbolic-colour → ESC C selector mapping
 //     mirrored from `tapeColourFor` in `duo-tape-media.ts` (source-
 //     of-truth lives there; the script duplicates the table)
-//   - `targetModels = widthMm === 24 ? ['d1-wide'] : ['d1']`
-// Override `targetModels` in source if the default doesn't fit.
+//
+// `targetModels` is explicit, NOT defaulted. D1 cartridges are a
+// cross-driver substrate (LabelWriter Duo today, potentially a
+// LabelManager driver tomorrow — `dymo-labels-lm.pdf` is the
+// shared catalogue), so the registry should declare its own
+// substrate tags rather than inherit a Duo-shaped default from
+// the labelwriter compile script. Convention: `['d1']` for
+// 6 / 9 / 12 / 19 mm, `['d1-wide']` for 24 mm — engines that
+// accept 24 mm declare both `'d1'` and `'d1-wide'` in
+// `mediaCompatibility`, so wide cartridges resolve only on
+// chassis that physically accept them.
 //
 // ─── Lookup ──────────────────────────────────────────────────────
 //
@@ -424,6 +433,7 @@
     background: 'white',
     text: 'black',
     skus: ['43613', 'S0720780'],
+    targetModels: ['d1'],
   },
 
   // ─── Standard ─────────────────────────────────────────────── 9 mm ─
@@ -437,6 +447,7 @@
     background: 'clear',
     text: 'black',
     skus: ['40910', 'S0720670'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_BLACK_ON_WHITE_9',
@@ -448,6 +459,7 @@
     background: 'white',
     text: 'black',
     skus: ['41913'],
+    targetModels: ['d1'],
   },
 
   // ─── Standard ────────────────────────────────────────────── 12 mm ─
@@ -461,6 +473,7 @@
     background: 'white',
     text: 'black',
     skus: ['45013'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_BLACK_ON_CLEAR_12',
@@ -472,6 +485,7 @@
     background: 'clear',
     text: 'black',
     skus: ['45010'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_BLACK_ON_YELLOW_12',
@@ -483,6 +497,7 @@
     background: 'yellow',
     text: 'black',
     skus: ['45018'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_BLACK_ON_BLUE_12',
@@ -494,6 +509,7 @@
     background: 'blue',
     text: 'black',
     skus: ['45016', 'S0720560'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_BLACK_ON_GREEN_12',
@@ -505,6 +521,7 @@
     background: 'green',
     text: 'black',
     skus: ['45019', 'S0720590'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_BLACK_ON_RED_12',
@@ -516,6 +533,7 @@
     background: 'red',
     text: 'black',
     skus: ['45017', 'S0720570'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_WHITE_ON_CLEAR_12',
@@ -527,6 +545,7 @@
     background: 'clear',
     text: 'white',
     skus: ['45020', 'S0720600'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_WHITE_ON_BLACK_12',
@@ -538,6 +557,7 @@
     background: 'black',
     text: 'white',
     skus: ['45021', 'S0720610'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_BLUE_ON_WHITE_12',
@@ -549,6 +569,7 @@
     background: 'white',
     text: 'blue',
     skus: ['45014'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_RED_ON_WHITE_12',
@@ -560,6 +581,7 @@
     background: 'white',
     text: 'red',
     skus: ['45015', 'S0720550'],
+    targetModels: ['d1'],
   },
 
   // ─── Standard ────────────────────────────────────────────── 19 mm ─
@@ -577,6 +599,7 @@
     background: 'white',
     text: 'black',
     skus: ['45800'],
+    targetModels: ['d1'],
   },
   {
     key: 'STANDARD_BLACK_ON_CLEAR_19',
@@ -588,6 +611,7 @@
     background: 'clear',
     text: 'black',
     skus: ['45803', 'S0720820'],
+    targetModels: ['d1'],
   },
 
   // ─── Standard (24 mm — wide tier) ──────────────────────────────────
@@ -601,6 +625,7 @@
     background: 'white',
     text: 'black',
     skus: ['53713', 'S0720930'],
+    targetModels: ['d1-wide'],
   },
   {
     key: 'STANDARD_BLACK_ON_YELLOW_24',
@@ -612,6 +637,7 @@
     background: 'yellow',
     text: 'black',
     skus: ['53718', 'S0720980'],
+    targetModels: ['d1-wide'],
   },
 
   // ─── Permanent Polyester ───────────────────────────────────────────
@@ -628,6 +654,7 @@
     background: 'white',
     text: 'black',
     skus: ['16955'],
+    targetModels: ['d1'],
   },
 
   // ─── Flexible Nylon ───────────────────────────────────────────────
@@ -641,6 +668,7 @@
     background: 'white',
     text: 'black',
     skus: ['16953', 'S0718040'],
+    targetModels: ['d1'],
   },
 
   // ─── Durable (industrial) ─────────────────────────────────────────
@@ -654,6 +682,7 @@
     background: 'white',
     text: 'black',
     skus: ['1978364'],
+    targetModels: ['d1'],
   },
   {
     key: 'DURABLE_WHITE_ON_BLACK_12',
@@ -665,6 +694,7 @@
     background: 'black',
     text: 'white',
     skus: ['1978365'],
+    targetModels: ['d1'],
   },
   {
     key: 'DURABLE_WHITE_ON_RED_12',
@@ -676,6 +706,7 @@
     background: 'red',
     text: 'white',
     skus: ['1978366'],
+    targetModels: ['d1'],
   },
   {
     key: 'DURABLE_BLACK_ON_ORANGE_12',
@@ -687,5 +718,6 @@
     background: 'orange',
     text: 'black',
     skus: ['1978367'],
+    targetModels: ['d1'],
   },
 ]

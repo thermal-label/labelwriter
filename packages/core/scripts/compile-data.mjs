@@ -131,8 +131,15 @@ function validateDeviceEntry(entry, file) {
 }
 
 // Apply tape-entry defaults in place (category, tapeWidthMm,
-// tapeColour, targetModels). No-op for paper entries. Called before
-// validation so rules see the fully-defaulted shape.
+// tapeColour). No-op for paper entries. Called before validation so
+// rules see the fully-defaulted shape.
+//
+// `targetModels` is intentionally NOT defaulted — D1 cartridges are
+// a cross-driver substrate (LabelWriter Duo today, potentially a
+// LabelManager driver tomorrow), so each entry declares its own
+// substrate tags. A default would silently encode "this registry
+// belongs to the Duo" and force any future shared consumer to
+// duplicate or override the rule.
 function applyTapeDefaults(entry) {
   if (entry?.type !== 'tape') return;
   if (entry.category === undefined) entry.category = 'cartridge';
@@ -145,9 +152,6 @@ function applyTapeDefaults(entry) {
     typeof entry.text === 'string'
   ) {
     entry.tapeColour = tapeColourFor(entry.background, entry.text);
-  }
-  if (entry.targetModels === undefined && typeof entry.widthMm === 'number') {
-    entry.targetModels = entry.widthMm === 24 ? ['d1-wide'] : ['d1'];
   }
 }
 

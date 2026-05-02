@@ -425,12 +425,12 @@ export const MEDIA = {
       "43613",
       "S0720780"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 6,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 6,
+    "tapeColour": 0
   },
   STANDARD_BLACK_ON_CLEAR_9: {
     "id": "d1-standard-bc-9",
@@ -444,12 +444,12 @@ export const MEDIA = {
       "40910",
       "S0720670"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 9,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 9,
+    "tapeColour": 0
   },
   STANDARD_BLACK_ON_WHITE_9: {
     "id": "d1-standard-bw-9",
@@ -462,12 +462,12 @@ export const MEDIA = {
     "skus": [
       "41913"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 9,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 9,
+    "tapeColour": 0
   },
   STANDARD_BLACK_ON_WHITE_12: {
     "id": "d1-standard-bw-12",
@@ -480,12 +480,12 @@ export const MEDIA = {
     "skus": [
       "45013"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 0
   },
   STANDARD_BLACK_ON_CLEAR_12: {
     "id": "d1-standard-bc-12",
@@ -498,12 +498,12 @@ export const MEDIA = {
     "skus": [
       "45010"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 0
   },
   STANDARD_BLACK_ON_YELLOW_12: {
     "id": "d1-standard-by-12",
@@ -516,12 +516,12 @@ export const MEDIA = {
     "skus": [
       "45018"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 4,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 4
   },
   STANDARD_BLACK_ON_BLUE_12: {
     "id": "d1-standard-bbl-12",
@@ -535,12 +535,12 @@ export const MEDIA = {
       "45016",
       "S0720560"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 1,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 1
   },
   STANDARD_BLACK_ON_GREEN_12: {
     "id": "d1-standard-bg-12",
@@ -554,12 +554,12 @@ export const MEDIA = {
       "45019",
       "S0720590"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 6,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 6
   },
   STANDARD_BLACK_ON_RED_12: {
     "id": "d1-standard-br-12",
@@ -573,12 +573,12 @@ export const MEDIA = {
       "45017",
       "S0720570"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 2,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 2
   },
   STANDARD_WHITE_ON_CLEAR_12: {
     "id": "d1-standard-wc-12",
@@ -592,12 +592,12 @@ export const MEDIA = {
       "45020",
       "S0720600"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 9,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 9
   },
   STANDARD_WHITE_ON_BLACK_12: {
     "id": "d1-standard-wbk-12",
@@ -611,12 +611,12 @@ export const MEDIA = {
       "45021",
       "S0720610"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 10,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 10
   },
   STANDARD_BLUE_ON_WHITE_12: {
     "id": "d1-standard-blw-12",
@@ -629,12 +629,12 @@ export const MEDIA = {
     "skus": [
       "45014"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 11,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 11
   },
   STANDARD_RED_ON_WHITE_12: {
     "id": "d1-standard-rw-12",
@@ -648,12 +648,12 @@ export const MEDIA = {
       "45015",
       "S0720550"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 12,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 12
   },
   STANDARD_BLACK_ON_WHITE_19: {
     "id": "d1-standard-bw-19",
@@ -666,12 +666,12 @@ export const MEDIA = {
     "skus": [
       "45800"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 19,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 19,
+    "tapeColour": 0
   },
   STANDARD_BLACK_ON_CLEAR_19: {
     "id": "d1-standard-bc-19",
@@ -685,12 +685,12 @@ export const MEDIA = {
       "45803",
       "S0720820"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 19,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 19,
+    "tapeColour": 0
   },
   STANDARD_BLACK_ON_WHITE_24: {
     "id": "d1-standard-bw-24",
@@ -704,12 +704,12 @@ export const MEDIA = {
       "53713",
       "S0720930"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 24,
-    "tapeColour": 0,
     "targetModels": [
       "d1-wide"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 24,
+    "tapeColour": 0
   },
   STANDARD_BLACK_ON_YELLOW_24: {
     "id": "d1-standard-by-24",
@@ -723,12 +723,12 @@ export const MEDIA = {
       "53718",
       "S0720980"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 24,
-    "tapeColour": 4,
     "targetModels": [
       "d1-wide"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 24,
+    "tapeColour": 4
   },
   PERMANENT_BLACK_ON_WHITE_12: {
     "id": "d1-permanent-bw-12",
@@ -741,12 +741,12 @@ export const MEDIA = {
     "skus": [
       "16955"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 0
   },
   FLEXIBLE_BLACK_ON_WHITE_12: {
     "id": "d1-flexible-bw-12",
@@ -760,12 +760,12 @@ export const MEDIA = {
       "16953",
       "S0718040"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 0
   },
   DURABLE_BLACK_ON_WHITE_12: {
     "id": "d1-durable-bw-12",
@@ -778,12 +778,12 @@ export const MEDIA = {
     "skus": [
       "1978364"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 0
   },
   DURABLE_WHITE_ON_BLACK_12: {
     "id": "d1-durable-wbk-12",
@@ -796,12 +796,12 @@ export const MEDIA = {
     "skus": [
       "1978365"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 10,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 10
   },
   DURABLE_WHITE_ON_RED_12: {
     "id": "d1-durable-wr-12",
@@ -814,12 +814,12 @@ export const MEDIA = {
     "skus": [
       "1978366"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 0
   },
   DURABLE_BLACK_ON_ORANGE_12: {
     "id": "d1-durable-bo-12",
@@ -832,11 +832,11 @@ export const MEDIA = {
     "skus": [
       "1978367"
     ],
-    "category": "cartridge",
-    "tapeWidthMm": 12,
-    "tapeColour": 0,
     "targetModels": [
       "d1"
-    ]
+    ],
+    "category": "cartridge",
+    "tapeWidthMm": 12,
+    "tapeColour": 0
   },
 } as const satisfies Record<MediaKey, LabelWriterAnyMedia>;

@@ -446,12 +446,12 @@
         "43613",
         "S0720780"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 6,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 6,
+      "tapeColour": 0
     },
     {
       "key": "STANDARD_BLACK_ON_CLEAR_9",
@@ -466,12 +466,12 @@
         "40910",
         "S0720670"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 9,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 9,
+      "tapeColour": 0
     },
     {
       "key": "STANDARD_BLACK_ON_WHITE_9",
@@ -485,12 +485,12 @@
       "skus": [
         "41913"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 9,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 9,
+      "tapeColour": 0
     },
     {
       "key": "STANDARD_BLACK_ON_WHITE_12",
@@ -504,12 +504,12 @@
       "skus": [
         "45013"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 0
     },
     {
       "key": "STANDARD_BLACK_ON_CLEAR_12",
@@ -523,12 +523,12 @@
       "skus": [
         "45010"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 0
     },
     {
       "key": "STANDARD_BLACK_ON_YELLOW_12",
@@ -542,12 +542,12 @@
       "skus": [
         "45018"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 4,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 4
     },
     {
       "key": "STANDARD_BLACK_ON_BLUE_12",
@@ -562,12 +562,12 @@
         "45016",
         "S0720560"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 1,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 1
     },
     {
       "key": "STANDARD_BLACK_ON_GREEN_12",
@@ -582,12 +582,12 @@
         "45019",
         "S0720590"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 6,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 6
     },
     {
       "key": "STANDARD_BLACK_ON_RED_12",
@@ -602,12 +602,12 @@
         "45017",
         "S0720570"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 2,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 2
     },
     {
       "key": "STANDARD_WHITE_ON_CLEAR_12",
@@ -622,12 +622,12 @@
         "45020",
         "S0720600"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 9,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 9
     },
     {
       "key": "STANDARD_WHITE_ON_BLACK_12",
@@ -642,12 +642,12 @@
         "45021",
         "S0720610"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 10,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 10
     },
     {
       "key": "STANDARD_BLUE_ON_WHITE_12",
@@ -661,12 +661,12 @@
       "skus": [
         "45014"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 11,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 11
     },
     {
       "key": "STANDARD_RED_ON_WHITE_12",
@@ -681,12 +681,12 @@
         "45015",
         "S0720550"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 12,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 12
     },
     {
       "key": "STANDARD_BLACK_ON_WHITE_19",
@@ -700,12 +700,12 @@
       "skus": [
         "45800"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 19,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 19,
+      "tapeColour": 0
     },
     {
       "key": "STANDARD_BLACK_ON_CLEAR_19",
@@ -720,12 +720,12 @@
         "45803",
         "S0720820"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 19,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 19,
+      "tapeColour": 0
     },
     {
       "key": "STANDARD_BLACK_ON_WHITE_24",
@@ -740,12 +740,12 @@
         "53713",
         "S0720930"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 24,
-      "tapeColour": 0,
       "targetModels": [
         "d1-wide"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 24,
+      "tapeColour": 0
     },
     {
       "key": "STANDARD_BLACK_ON_YELLOW_24",
@@ -760,12 +760,12 @@
         "53718",
         "S0720980"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 24,
-      "tapeColour": 4,
       "targetModels": [
         "d1-wide"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 24,
+      "tapeColour": 4
     },
     {
       "key": "PERMANENT_BLACK_ON_WHITE_12",
@@ -779,12 +779,12 @@
       "skus": [
         "16955"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 0
     },
     {
       "key": "FLEXIBLE_BLACK_ON_WHITE_12",
@@ -799,12 +799,12 @@
         "16953",
         "S0718040"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 0
     },
     {
       "key": "DURABLE_BLACK_ON_WHITE_12",
@@ -818,12 +818,12 @@
       "skus": [
         "1978364"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 0
     },
     {
       "key": "DURABLE_WHITE_ON_BLACK_12",
@@ -837,12 +837,12 @@
       "skus": [
         "1978365"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 10,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 10
     },
     {
       "key": "DURABLE_WHITE_ON_RED_12",
@@ -856,12 +856,12 @@
       "skus": [
         "1978366"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 0
     },
     {
       "key": "DURABLE_BLACK_ON_ORANGE_12",
@@ -875,12 +875,12 @@
       "skus": [
         "1978367"
       ],
-      "category": "cartridge",
-      "tapeWidthMm": 12,
-      "tapeColour": 0,
       "targetModels": [
         "d1"
-      ]
+      ],
+      "category": "cartridge",
+      "tapeWidthMm": 12,
+      "tapeColour": 0
     }
   ]
 }
