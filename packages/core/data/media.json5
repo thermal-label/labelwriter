@@ -1,10 +1,13 @@
-// Dymo LabelWriter consumables registry.
+// Dymo LabelWriter consumables registry — paper rolls and D1 tape
+// cassettes alike. One entry per physical product (regional / durable /
+// count-per-roll SKU variants collapse onto one entry via the `skus`
+// array). Per-`type` rules below.
+//
+// ─── Paper (`type: 'die-cut' | 'continuous'`) ─────────────────────
 //
 // Sourced from the official Dymo per-printer compatibility matrix
 // (`dymo-labels-lw.pdf`, archived at the repo root). One entry per
-// physical (widthMm × heightMm) — regional / durable / count-per-roll
-// SKU variants of the same physical product collapse onto one entry
-// via the `skus` array.
+// physical (widthMm × heightMm).
 //
 // Dimensions assume the 300-dpi print engine (11.81 dots per mm);
 // `lengthDots = round(heightMm * 11.81)` is kept on each die-cut
@@ -21,9 +24,19 @@
 // engine) except wide-only rolls, which carry `['lw-wide']` and only
 // match engines that declare the wide tier (LW 4XL / 5XL).
 //
-// `printMargins` is a design-tool hint (~1.5 mm shipping label inset
-// per the Dymo spec). `cornerRadiusMm` is informational; previews use
-// it to render the actual paper outline.
+// `printMargins` is intentionally **omitted**. The 1.5 mm "design-tool
+// inset" we used to encode here was uniform across every entry —
+// strong signal it isn't actually media-specific. The real,
+// useful margins are the chassis-physical leading / trailing /
+// side offsets, which vary per *engine*, not per *media*. Those
+// live on `engines[].capabilities.{leadingEdgeOffsetMm, ...}`
+// (currently populated for LW_330_TURBO; see
+// plans/backlog/chassis-offset-and-pitch-semantics.md). Design
+// tools that want a visual-breathing-room inset should layer their
+// own constant on top of the chassis offset.
+//
+// `cornerRadiusMm` is informational; previews use it to render the
+// actual paper outline.
 //
 // `key` on each entry is the lookup name exposed via `MEDIA[key]` —
 // e.g. `MEDIA.ADDRESS_STANDARD`. The compile-data script folds this
@@ -41,7 +54,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 602,
     skus: ['30330', '30578'],
     targetModels: ['lw'],
@@ -56,7 +68,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1051,
     skus: ['30251', '30252', '30254', '30320', '30340'],
     targetModels: ['lw'],
@@ -71,7 +82,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1051,
     skus: ['30321'],
     targetModels: ['lw'],
@@ -88,7 +98,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1205,
     skus: ['30323'],
     targetModels: ['lw'],
@@ -103,7 +112,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1205,
     skus: ['30256', '1763982', '1933088'],
     targetModels: ['lw'],
@@ -118,7 +126,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1795,
     skus: ['1744907', '1933086'],
     targetModels: ['lw-wide'],
@@ -135,7 +142,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 2244,
     skus: ['1933087'],
     targetModels: ['lw'],
@@ -152,7 +158,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1027,
     skus: ['30327'],
     targetModels: ['lw'],
@@ -168,7 +173,6 @@
     heightMm: 25,
     type: 'die-cut',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 295,
     skus: ['30333'],
     targetModels: ['lw'],
@@ -182,7 +186,6 @@
     heightMm: 25,
     type: 'die-cut',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 295,
     skus: ['30332', '1933083'],
     targetModels: ['lw'],
@@ -197,7 +200,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 638,
     skus: ['30336', '1976411'],
     targetModels: ['lw'],
@@ -211,7 +213,6 @@
     heightMm: 57,
     type: 'die-cut',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 673,
     skus: ['30334', '1933084'],
     targetModels: ['lw'],
@@ -225,7 +226,6 @@
     heightMm: 70,
     type: 'die-cut',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 827,
     skus: ['30324'],
     targetModels: ['lw'],
@@ -239,7 +239,6 @@
     heightMm: 79,
     type: 'die-cut',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 933,
     skus: ['30326'],
     targetModels: ['lw'],
@@ -253,7 +252,6 @@
     heightMm: 59,
     type: 'die-cut',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 697,
     skus: ['30370'],
     targetModels: ['lw'],
@@ -268,7 +266,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1051,
     skus: ['1933081'],
     targetModels: ['lw'],
@@ -282,7 +279,6 @@
     heightMm: 89,
     type: 'die-cut',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1051,
     skus: ['30374'],
     targetModels: ['lw'],
@@ -296,7 +292,6 @@
     heightMm: 38,
     type: 'die-cut',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 449,
     skus: ['30347'],
     targetModels: ['lw'],
@@ -313,7 +308,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 756,
     skus: ['1933085'],
     targetModels: ['lw'],
@@ -330,7 +324,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1205,
     skus: ['30857', '30911'],
     targetModels: ['lw'],
@@ -348,7 +341,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 1252,
     skus: ['30856'],
     targetModels: ['lw'],
@@ -364,7 +356,6 @@
     heightMm: 22,
     type: 'die-cut',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 260,
     skus: ['30373'],
     targetModels: ['lw'],
@@ -380,7 +371,6 @@
     type: 'die-cut',
     defaultOrientation: 'horizontal',
     cornerRadiusMm: 3,
-    printMargins: { leftMm: 1.5, rightMm: 1.5, topMm: 1.5, bottomMm: 1.5 },
     lengthDots: 224,
     skus: ['30299'],
     targetModels: ['lw'],

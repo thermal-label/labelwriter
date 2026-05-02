@@ -12,12 +12,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 602,
       "skus": [
         "30330",
@@ -37,12 +31,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 1051,
       "skus": [
         "30251",
@@ -65,12 +53,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 1051,
       "skus": [
         "30321"
@@ -89,12 +71,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 1205,
       "skus": [
         "30323"
@@ -113,12 +89,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 1205,
       "skus": [
         "30256",
@@ -139,12 +109,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 1795,
       "skus": [
         "1744907",
@@ -164,12 +128,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 2244,
       "skus": [
         "1933087"
@@ -188,12 +146,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 1027,
       "skus": [
         "30327"
@@ -211,12 +163,6 @@
       "heightMm": 25,
       "type": "die-cut",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 295,
       "skus": [
         "30333"
@@ -234,12 +180,6 @@
       "heightMm": 25,
       "type": "die-cut",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 295,
       "skus": [
         "30332",
@@ -259,12 +199,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 638,
       "skus": [
         "30336",
@@ -283,12 +217,6 @@
       "heightMm": 57,
       "type": "die-cut",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 673,
       "skus": [
         "30334",
@@ -307,12 +235,6 @@
       "heightMm": 70,
       "type": "die-cut",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 827,
       "skus": [
         "30324"
@@ -330,12 +252,6 @@
       "heightMm": 79,
       "type": "die-cut",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 933,
       "skus": [
         "30326"
@@ -353,12 +269,6 @@
       "heightMm": 59,
       "type": "die-cut",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 697,
       "skus": [
         "30370"
@@ -377,12 +287,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 1051,
       "skus": [
         "1933081"
@@ -400,12 +304,6 @@
       "heightMm": 89,
       "type": "die-cut",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 1051,
       "skus": [
         "30374"
@@ -423,12 +321,6 @@
       "heightMm": 38,
       "type": "die-cut",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 449,
       "skus": [
         "30347"
@@ -447,12 +339,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 756,
       "skus": [
         "1933085"
@@ -471,12 +357,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 1205,
       "skus": [
         "30857",
@@ -496,12 +376,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 1252,
       "skus": [
         "30856"
@@ -519,12 +393,6 @@
       "heightMm": 22,
       "type": "die-cut",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 260,
       "skus": [
         "30373"
@@ -543,12 +411,6 @@
       "type": "die-cut",
       "defaultOrientation": "horizontal",
       "cornerRadiusMm": 3,
-      "printMargins": {
-        "leftMm": 1.5,
-        "rightMm": 1.5,
-        "topMm": 1.5,
-        "bottomMm": 1.5
-      },
       "lengthDots": 224,
       "skus": [
         "30299"

@@ -96,11 +96,14 @@ the only knob.
 
 ### What 6 mm means for design tools today
 
-`printMargins.topMm: 1.5` is what the registry says. The actual
-unprintable strip is ~7.5 mm (chassis 6 + design 1.5). Apps that lay
-out content from `printMargins.topMm` will clip; apps that hard-code
-larger margins (a lot of Dymo-tooling does, with Dymo's default
-`Page.LeadingMargin = 6 mm`) won't notice.
+`printMargins` has been **removed** from every media entry (it was
+uniformly 1.5/1.5/1.5/1.5 across all 24 entries — clear signal it
+wasn't actually media-discriminating data). The chassis offsets
+under `engines[].capabilities` are the only margin source today.
+Apps that hard-code larger insets (a lot of Dymo-tooling does, with
+Dymo's default `Page.LeadingMargin = 6 mm`) match what the chassis
+actually does; apps that previously read `printMargins` need to
+switch to the engine-level offsets.
 
 The test print itself is unaffected — the script's `safeTop = 30` dots
 ≈ 2.5 mm sits inside the 6 mm chassis offset and rendered fine,

@@ -15,12 +15,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 602,
     "skus": [
       "30330",
@@ -39,12 +33,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 1051,
     "skus": [
       "30251",
@@ -66,12 +54,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 1051,
     "skus": [
       "30321"
@@ -89,12 +71,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 1205,
     "skus": [
       "30323"
@@ -112,12 +88,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 1205,
     "skus": [
       "30256",
@@ -137,12 +107,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 1795,
     "skus": [
       "1744907",
@@ -161,12 +125,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 2244,
     "skus": [
       "1933087"
@@ -184,12 +142,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 1027,
     "skus": [
       "30327"
@@ -206,12 +158,6 @@ export const MEDIA = {
     "heightMm": 25,
     "type": "die-cut",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 295,
     "skus": [
       "30333"
@@ -228,12 +174,6 @@ export const MEDIA = {
     "heightMm": 25,
     "type": "die-cut",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 295,
     "skus": [
       "30332",
@@ -252,12 +192,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 638,
     "skus": [
       "30336",
@@ -275,12 +209,6 @@ export const MEDIA = {
     "heightMm": 57,
     "type": "die-cut",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 673,
     "skus": [
       "30334",
@@ -298,12 +226,6 @@ export const MEDIA = {
     "heightMm": 70,
     "type": "die-cut",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 827,
     "skus": [
       "30324"
@@ -320,12 +242,6 @@ export const MEDIA = {
     "heightMm": 79,
     "type": "die-cut",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 933,
     "skus": [
       "30326"
@@ -342,12 +258,6 @@ export const MEDIA = {
     "heightMm": 59,
     "type": "die-cut",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 697,
     "skus": [
       "30370"
@@ -365,12 +275,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 1051,
     "skus": [
       "1933081"
@@ -387,12 +291,6 @@ export const MEDIA = {
     "heightMm": 89,
     "type": "die-cut",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 1051,
     "skus": [
       "30374"
@@ -409,12 +307,6 @@ export const MEDIA = {
     "heightMm": 38,
     "type": "die-cut",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 449,
     "skus": [
       "30347"
@@ -432,12 +324,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 756,
     "skus": [
       "1933085"
@@ -455,12 +341,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 1205,
     "skus": [
       "30857",
@@ -479,12 +359,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 1252,
     "skus": [
       "30856"
@@ -501,12 +375,6 @@ export const MEDIA = {
     "heightMm": 22,
     "type": "die-cut",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 260,
     "skus": [
       "30373"
@@ -524,12 +392,6 @@ export const MEDIA = {
     "type": "die-cut",
     "defaultOrientation": "horizontal",
     "cornerRadiusMm": 3,
-    "printMargins": {
-      "leftMm": 1.5,
-      "rightMm": 1.5,
-      "topMm": 1.5,
-      "bottomMm": 1.5
-    },
     "lengthDots": 224,
     "skus": [
       "30299"
