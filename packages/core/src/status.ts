@@ -39,27 +39,50 @@ export function buildStatusRequest(device: DeviceEntry, lock: 0 | 1 | 2 = 0): Ui
 /**
  * Parse a LabelWriter 450 status response (single byte).
  *
- * Bit layout:
- *   bit 0 → paper out
- *   bit 1 → paused / not ready
- *   bit 2 → label too long
+ * Per `LW 450 Series Technical Reference Manual` p.17 (Get Printer
+ * Status, ESC A) the byte returns 1=true for each bit:
  *
- * The 450 has no media detection — `detectedMedia` is always undefined.
+ *   bit 0  Ready (paper in, no jam)
+ *   bit 1  Top of form
+ *   bit 2  Not used
+ *   bit 3  Not used
+ *   bit 4  Not used
+ *   bit 5  No paper
+ *   bit 6  Paper jam
+ *   bit 7  Printer error (jam, invalid sequence, and so on)
+ *
+ * Healthy idle printer returns 0x03 (Ready + Top of form).
+ *
+ * Bit 0 is *active-high ready*, not *paper out* — a 0 means not ready,
+ * a 1 means ready. Bit 1 (top of form) is informational, not an error.
+ * Earlier revisions of this parser read bits 0/1/2 with the wrong
+ * polarity and the wrong meanings, which surfaced "no paper" / "busy"
+ * / "label too long" toasts on healthy 400-series and 330-era units.
+ *
+ * The LabelWriter 450 protocol has no media-type detection — that
+ * arrives with the 550-family NFC bay-status parser in
+ * `parseStatus550`. `detectedMedia` here is always undefined.
  */
 function parseStatus450(bytes: Uint8Array): PrinterStatus {
   const b = bytes[0] ?? 0;
-  const paperOut = (b & 0x01) !== 0;
-  const notReady = (b & 0x02) !== 0;
-  const labelTooLong = (b & 0x04) !== 0;
+  const ready = (b & 0x01) !== 0;
+  const noPaper = (b & 0x20) !== 0;
+  const paperJam = (b & 0x40) !== 0;
+  const printerError = (b & 0x80) !== 0;
 
   const errors: PrinterError[] = [];
-  if (notReady) errors.push({ code: 'not_ready', message: 'Printer busy' });
-  if (paperOut) errors.push({ code: 'no_media', message: 'No labels loaded' });
-  if (labelTooLong) errors.push({ code: 'label_too_long', message: 'Label exceeded max length' });
+  if (noPaper) errors.push({ code: 'no_media', message: 'No labels loaded' });
+  if (paperJam) errors.push({ code: 'paper_jam', message: 'Label is jammed in the printer' });
+  if (printerError && !noPaper && !paperJam) {
+    errors.push({ code: 'printer_error', message: 'Printer reported an error' });
+  }
+  if (!ready && errors.length === 0) {
+    errors.push({ code: 'not_ready', message: 'Printer not ready' });
+  }
 
   return {
-    ready: b === 0,
-    mediaLoaded: !paperOut,
+    ready: ready && errors.length === 0,
+    mediaLoaded: !noPaper,
     errors,
     rawBytes: bytes,
   };
@@ -182,6 +205,14 @@ function parseStatus550(bytes: Uint8Array): PrinterStatus {
   // either no-media or an error condition.
   const mediaLoaded = bayStatus >= 4 && bayStatus <= 8;
   const ready = errors.length === 0 && (printStatus === 0 || printStatus === 1);
+
+  // Final fallback: if the printer is not idle/printing and nothing
+  // else surfaced a reason, emit a generic not_ready so the UI has
+  // something to show. Covers printStatus 2 (error) with errorId=0,
+  // 3 (cancel), 4 (busy), 5 (Unlock).
+  if (!ready && errors.length === 0) {
+    errors.push({ code: 'not_ready', message: 'Printer not ready' });
+  }
 
   return {
     ready,

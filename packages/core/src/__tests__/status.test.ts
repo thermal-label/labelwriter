@@ -19,36 +19,78 @@ describe('statusByteCount', () => {
 });
 
 describe('parseStatus — 450 series', () => {
-  it('reports ready when the single byte is zero', () => {
-    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x00]));
+  it('treats the canonical 0x03 (Ready + Top of form) as ready and idle', () => {
+    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x03]));
     expect(status.ready).toBe(true);
     expect(status.mediaLoaded).toBe(true);
     expect(status.errors).toEqual([]);
     expect(status.detectedMedia).toBeUndefined();
   });
 
-  it('surfaces no_media when bit 0 is set', () => {
+  it('reports not_ready when bit 0 is clear and no fault bit is set', () => {
+    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x00]));
+    expect(status.ready).toBe(false);
+    expect(status.errors.map(e => e.code)).toContain('not_ready');
+  });
+
+  it('reports ready when only bit 0 is set (mid-job, not at top of form)', () => {
     const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x01]));
+    expect(status.ready).toBe(true);
+    expect(status.mediaLoaded).toBe(true);
+    expect(status.errors).toEqual([]);
+  });
+
+  it('does not surface errors when bit 2 (reserved) is set on a healthy printer', () => {
+    // Pre-spec units (LW 330 Turbo) sometimes return 0x05 (Ready + bit 2)
+    // — bit 2 is "Not used" per the 450 spec, so we ignore it.
+    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x05]));
+    expect(status.ready).toBe(true);
+    expect(status.errors).toEqual([]);
+  });
+
+  it('surfaces no_media when bit 5 (No paper) is set', () => {
+    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x20]));
     expect(status.ready).toBe(false);
     expect(status.mediaLoaded).toBe(false);
     expect(status.errors.map(e => e.code)).toContain('no_media');
   });
 
-  it('surfaces not_ready when bit 1 is set', () => {
-    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x02]));
+  it('surfaces paper_jam when bit 6 (Paper jam) is set', () => {
+    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x40]));
     expect(status.ready).toBe(false);
-    expect(status.errors.map(e => e.code)).toContain('not_ready');
+    expect(status.errors.map(e => e.code)).toContain('paper_jam');
   });
 
-  it('surfaces label_too_long when bit 2 is set', () => {
-    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x04]));
-    expect(status.errors.map(e => e.code)).toContain('label_too_long');
+  it('surfaces printer_error when bit 7 is set without a more specific fault', () => {
+    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x80]));
+    expect(status.errors.map(e => e.code)).toContain('printer_error');
+  });
+
+  it('does not double-report printer_error when no_media is already raised (bit 7 echoes paper-out)', () => {
+    // Page 11 of the spec: bit 7 is also set when out of paper. Avoid
+    // surfacing both no_media and printer_error for the same root cause.
+    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0xa0]));
+    const codes = status.errors.map(e => e.code);
+    expect(codes).toContain('no_media');
+    expect(codes).not.toContain('printer_error');
   });
 
   it('exposes rawBytes for diagnostics', () => {
     const bytes = new Uint8Array([0x03]);
     const status = parseStatus(DEVICES.LW_450, bytes);
     expect(status.rawBytes).toBe(bytes);
+  });
+
+  it('treats the LW 400 canonical 0x03 response as ready (regression: was misread as paper-out + busy)', () => {
+    const status = parseStatus(DEVICES.LW_400, new Uint8Array([0x03]));
+    expect(status.ready).toBe(true);
+    expect(status.errors).toEqual([]);
+  });
+
+  it('treats the LW 330 Turbo 0x05 response as ready (regression: was misread as paper-out + label-too-long)', () => {
+    const status = parseStatus(DEVICES.LW_330_TURBO, new Uint8Array([0x05]));
+    expect(status.ready).toBe(true);
+    expect(status.errors).toEqual([]);
   });
 });
 
@@ -184,6 +226,26 @@ describe('parseStatus — 550 series', () => {
       );
       expect(status.errors.map(e => e.code)).toContain('paper_jam');
       expect(status.errors.map(e => e.code)).not.toContain('printer_error');
+    });
+
+    it('printStatus 2 + errorId=0 + no other diagnostic → not_ready fallback (no silent state)', () => {
+      const status = parseStatus(DEVICES.LW_550, make550({ printStatus: 2, errorId: 0 }));
+      expect(status.ready).toBe(false);
+      expect(status.errors.map(e => e.code)).toContain('not_ready');
+    });
+
+    it('printStatus 4 (busy) with everything else healthy → not_ready fallback', () => {
+      const status = parseStatus(DEVICES.LW_550, make550({ printStatus: 4 }));
+      expect(status.ready).toBe(false);
+      expect(status.errors.map(e => e.code)).toContain('not_ready');
+    });
+
+    it('printStatus 3 (cancel) and 5 (Unlock) also fall through to not_ready', () => {
+      for (const ps of [3, 5]) {
+        const status = parseStatus(DEVICES.LW_550, make550({ printStatus: ps }));
+        expect(status.ready).toBe(false);
+        expect(status.errors.map(e => e.code)).toContain('not_ready');
+      }
     });
   });
 
