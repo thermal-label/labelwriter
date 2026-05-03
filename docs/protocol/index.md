@@ -35,7 +35,7 @@ same `SYN`-row framing and `ESC C` / `ESC D` opcodes — but uses
 The driver dispatches automatically:
 
 ```ts
-encodeLabel(device, bitmap, options);    // 450 + 550 (label engines)
+encodeLabel(device, bitmap, options); // 450 + 550 (label engines)
 encodeDuoTapeLabel(device, bitmap, opts); // d1-tape (Duo tape engine)
 ```
 
@@ -46,10 +46,10 @@ interface-number selection that callers need to be explicit about.
 
 The encoder source lives in `packages/core/src/`:
 
-| File              | Covers           |
-| ----------------- | ---------------- |
-| `protocol.ts`     | `lw-450` encoder + dispatch |
-| `protocol-550.ts` | `lw-550` encoder, SKU / engine-version parsers |
-| `duo-tape.ts`     | `d1-tape` Duo tape encoder |
-| `duo-tape-status.ts` | `d1-tape` 8-byte status parser |
-| `status.ts`       | 1-byte (450) / 32-byte (550) status parsers |
+| File                 | Covers                                         |
+| -------------------- | ---------------------------------------------- |
+| `protocol.ts`        | `lw-450` encoder + dispatch                    |
+| `protocol-550.ts`    | `lw-550` encoder, SKU / engine-version parsers |
+| `duo-tape.ts`        | `d1-tape` Duo tape encoder                     |
+| `duo-tape-status.ts` | `d1-tape` 8-byte status parser                 |
+| `status.ts`          | 1-byte (450) / 32-byte (550) status parsers    |

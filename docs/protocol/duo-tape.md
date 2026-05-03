@@ -7,28 +7,29 @@ chassis: a 672-dot label engine on `bInterfaceNumber 0` (handled by
 `bInterfaceNumber 1`, documented here.
 
 ::: info Source
-The byte sequences below are sourced from *DYMO LabelWriter 450 Series
-Technical Reference*, **Appendix B (pp. 23–25)**. The PDF is the
+The byte sequences below are sourced from _DYMO LabelWriter 450 Series
+Technical Reference_, **Appendix B (pp. 23–25)**. The PDF is the
 authoritative reference; this page summarises what the driver actually
 emits and parses. The reference document is **not** redistributed —
 DYMO publishes it from their support site.
 :::
 
 ::: tip Related pages
+
 - [LW 450](./lw-450) — the Duo's label-side engine.
 - [LabelManager D1 protocol](https://thermal-label.github.io/labelmanager/protocol)
   — closely related protocol on the LabelManager line. See
   [Relationship to LabelManager D1](#relationship-to-labelmanager-d1).
 - [Protocol overview](./) — index of all protocols implemented here.
 - [Core](../core) — the TypeScript API.
-:::
+  :::
 
 ## Models and engines
 
-| Chassis              | Tape head dots | Wire-protocol slug |
-| -------------------- | -------------: | ------------------ |
-| LabelWriter Duo 96   | 96             | `d1-tape`          |
-| LabelWriter Duo 128  | 128            | `d1-tape`          |
+| Chassis             | Tape head dots | Wire-protocol slug |
+| ------------------- | -------------: | ------------------ |
+| LabelWriter Duo 96  |             96 | `d1-tape`          |
+| LabelWriter Duo 128 |            128 | `d1-tape`          |
 
 Both Duo engines share `vid:pid = 0x0922:0x0023`. The chassis exposes
 two USB Printer-class interfaces; the tape engine is on
@@ -60,17 +61,17 @@ Returns **8 bytes**, but only **byte 0** carries data on current Duo
 firmware. Bits 1–7 are reserved for future use; the driver captures
 all 8 in `rawBytes` for forward compat and only branches on byte 0.
 
-| Bit | Meaning when set     |
-| --: | -------------------- |
+| Bit | Meaning when set                         |
+| --: | ---------------------------------------- |
 |   2 | General error (motor stalled / tape jam) |
-|   4 | Cutter jammed (blade may be exposed!) |
-|   6 | Cassette inserted    |
+|   4 | Cutter jammed (blade may be exposed!)    |
+|   6 | Cassette inserted                        |
 
 A healthy idle printer returns `0x40` (cassette present, no errors).
 
 ::: warning Cutter-jam safety
-PDF p. 25 calls out specifically: *"the cutter blade is not retracted
-and may present a very sharp, dangerous edge."* The driver maps bit 4
+PDF p. 25 calls out specifically: _"the cutter blade is not retracted
+and may present a very sharp, dangerous edge."_ The driver maps bit 4
 to a distinct `cutter_jam` error code rather than the generic
 `paper_jam` so UIs can warn the user before they reach into the
 cassette bay.
@@ -101,8 +102,8 @@ Resets the engine to defaults. Always the first command in a copy.
 
 `selector` is a value in `0..12` from the palette table on PDF p. 24:
 
-| `n` | Cassette type            |
-| ---: | ----------------------- |
+| `n` | Cassette type           |
+| --: | ----------------------- |
 |   0 | Black on white / clear  |
 |   1 | Black on blue           |
 |   2 | Black on red            |
@@ -158,11 +159,11 @@ The `d1-tape` slug names the same wire-format family used by the
 both share the `SYN`-row framing and the `ESC C` / `ESC D` opcodes
 described above. The two diverge in three places:
 
-| Aspect              | LabelManager (d1-tape)        | LabelWriter Duo (d1-tape)  |
-| ------------------- | ----------------------------- | -------------------------- |
-| Cut command         | `ESC G` / `ESC A` (`1B 47` / `1B 41`) | **`ESC E`** (`1B 45`) |
-| Tape-type byte (`ESC C n`) | `n = 0` (always — single tape mode) | `n = 0..12` (palette selector) |
-| Status reply length | **1 byte** (busy / no-tape / low) | **8 bytes** (only byte 0 used today) |
+| Aspect                     | LabelManager (d1-tape)                | LabelWriter Duo (d1-tape)            |
+| -------------------------- | ------------------------------------- | ------------------------------------ |
+| Cut command                | `ESC G` / `ESC A` (`1B 47` / `1B 41`) | **`ESC E`** (`1B 45`)                |
+| Tape-type byte (`ESC C n`) | `n = 0` (always — single tape mode)   | `n = 0..12` (palette selector)       |
+| Status reply length        | **1 byte** (busy / no-tape / low)     | **8 bytes** (only byte 0 used today) |
 
 Because of the cut and status divergence, the driver keeps `duo-tape.ts`
 and `duo-tape-status.ts` as their own modules rather than reusing
@@ -179,7 +180,7 @@ job, `transferIn(8)` for the status reply.
 
 ## References
 
-- *DYMO LabelWriter 450 Series Technical Reference*, Appendix B
+- _DYMO LabelWriter 450 Series Technical Reference_, Appendix B
   (pp. 23–25). Cited inline; not redistributed.
 - Implementation in this driver:
   - `packages/core/src/duo-tape.ts` — encoder.

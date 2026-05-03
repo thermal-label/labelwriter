@@ -1,6 +1,6 @@
 {
   "name": "@thermal-label/labelwriter-node",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Node.js USB and TCP driver for Dymo LabelWriter printers",
   "keywords": [
     "dymo",
@@ -57,9 +57,9 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@thermal-label/contracts": "^0.3.1",
+    "@thermal-label/contracts": "^0.5.0",
     "@thermal-label/labelwriter-core": "workspace:*",
-    "@thermal-label/transport": "^0.3.0",
+    "@thermal-label/transport": "^0.5.0",
     "usb": "^2.0.0"
   },
   "optionalDependencies": {

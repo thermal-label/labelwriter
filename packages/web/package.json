@@ -1,6 +1,6 @@
 {
   "name": "@thermal-label/labelwriter-web",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "WebUSB browser driver for Dymo LabelWriter printers",
   "keywords": [
     "dymo",
@@ -40,9 +40,9 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@thermal-label/contracts": "^0.3.1",
+    "@thermal-label/contracts": "^0.5.0",
     "@thermal-label/labelwriter-core": "workspace:*",
-    "@thermal-label/transport": "^0.3.0"
+    "@thermal-label/transport": "^0.5.0"
   },
   "peerDependencies": {
     "typescript": ">=5.0"
