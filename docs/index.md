@@ -45,11 +45,19 @@ features:
     </span>
     <span class="ref-arrow">→</span>
   </a>
-  <a href="./core.html" class="ref-link">
+  <a href="./protocol/" class="ref-link">
     <span class="ref-icon">📡</span>
     <span class="ref-body">
-      <strong>Protocol & Core API</strong>
-      <span>450 and 550 ESC sequences, RLE encoding, job headers</span>
+      <strong>Wire protocols</strong>
+      <span>LW 450 raster · LW 550 NFC · Duo tape — byte-level reference</span>
+    </span>
+    <span class="ref-arrow">→</span>
+  </a>
+  <a href="./core.html" class="ref-link">
+    <span class="ref-icon">🧰</span>
+    <span class="ref-body">
+      <strong>Core API</strong>
+      <span>Encoder, parsers, types, registries</span>
     </span>
     <span class="ref-arrow">→</span>
   </a>

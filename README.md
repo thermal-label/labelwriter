@@ -60,6 +60,7 @@ Full docs at **<https://thermal-label.github.io/labelwriter/>**.
 
 - [Getting started](https://thermal-label.github.io/labelwriter/getting-started)
 - [Hardware list](https://thermal-label.github.io/labelwriter/hardware) (incl. NFC-lock model list)
+- [Wire protocols](https://thermal-label.github.io/labelwriter/protocol/) — [LW 450](https://thermal-label.github.io/labelwriter/protocol/lw-450) · [LW 550](https://thermal-label.github.io/labelwriter/protocol/lw-550) · [Duo tape](https://thermal-label.github.io/labelwriter/protocol/duo-tape)
 - [Node guide](https://thermal-label.github.io/labelwriter/node)
 - [Web guide](https://thermal-label.github.io/labelwriter/web)
 - [API reference](https://thermal-label.github.io/labelwriter/api/)
