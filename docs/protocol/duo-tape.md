@@ -177,28 +177,7 @@ Same protocol as USB. The browser package selects
 `bInterfaceNumber 1` for the tape side, `transferOut` for the encoded
 job, `transferIn(8)` for the status reply.
 
-## Porting checklist
-
-- [ ] Use VID `0x0922`, PID `0x0023`, **`bInterfaceNumber 1`** for
-      the tape engine. (Interface 0 is the label engine — see
-      [LW 450](./lw-450).)
-- [ ] Per copy: `ESC @` → `ESC C <selector>` → `ESC D <bytesPerLine>`
-      → repeated `SYN <row>` → `ESC E`.
-- [ ] `bytesPerLine = headDots / 8`; cap at `12` for 96-dot, `16`
-      for 128-dot.
-- [ ] Each SYN row is exactly `bytesPerLine` payload bytes; pad or
-      crop the bitmap to `headDots` columns before emission.
-- [ ] **Always emit `ESC E` at the end** — the Duo cannot feed without
-      cutting.
-- [ ] Status reply is 8 bytes; read all 8 but branch only on byte 0
-      bits 2 (general error), 4 (cutter jam), 6 (cassette present).
-- [ ] Surface cutter jam as a distinct error code and warn the user
-      about the exposed blade — PDF p. 25 explicitly notes this is a
-      safety hazard.
-- [ ] Don't reuse the LabelManager cut command (`ESC G` / `ESC A`)
-      here — the Duo needs `ESC E`.
-
-## Source references
+## References
 
 - *DYMO LabelWriter 450 Series Technical Reference*, Appendix B
   (pp. 23–25). Cited inline; not redistributed.
