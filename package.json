@@ -18,7 +18,9 @@
     "prepare": "node -e \"try{require('node:child_process').execSync('git config core.hooksPath .githooks',{stdio:'ignore'})}catch{}\"",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "docs:hardware": "node scripts/build-hardware-table.mjs",
+    "predocs:hardware": "pnpm --filter ./packages/core run compile-data"
   },
   "devDependencies": {
     "@changesets/cli": "^2.0.0",
@@ -30,7 +32,8 @@
     "typedoc": "^0.28.0",
     "typedoc-plugin-markdown": "^4.0.0",
     "typescript": "~5.5.0",
-    "vitest": "^2.0.0"
+    "vitest": "^2.0.0",
+    "json5": "^2.2.3"
   },
   "version": "0.0.1"
 }
