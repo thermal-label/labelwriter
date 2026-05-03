@@ -19,7 +19,7 @@ Wire layout per copy:
   ESC @            (reset)
   ESC C n          (tape type)
   ESC D bytesPerLine
-  <SYN> row …      (one per raster line, padded/cropped to head width)
+  `SYN` row …      (one per raster line, padded/cropped to head width)
   ESC E            (cut)
 
 The bitmap must already be in head-aligned orientation (caller's
