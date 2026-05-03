@@ -57,7 +57,8 @@ describe('WebLabelWriterPrinter', () => {
   });
 
   it('getStatus returns the contracts shape on the 450', async () => {
-    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
+    // 0x03 = bit 0 (Ready) + bit 1 (Top of form) — the canonical idle byte.
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid, new Uint8Array([0x03]));
     const printer = await fromUSBDevice(device);
     const status = await printer.getStatus();
     expect(status.ready).toBe(true);

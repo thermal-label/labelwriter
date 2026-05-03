@@ -64,7 +64,8 @@ describe('LabelWriterPrinter', () => {
 
   describe('getStatus', () => {
     it('reads 1 byte for 450 protocol device', async () => {
-      const { transport } = makeTransport();
+      // 0x03 = bit 0 (Ready) + bit 1 (Top of form) — the canonical idle byte.
+      const { transport } = makeTransport(new Uint8Array([0x03]));
       const printer = new LabelWriterPrinter(device450, transport, 'usb');
       const status = await printer.getStatus();
 
@@ -83,8 +84,8 @@ describe('LabelWriterPrinter', () => {
       expect(status.rawBytes.length).toBe(32);
     });
 
-    it('surfaces no_media when the 450 reports paper-out (bit 0)', async () => {
-      const { transport } = makeTransport(new Uint8Array([0x01]));
+    it('surfaces no_media when the 450 reports paper-out (bit 5)', async () => {
+      const { transport } = makeTransport(new Uint8Array([0x20]));
       const printer = new LabelWriterPrinter(device450, transport, 'usb');
       const status = await printer.getStatus();
       expect(status.ready).toBe(false);
