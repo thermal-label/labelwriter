@@ -1,0 +1,24 @@
+id,material,name,widthIn,widthMm,background,text,skus,notes
+d1-standard-bw-6,standard,6mm Black on White,0.25,6,white,black,43613;S0720780,
+d1-standard-bc-9,standard,9mm Black on Clear,0.375,9,clear,black,40910;S0720670,
+d1-standard-bw-9,standard,9mm Black on White,0.375,9,white,black,41913,
+d1-standard-bw-12,standard,12mm Black on White,0.5,12,white,black,45013,
+d1-standard-bc-12,standard,12mm Black on Clear,0.5,12,clear,black,45010,
+d1-standard-by-12,standard,12mm Black on Yellow,0.5,12,yellow,black,45018,
+d1-standard-bbl-12,standard,12mm Black on Blue,0.5,12,blue,black,45016;S0720560,
+d1-standard-bg-12,standard,12mm Black on Green,0.5,12,green,black,45019;S0720590,
+d1-standard-br-12,standard,12mm Black on Red,0.5,12,red,black,45017;S0720570,
+d1-standard-wc-12,standard,12mm White on Clear,0.5,12,clear,white,45020;S0720600,
+d1-standard-wbk-12,standard,12mm White on Black,0.5,12,black,white,45021;S0720610,
+d1-standard-blw-12,standard,12mm Blue on White,0.5,12,white,blue,45014,
+d1-standard-rw-12,standard,12mm Red on White,0.5,12,white,red,45015;S0720550,
+d1-standard-bw-19,standard,19mm Black on White,0.75,19,white,black,45800;45803,SKU 45803 contested — see §5.4
+d1-standard-bc-19,standard,19mm Black on Clear,0.75,19,clear,black,S0720820,LW PDF labels 45803 as Black on Clear; LM PDF labels it Black on White — verify
+d1-standard-bw-24,standard,24mm Black on White,1,24,white,black,53713;S0720930,1in tape; only larger LMs and 450 Duo accept this width
+d1-standard-by-24,standard,24mm Black on Yellow,1,24,yellow,black,53718;S0720980,1in tape; only larger LMs and 450 Duo accept this width
+d1-permanent-bw-12,permanent-polyester,12mm Permanent Black on White,0.5,12,white,black,16955,LM 280 lists this as 1978364 — likely PDF typo (1978364 is also Durable Black on White)
+d1-flexible-bw-12,flexible-nylon,12mm Flexible Black on White,0.5,12,white,black,16953;S0718040,
+d1-durable-bw-12,durable,12mm Durable Black on White,0.5,12,white,black,1978364,
+d1-durable-wbk-12,durable,12mm Durable White on Black,0.5,12,black,white,1978365,
+d1-durable-wr-12,durable,12mm Durable White on Red,0.5,12,red,white,1978366,
+d1-durable-bo-12,durable,12mm Durable Black on Orange,0.5,12,orange,black,1978367,

@@ -1,0 +1,25 @@
+id,category,name,widthIn,heightIn,widthMm,heightMm,lengthDots,skus,labelsPerRoll,targetModels,notes
+return-address,address,19×51 Return Address,0.75,2,19,51,602,30330;30578,500;200,all,
+address-standard,address,28×89 Address,1.125,3.5,28,89,1051,30251;30252;30254;30320;30340,130;350;130;260;50,all,30254 is clear stock; widthMm rounds to 29 from 28.575 but Dymo brands as 28
+address-large,address,36×89 Large Address,1.4,3.5,36,89,1051,30321,260,all,
+shipping-standard,shipping,54×102 Shipping,2.125,4,54,102,1205,30323,220,all,
+shipping-large,shipping,59×102 Large Shipping,2.3125,4,59,102,1205,30256;1763982;1933088,300;250;300,all,1933088 is Durable variant
+shipping-4x6,shipping,102×152 Extra Large Shipping,4,6,102,152,1795,1744907;1933086,220;200,4xl-5xl-only,1933086 is Durable variant; only fits wide-head printers
+lever-arch,shipping,59×190 Lever Arch / Confirmation (Durable),2.3125,7.5,59,190,2244,1933087,170,all,Listed under both Lever Arch and Confirmation names in PDF — same SKU
+file-folder,file-folder,14×87 File Folder,0.5625,3.4375,14,87,1027,30327,130,all,Replaces existing 19×87 entry (audit fix)
+multi-purpose-extra-small,multi-purpose,13×25 Extra Small (2-up),0.5,1,13,25,295,30333,1000,all,
+multi-purpose-square,multi-purpose,25×25 Square,1,1,25,25,295,30332;1933083,750;850,all,1933083 is Durable variant
+multi-purpose-small,multi-purpose,25×54 Small,1,2.125,25,54,638,30336;1976411,500;160,all,1976411 is Durable variant
+multi-purpose-medium,multi-purpose,32×57 Medium,1.25,2.25,32,57,673,30334;1933084,1000;800,all,1933084 is Durable variant
+multi-purpose-large,multi-purpose,54×70 Large,2.125,2.75,54,70,827,30324,320,all,
+multi-purpose-video-top,multi-purpose,46×79 Video Top,1.8,3.1,46,79,933,30326,150,all,
+removable,multi-purpose,51×59 Removable,2,2.3125,51,59,697,30370,250,all,Removable adhesive
+shelving,multi-purpose,25×89 Shelving,1,3.5,25,89,1051,1933081,350,all,
+appointment-card,multi-purpose,51×89 Appointment / Business Card,2,3.5,51,89,1051,30374,300,all,Non-adhesive
+book-spine,multi-purpose,25×38 Book Spine Label,1,1.5,25,38,449,30347,750,all,
+barcode-dymo-file,barcode,19×64 Barcode / DYMO File,0.75,2.5,19,64,756,1933085,450,all,
+name-badge,name-badge,57×102 Name Badge,2.25,4,57,102,1205,30857;30911,250;250,all,30911 is time-expiring variant
+name-badge-non-adhesive,name-badge,62×106 Name Badge Non-Adhesive,2.4375,4.1875,62,106,1252,30856,250,all,
+price-tag,price-tag,24×22 Price Tag,0.9375,0.875,24,22,260,30373,400,all,
+price-tag-2up,price-tag,10×19 Price Tag (2-up),0.375,0.75,10,19,224,30299,1500,all,US-only per PDF
+continuous-57,continuous,57mm Continuous Non-Adhesive,2.25,,57,,,30270,N/A,all,Replaces existing 56mm entry (audit fix)

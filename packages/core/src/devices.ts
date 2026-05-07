@@ -1,5 +1,5 @@
 import type { DeviceEntry, DeviceRegistry } from '@thermal-label/contracts';
-import { DEVICES, REGISTRY, type DeviceKey } from './devices.generated.js';
+import { DEVICES, REGISTRY, type DeviceKey, type RegistryDeviceEntry } from './devices.generated.js';
 
 /**
  * Aggregated LabelWriter device registry.
@@ -17,7 +17,7 @@ export const REGISTRY_LW: DeviceRegistry = REGISTRY;
  * does not surface `undefined` to callers.
  */
 export { DEVICES };
-export type { DeviceKey };
+export type { DeviceKey, RegistryDeviceEntry };
 
 function parseHex(s: string): number {
   return Number.parseInt(s, 16);

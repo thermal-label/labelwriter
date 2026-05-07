@@ -22,6 +22,11 @@
     "docs:hardware": "node scripts/build-hardware-table.mjs",
     "predocs:hardware": "pnpm --filter ./packages/core run compile-data"
   },
+  "pnpm": {
+    "overrides": {
+      "@thermal-label/contracts": "link:../contracts"
+    }
+  },
   "devDependencies": {
     "@changesets/cli": "^2.0.0",
     "@mbtech-nl/eslint-config": "^1.0.1",

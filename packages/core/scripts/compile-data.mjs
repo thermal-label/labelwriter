@@ -22,6 +22,7 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import JSON5 from 'json5';
+import { expandVerifications, mapLegacyStatus } from '@thermal-label/contracts';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = resolve(SCRIPT_DIR, '..');
@@ -35,7 +36,10 @@ const MEDIA_TS = resolve(PACKAGE_ROOT, 'src/media.generated.ts');
 const DRIVER = 'labelwriter';
 const HEX_RE = /^0x[0-9a-fA-F]+$/;
 const KEY_RE = /^[A-Z][A-Z0-9_]*$/;
-const SUPPORT_STATUS = new Set(['verified', 'partial', 'broken', 'untested']);
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const LEGACY_SUPPORT_STATUS = new Set(['verified', 'partial', 'broken', 'untested']);
+const VERIFICATION_RUNGS = new Set(['verified', 'partial', 'unsupported']);
+const MAX_ISSUES_PER_CELL = 2;
 const TRANSPORT_KEYS = new Set(['usb', 'tcp', 'serial', 'bluetooth-spp', 'bluetooth-gatt']);
 const MEDIA_TYPE = new Set(['die-cut', 'continuous', 'tape']);
 const KNOWN_TARGET_MODELS = new Set(['lw', 'lw-wide', 'd1', 'd1-wide']);
@@ -128,10 +132,87 @@ function validateDeviceEntry(entry, file) {
 
   if (!entry?.support || typeof entry.support !== 'object') {
     fail(where, 'support must be an object');
-  } else if (!SUPPORT_STATUS.has(entry.support.status)) {
-    fail(where, `support.status must be one of ${[...SUPPORT_STATUS].join('|')}`);
+  } else if (!LEGACY_SUPPORT_STATUS.has(entry.support.status)) {
+    fail(where, `support.status must be one of ${[...LEGACY_SUPPORT_STATUS].join('|')}`);
+  }
+
+  // Optional `verifications` block — new shape, runs alongside legacy
+  // `support` during the alias transition (see plan #0).
+  if (entry?.verifications !== undefined) {
+    if (typeof entry.verifications !== 'object' || Array.isArray(entry.verifications)) {
+      fail(where, 'verifications must be a keyed object');
+    } else {
+      const declared = new Set(Object.keys(entry.transports ?? {}));
+      for (const [k, cell] of Object.entries(entry.verifications)) {
+        const cwhere = `${where} verifications.${k}`;
+        if (!TRANSPORT_KEYS.has(k)) {
+          fail(cwhere, 'unknown transport key');
+          continue;
+        }
+        if (!declared.has(k)) {
+          fail(cwhere, 'transport not declared on this device');
+        }
+        if (!cell || typeof cell !== 'object') {
+          fail(cwhere, 'cell must be an object');
+          continue;
+        }
+        if (!VERIFICATION_RUNGS.has(cell.status)) {
+          fail(cwhere, `status must be one of ${[...VERIFICATION_RUNGS].join('|')}`);
+        }
+        if (cell.issues !== undefined) {
+          if (!Array.isArray(cell.issues)) {
+            fail(cwhere, 'issues must be an array');
+          } else {
+            if (cell.issues.length > MAX_ISSUES_PER_CELL) {
+              fail(cwhere, `issues may have at most ${MAX_ISSUES_PER_CELL} entries`);
+            }
+            for (const n of cell.issues) {
+              if (!Number.isInteger(n) || n <= 0) {
+                fail(cwhere, 'issues entries must be positive integers');
+              }
+            }
+          }
+        }
+        if (cell.reason !== undefined && typeof cell.reason !== 'string') {
+          fail(cwhere, 'reason must be a string');
+        }
+        if (cell.lastReported !== undefined && !ISO_DATE_RE.test(cell.lastReported ?? '')) {
+          fail(cwhere, 'lastReported must be ISO date YYYY-MM-DD');
+        }
+      }
+    }
   }
 }
+
+// Synthesise a `verifications` block from the legacy `support` field
+// when no explicit `verifications` is authored. Prefers per-transport
+// `support.transports.<t>` when authored; otherwise falls back to the
+// device-level `support.status`. Returns an empty object when the
+// effective status is `'untested'` (no claim).
+//
+// `mapLegacyStatus` is imported from `@thermal-label/contracts`.
+function legacyToVerifications(entry) {
+  const declared = Object.keys(entry?.transports ?? {});
+  const supportTransports = entry?.support?.transports;
+  const out = {};
+  if (supportTransports && typeof supportTransports === 'object') {
+    for (const t of declared) {
+      const mapped = mapLegacyStatus(supportTransports[t]);
+      if (mapped) out[t] = { status: mapped };
+    }
+    // If author specified per-transport entries, trust the granularity
+    // — do not fall back to device-level status for unmentioned transports.
+    if (Object.keys(supportTransports).length > 0) return out;
+  }
+  const deviceStatus = mapLegacyStatus(entry?.support?.status);
+  if (!deviceStatus) return {};
+  for (const t of declared) {
+    if (out[t] === undefined) out[t] = { status: deviceStatus };
+  }
+  return out;
+}
+
+// `expandVerifications` is imported from `@thermal-label/contracts`.
 
 // Apply tape-entry defaults in place (category, tapeWidthMm,
 // tapeColour). No-op for paper entries. Called before validation so
@@ -274,26 +355,77 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-const registry = { schemaVersion: 1, driver: DRIVER, devices };
-writeFileSync(DEVICES_JSON, JSON.stringify(registry, null, 2) + '\n');
+// Build a registry shadow where each device has a populated
+// `verifications` field — explicit when authored, synthesised from
+// legacy `support` otherwise — so the contracts `expandVerifications`
+// sees one consistent shape.
+const synthesizedDevices = devices.map(d => {
+  const v =
+    d.verifications && Object.keys(d.verifications).length > 0
+      ? d.verifications
+      : legacyToVerifications(d);
+  return { ...d, verifications: v };
+});
+
+const expanded = expandVerifications({
+  schemaVersion: 1,
+  driver: DRIVER,
+  devices: synthesizedDevices,
+});
+
+// Lean device entries for the bundled TS: drop authoring-only blocks
+// (`verifications`) and stamp the rolled-up `supportStatus`.
+const leanDevices = devices.map((d, i) => {
+  const { verifications: _v, ...rest } = d;
+  return { ...rest, supportStatus: expanded.devices[i].supportStatus };
+});
+
+// Rich device entries for the JSON projection: keep `verifications`
+// + stamp the expanded `verificationGrid` and rolled-up `supportStatus`.
+const richDevices = devices.map((d, i) => ({
+  ...d,
+  verificationGrid: expanded.devices[i].verificationGrid,
+  supportStatus: expanded.devices[i].supportStatus,
+}));
+
+const richRegistry = { schemaVersion: 1, driver: DRIVER, devices: richDevices };
+writeFileSync(DEVICES_JSON, JSON.stringify(richRegistry, null, 2) + '\n');
 
 writeFileSync(
   MEDIA_JSON,
   JSON.stringify({ schemaVersion: 1, driver: DRIVER, media: mediaList }, null, 2) + '\n',
 );
 
-const deviceEntries = devices.map((d, i) => `  ${d.key}: REGISTRY.devices[${i}],`).join('\n');
-const deviceKeyUnion = devices.map(d => `'${d.key}'`).join(' | ');
+const leanRegistry = { schemaVersion: 1, driver: DRIVER, devices: leanDevices };
+const deviceEntries = leanDevices.map((d, i) => `  ${d.key}: REGISTRY.devices[${i}],`).join('\n');
+const deviceKeyUnion = leanDevices.map(d => `'${d.key}'`).join(' | ');
 const devicesBody = `// AUTO-GENERATED by scripts/compile-data.mjs from data/devices/*.json5.
 // Edit those files, not this one. Run \`pnpm run compile-data\`.
 
 import type { DeviceEntry, DeviceRegistry } from '@thermal-label/contracts';
 
-export const REGISTRY = ${JSON.stringify(registry, null, 2)} as const satisfies DeviceRegistry;
+/**
+ * Render-time effective status — superset of the contracts' stored
+ * verification rungs that includes \`'expected'\` (propagated lift)
+ * and \`'unverified'\` (no claim). Mirrors \`EffectiveStatus\` in
+ * @thermal-label/contracts ≥ 0.6; literal here so codegen does not
+ * require the matching contracts version on consumers' machines.
+ */
+export type EffectiveStatus = 'verified' | 'partial' | 'unsupported' | 'expected' | 'unverified';
+
+/** Each entry carries a rolled-up \`supportStatus\` from the verification grid. */
+export type RegistryDeviceEntry = DeviceEntry & { supportStatus: EffectiveStatus };
+
+/** Registry shape with \`supportStatus\` stamped on each device. */
+export type RegistryWithStatus = Omit<DeviceRegistry, 'devices'> & {
+  devices: readonly RegistryDeviceEntry[];
+};
+
+export const REGISTRY = ${JSON.stringify(leanRegistry, null, 2)} as const satisfies RegistryWithStatus;
 
 export type DeviceKey = ${deviceKeyUnion};
 
-export const DEVICES: Record<DeviceKey, DeviceEntry> = {
+export const DEVICES: Record<DeviceKey, RegistryDeviceEntry> = {
 ${deviceEntries}
 };
 `;
