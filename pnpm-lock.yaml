@@ -6,6 +6,7 @@ settings:
 
 overrides:
   '@thermal-label/contracts': link:../contracts
+  '@thermal-label/d1-core': link:../d1-core
 
 importers:
 
@@ -53,6 +54,9 @@ importers:
       '@thermal-label/contracts':
         specifier: link:../../../contracts
         version: link:../../../contracts
+      '@thermal-label/d1-core':
+        specifier: link:../../../d1-core
+        version: link:../../../d1-core
     devDependencies:
       '@mbtech-nl/tsconfig':
         specifier: ^1.1.0
@@ -78,6 +82,9 @@ importers:
       '@thermal-label/contracts':
         specifier: link:../../../contracts
         version: link:../../../contracts
+      '@thermal-label/d1-core':
+        specifier: link:../../../d1-core
+        version: link:../../../d1-core
       '@thermal-label/labelwriter-core':
         specifier: workspace:*
         version: link:../core

@@ -1,6 +1,5 @@
 import {
   DEFAULT_MEDIA,
-  DUO_TAPE_STATUS_BYTE_COUNT,
   ENGINE_VERSION_BYTE_COUNT,
   ROTATE_DIRECTION,
   SKU_INFO_BYTE_COUNT,
@@ -10,15 +9,12 @@ import {
   build550StatusRequest,
   PRINT_STATUS_LOCK_NOT_GRANTED,
   STATUS_BYTE_COUNT_550,
-  buildDuoStatusRequest,
   buildErrorRecovery,
   buildStatusRequest,
   createPreviewOffline,
-  encodeDuoTapeLabel,
   encodeLabel,
   isDuoTapeEngine,
   isEngineDrivable,
-  parseDuoTapeStatus,
   parseEngineVersion,
   parseSkuInfo,
   parseStatus,
@@ -31,7 +27,6 @@ import {
   type LabelWriterEngineHandle,
   type LabelWriterMedia,
   type LabelWriterPrintOptions,
-  type LabelWriterTapeMedia,
   type MediaDescriptor,
   type PreviewOptions,
   type PreviewResult,
@@ -43,6 +38,10 @@ import {
   type Transport,
   type TransportType,
 } from '@thermal-label/labelwriter-core';
+import {
+  STATUS_REQUEST as D1_STATUS_REQUEST,
+  parseStatus as parseD1Status,
+} from '@thermal-label/d1-core';
 import { MediaNotSpecifiedError, UnsupportedOperationError } from '@thermal-label/contracts';
 
 export interface LabelWriterPrinterOptions {
@@ -102,11 +101,15 @@ export class LabelWriterPrinter implements PrinterAdapter {
       const override = options.engineTransports?.[engine.role];
       if (override) {
         this.transports[engine.role] = override;
-      } else if (isEngineDrivable(engine)) {
+      } else if (isEngineDrivable(engine) && !isDuoTapeEngine(engine)) {
         this.transports[engine.role] = transport;
       }
-      // Tape engines without an override are intentionally not mapped —
-      // the engine handle is omitted from `this.engines` below.
+      // Tape engines (d1-tape) without an explicit override are
+      // intentionally not mapped — they live on a separate USB
+      // interface than the primary label transport, so auto-mapping
+      // would point them at the wrong endpoint. The engine handle is
+      // omitted from `this.engines` below until the caller provides
+      // `engineTransports: { tape: <transport> }`.
     }
 
     this.engines = buildEngineHandles(device, this.transports, this);
@@ -134,10 +137,11 @@ export class LabelWriterPrinter implements PrinterAdapter {
       );
     }
 
-    if (isDuoTapeEngine(engine)) {
-      await printTape(this.device, transport, image, media, options);
-      return;
-    }
+    // D1 tape (Duo's tape side) — let the unified flow below run.
+    // `encodeLabel` dispatches on `engine.protocol` and routes
+    // `d1-tape` through `@thermal-label/d1-core`'s `buildPrinterStream`;
+    // tape engines skip the 550-only lock + SKU-fallback paths via
+    // the `engine.protocol === 'lw-550'` guards.
 
     // 550 family: acquire the print lock and check printer health
     // before sending the job. The lock is what prevents concurrent
@@ -149,7 +153,7 @@ export class LabelWriterPrinter implements PrinterAdapter {
       await this.acquire550Lock(transport);
     }
 
-    let resolvedMedia = (media ?? this.lastStatus?.detectedMedia) as LabelWriterMedia | undefined;
+    let resolvedMedia = media ?? this.lastStatus?.detectedMedia;
 
     // 550 status doesn't carry media dimensions — those live in the
     // NFC SKU dump (ESC U). Best-effort fetch when no explicit media
@@ -358,29 +362,6 @@ function resolveRequestedEngine(device: DeviceEntry, requested: string | undefin
   return found;
 }
 
-async function printTape(
-  device: DeviceEntry,
-  transport: Transport,
-  image: RawImageData,
-  media: MediaDescriptor | undefined,
-  options: LabelWriterPrintOptions | undefined,
-): Promise<void> {
-  if (!media) throw new MediaNotSpecifiedError();
-  if ((media as { type?: string }).type !== 'tape') {
-    throw new Error(
-      `Tape engine requires media of type "tape" (got "${String((media as { type?: string }).type)}").`,
-    );
-  }
-  const tapeMedia = media as LabelWriterTapeMedia;
-  const bitmap = renderImage(image, { dither: true });
-  const encodeOptions: Parameters<typeof encodeDuoTapeLabel>[2] = {};
-  if (options?.engine !== undefined) encodeOptions.engine = options.engine;
-  if (options?.copies !== undefined) encodeOptions.copies = options.copies;
-  if (tapeMedia.tapeColour !== undefined) encodeOptions.tapeType = tapeMedia.tapeColour;
-  const bytes = encodeDuoTapeLabel(device, bitmap, encodeOptions);
-  await transport.write(bytes);
-}
-
 function buildEngineHandles(
   device: DeviceEntry,
   transports: Record<string, Transport>,
@@ -403,9 +384,9 @@ function buildEngineHandles(
       },
       async getStatus(): Promise<PrinterStatus> {
         if (isDuoTapeEngine(engine)) {
-          await transport.write(buildDuoStatusRequest());
-          const bytes = await transport.read(DUO_TAPE_STATUS_BYTE_COUNT);
-          return parseDuoTapeStatus(bytes);
+          await transport.write(D1_STATUS_REQUEST);
+          const bytes = await transport.read(1);
+          return parseD1Status(bytes);
         }
         await transport.write(buildStatusRequest(device));
         const bytes = await transport.read(statusByteCount(device));

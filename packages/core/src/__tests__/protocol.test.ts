@@ -335,11 +335,16 @@ describe('encodeLabel', () => {
     );
   });
 
-  it("throws UnsupportedOperationError on Duo's tape engine (d1-tape protocol)", () => {
+  it("dispatches the Duo's tape engine (d1-tape) through d1-core's buildPrinterStream", () => {
     const bm = makeBitmap(128, 10);
-    expect(() => encodeLabel(DEVICES.LW_450_DUO, bm, { engine: 'tape' })).toThrow(
-      /protocol "d1-tape"/,
-    );
+    const bytes = encodeLabel(DEVICES.LW_450_DUO, bm, { engine: 'tape' });
+    // d1-core wire shape begins with `ESC C n` (tape-type selector),
+    // not the lw-450 `ESC @` reset.
+    expect(bytes[0]).toBe(0x1b);
+    expect(bytes[1]).toBe(0x43);
+    // Final byte is `ESC A` (status query) — d1-core terminator.
+    expect(bytes.at(-2)).toBe(0x1b);
+    expect(bytes.at(-1)).toBe(0x41);
   });
 
   // Per LW SE450 Tech Ref p.9: ESC G (short form feed) and ESC q (roll

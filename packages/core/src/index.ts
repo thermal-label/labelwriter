@@ -33,10 +33,12 @@ export { DEVICES, REGISTRY_LW, findDevice } from './devices.js';
  * `@thermal-label/contracts` to filter a device list down to what
  * this runtime can actually drive.
  *
- * Note: the LabelWriter Duo's tape engine uses `d1-tape`, which is
- * encoded by `@thermal-label/labelmanager-core`, not here.
+ * `d1-tape` (Duo tape side) is dispatched through
+ * `@thermal-label/d1-core`'s `buildPrinterStream`; the entry here
+ * keeps device-list filters simple — a Duo is fully drivable from
+ * this driver alone.
  */
-export const PROTOCOLS: ReadonlySet<string> = new Set(['lw-450', 'lw-550']);
+export const PROTOCOLS: ReadonlySet<string> = new Set(['lw-450', 'lw-550', 'd1-tape']);
 export { DEFAULT_MEDIA, MEDIA, findMediaByDimensions } from './media.js';
 export { ROTATE_DIRECTION } from './orientation.js';
 export {
@@ -100,24 +102,11 @@ export type {
   LabelWriterTapeMedia,
 } from './types.js';
 
-export { isEngineDrivable } from './protocol.js';
+export { isEngineDrivable, isDuoTapeEngine } from './protocol.js';
 
-export {
-  buildDuoReset,
-  buildDuoSetTapeType,
-  buildDuoBytesPerLine,
-  buildDuoCutTape,
-  buildDuoStatusRequest,
-  buildDuoRasterRow,
-  encodeDuoTapeLabel,
-  isDuoTapeEngine,
-} from './duo-tape.js';
-export type { DuoTapePrintOptions } from './duo-tape.js';
-export { DUO_TAPE_STATUS_BYTE_COUNT, parseDuoTapeStatus } from './duo-tape-status.js';
 export {
   D1_TAPE_COLOR_HEX,
   allTapeMedia,
   findTapeMediaByWidth,
   findTapeMediaByWidthAll,
-  tapeColourFor,
 } from './duo-tape-media.js';

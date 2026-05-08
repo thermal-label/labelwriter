@@ -453,13 +453,15 @@ describe('LabelWriterPrinter', () => {
       await printer.engines.tape!.print(solidRgba(128, 8), MEDIA.STANDARD_BLACK_ON_WHITE_12);
       expect(labelWritten).toHaveLength(0);
       expect(tapeWritten).toHaveLength(1);
-      // Tape stream starts with ESC @ (reset) per duo-tape encoder
+      // d1-core tape stream starts with `ESC C n` (tape-type selector).
       expect(tapeWritten[0]![0]).toBe(0x1b);
-      expect(tapeWritten[0]![1]).toBe(0x40);
-      // ESC E (cut) is the last opcode
+      expect(tapeWritten[0]![1]).toBe(0x43);
+      // Last bytes: `ESC E` (autocut) immediately before `ESC A` (status).
       const last = tapeWritten[0]!;
+      expect(last.at(-4)).toBe(0x1b);
+      expect(last.at(-3)).toBe(0x45);
       expect(last.at(-2)).toBe(0x1b);
-      expect(last.at(-1)).toBe(0x45);
+      expect(last.at(-1)).toBe(0x41);
     });
 
     it("Duo tape engine.print derives ESC C selector from media's tapeColour", async () => {
@@ -470,8 +472,8 @@ describe('LabelWriterPrinter', () => {
       });
       const colouredTape = { ...MEDIA.STANDARD_BLACK_ON_WHITE_12, tapeColour: 5 };
       await printer.engines.tape!.print(solidRgba(128, 4), colouredTape);
-      // Wire layout: ESC @, ESC C n, ESC D ...
-      expect(written[0]![4]).toBe(0x05);
+      // d1-core wire layout: ESC C n at byte 0..2.
+      expect(written[0]![2]).toBe(0x05);
     });
 
     it('Duo tape engine.print rejects non-tape media', async () => {
@@ -485,16 +487,15 @@ describe('LabelWriterPrinter', () => {
       ).rejects.toThrow(/type "tape"/);
     });
 
-    it('Duo tape engine.getStatus reads 8 bytes via parseDuoTapeStatus', async () => {
+    it('Duo tape engine.getStatus reads 1 byte via d1-core parseStatus', async () => {
       const { transport: labelT } = makeTransport();
-      const tapeStatus = new Uint8Array(8);
-      tapeStatus[0] = 0x40; // CASSETTE present, no errors
-      const { transport: tapeT } = makeTransport(tapeStatus);
+      // D1 status is a single byte; 0x00 = ready + tape inserted + no flags.
+      const { transport: tapeT } = makeTransport(new Uint8Array([0x00]));
       const printer = new LabelWriterPrinter(DEVICES.LW_450_DUO, labelT, 'usb', {
         engineTransports: { tape: tapeT },
       });
       const status = await printer.engines.tape!.getStatus!();
-      expect(vi.mocked(tapeT.read)).toHaveBeenCalledWith(8);
+      expect(vi.mocked(tapeT.read)).toHaveBeenCalledWith(1);
       expect(status.ready).toBe(true);
       expect(status.mediaLoaded).toBe(true);
     });

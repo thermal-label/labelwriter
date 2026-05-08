@@ -1,7 +1,8 @@
 import { createBitmap, padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
 import type { DeviceEntry, MediaDescriptor, PrintEngine } from '@thermal-label/contracts';
 import { UnsupportedOperationError, getPrintableArea } from '@thermal-label/contracts';
-import type { LabelWriterPrintOptions, Density } from './types.js';
+import { buildPrinterStream } from '@thermal-label/d1-core';
+import type { LabelWriterPrintOptions, LabelWriterTapeMedia, Density } from './types.js';
 import { encode550Label } from './protocol-550.js';
 
 /**
@@ -27,18 +28,28 @@ export const ROLL_BYTE_AUTO = 0x30;
  * `lw-550` is dispatched to `protocol-550.ts` — a fundamentally
  * different print job structure (ESC s / ESC n / ESC D 12-byte header
  * / ESC Q) that does not share bytes with the 450 family. `d1-tape`
- * (Duo's tape side) is handled by `duo-tape.ts` and routed via
- * `isDuoTapeEngine` rather than `isEngineDrivable` here.
+ * (Duo's tape side) is dispatched to `@thermal-label/d1-core`'s
+ * `buildPrinterStream` — same encoder the labelmanager driver uses,
+ * since the Duo's tape engine is electrically a LabelManager.
  */
-const SUPPORTED_PROTOCOLS = new Set(['lw-450', 'lw-550']);
+const SUPPORTED_PROTOCOLS = new Set(['lw-450', 'lw-550', 'd1-tape']);
 
 /**
  * Whether *this module's* `encodeLabel` produces a correct byte stream
- * for a given engine. Adapters use this together with `isDuoTapeEngine`
- * to route engines to the right encoder (label vs tape).
+ * for a given engine. Adapters use this to filter the device's
+ * engines down to drivable ones at construction time.
  */
 export function isEngineDrivable(engine: PrintEngine): boolean {
   return SUPPORTED_PROTOCOLS.has(engine.protocol);
+}
+
+/**
+ * Whether an engine speaks the D1 tape protocol (the Duo's tape
+ * side). Used by adapters to route status queries through d1-core's
+ * 1-byte parser instead of the 450/550 multi-byte parsers.
+ */
+export function isDuoTapeEngine(engine: PrintEngine): boolean {
+  return engine.protocol === 'd1-tape';
 }
 
 export function buildReset(): Uint8Array {
@@ -310,6 +321,23 @@ export function encodeLabel(
   // the 450-shaped path.
   if (engine.protocol === 'lw-550') {
     return encode550Label(device, bitmap, options, media);
+  }
+
+  // D1 tape (Duo's tape side) — same encoder the labelmanager driver
+  // uses. Tape media's pre-computed `tapeColour` (ESC C selector) maps
+  // to d1-core's `options.tapeType`; if absent, d1-core derives from
+  // the media's `text` / `background` colours.
+  if (engine.protocol === 'd1-tape') {
+    if (media && (media as { type?: string }).type !== 'tape') {
+      throw new Error(
+        `Tape engine requires media of type "tape" (got "${String((media as { type?: string }).type)}").`,
+      );
+    }
+    const tapeMedia = media as LabelWriterTapeMedia | undefined;
+    const d1Options: Parameters<typeof buildPrinterStream>[2] = {};
+    if (options.copies !== undefined) d1Options.copies = options.copies;
+    if (tapeMedia?.tapeColour !== undefined) d1Options.tapeType = tapeMedia.tapeColour;
+    return buildPrinterStream(bitmap, engine, d1Options, tapeMedia);
   }
 
   const headDots = engine.headDots;

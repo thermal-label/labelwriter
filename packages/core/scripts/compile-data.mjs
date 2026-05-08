@@ -56,11 +56,11 @@ const D1_TAPE_COLORS = new Set([
 ]);
 const D1_TAPE_WIDTHS = new Set([6, 9, 12, 19, 24]);
 
-// Mirror of `tapeColourFor` in src/duo-tape-media.ts — keep in sync.
-// Source-of-truth + JSDoc + spec citation live there; this duplicate
-// lets the generator bake the wire byte into each D1 descriptor at
-// compile time so runtime callers don't recompute. Per LW 400 Series
-// Tech Ref p.24.
+// Mirror of `tapeTypeFor` in @thermal-label/d1-core — keep in sync
+// with d1-core/src/tape-type.ts. Source-of-truth + JSDoc + spec
+// citation live there; this duplicate lets the generator bake the
+// wire byte into each D1 descriptor at compile time so runtime
+// callers don't recompute. Per LW 400 Series Tech Ref p.24.
 function tapeColourFor(background, text) {
   if (text === 'black') {
     if (background === 'white' || background === 'clear') return 0;

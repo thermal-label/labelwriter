@@ -5,6 +5,7 @@ import type {
   PrinterStatus,
   PrintOptions,
 } from '@thermal-label/contracts';
+import type { D1Media } from '@thermal-label/d1-core';
 import type { RawImageData } from '@mbtech-nl/bitmap';
 
 export type Density = 'light' | 'medium' | 'normal' | 'high';
@@ -74,24 +75,19 @@ export type D1Material = 'standard' | 'permanent-polyester' | 'flexible-nylon' |
 /**
  * Duo tape-cassette media descriptor.
  *
- * Tape is continuous along its length, so `heightMm` is omitted —
- * `widthMm` is the tape width (6, 9, 12, 19, or 24 mm). `tapeColour`
- * is the `ESC C` selector (0..12 per PDF p.24) identifying which
- * cassette is loaded; defaults to 0 (black on white/clear) when
- * omitted.
+ * Extends `D1Media` from `@thermal-label/d1-core` (the shared D1 tape
+ * shape) with LabelWriter-specific narrowing: `type` fixed to `'tape'`,
+ * `tapeWidthMm` narrowed to the supported widths, `text` / `background`
+ * narrowed to `D1TapeColor`, plus the catalogue's pre-computed
+ * `tapeColour` (ESC C selector) and `material` family for picker UX.
  *
- * Parallel to (not a variant of) `LabelWriterMedia`: the tape engine
- * has its own protocol module and doesn't share the die-cut/continuous
- * length-dots plumbing. Routed via discrimination on `type`.
- *
- * Catalogue metadata (`material`, `background`, `text`) is optional
- * to keep the type compatible with user-constructed descriptors;
- * `DUO_TAPE_MEDIA` entries declare all three.
+ * Routed by the `encodeLabel` dispatcher to `@thermal-label/d1-core`'s
+ * `buildPrinterStream` — same encoder the LabelManager driver uses.
  */
-export interface LabelWriterTapeMedia extends MediaDescriptor {
+export interface LabelWriterTapeMedia extends D1Media {
   type: 'tape';
   tapeWidthMm: DuoTapeWidth;
-  /** ESC C selector 0..12; defaults to 0 (black on white) when omitted. */
+  /** Pre-computed ESC C selector 0..12; mirrors `tapeTypeFor(media)`. */
   tapeColour?: number;
   /** Cartridge material family — drives docs grouping + UI. */
   material?: D1Material;
@@ -173,15 +169,14 @@ export interface LabelWriterPrintOptions extends PrintOptions {
  * explicitly: `printer.engines.left.print(image, media)`.
  *
  * `getStatus()` queries the engine over its own transport — relevant
- * on the Duo, where the tape engine has its own status response shape
- * (8 bytes via `parseDuoTapeStatus`) on a different USB interface
- * than the label engine (1 byte via `parseStatus`).
+ * on the Duo, where the tape engine sits on its own USB interface and
+ * speaks D1 (1-byte status reply via `@thermal-label/d1-core`) while
+ * the label engine speaks lw-450 (1-byte) or lw-550 (32-byte).
  *
- * Adapters expose engines whose protocol either the labelwriter
- * encoder handles (`lw-450` / `lw-550`) or the duo-tape encoder
- * handles (`d1-tape`). Tape engines only appear when a tape
- * transport is provided to the adapter — without one, the engine is
- * declared in the registry but unreachable.
+ * Adapters expose engines whose protocol the encoder dispatch handles
+ * (`lw-450` / `lw-550` natively; `d1-tape` via d1-core). Tape engines
+ * only appear when a tape transport is provided to the adapter —
+ * without one, the engine is declared in the registry but unreachable.
  */
 export interface LabelWriterEngineHandle {
   readonly role: string;
