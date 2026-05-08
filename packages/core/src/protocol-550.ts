@@ -282,10 +282,11 @@ function composeWireBitmap550(
   bitmap: LabelBitmap,
   engine: PrintEngine,
   media: MediaDescriptor | undefined,
+  override?: import('@thermal-label/contracts').PrintableArea,
 ): LabelBitmap {
   const headDots = engine.headDots;
   const dpi = engine.dpi;
-  const { leading, trailing, left, right } = getPrintableArea(engine, media);
+  const { leading, trailing, left, right } = override ?? getPrintableArea(engine, media);
   const leadingDots = mmToDots(leading, dpi);
   const trailingDots = mmToDots(trailing, dpi);
   const leftDots = mmToDots(left, dpi);

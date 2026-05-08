@@ -161,10 +161,14 @@ function composeWireBitmap(
   bitmap: LabelBitmap,
   engine: PrintEngine,
   media: MediaDescriptor | undefined,
+  override?: import('@thermal-label/contracts').PrintableArea,
 ): LabelBitmap {
   const headDots = engine.headDots;
   const dpi = engine.dpi;
-  const { leading, trailing, left, right } = getPrintableArea(engine, media);
+  // Override wins over getPrintableArea (which itself prefers media-tag
+  // override over engine field). Intent: harness operator dialing in
+  // values per session bypasses the registry default.
+  const { leading, trailing, left, right } = override ?? getPrintableArea(engine, media);
   const leadingDots = mmToDots(leading, dpi);
   const trailingDots = mmToDots(trailing, dpi);
   const leftDots = mmToDots(left, dpi);
@@ -312,7 +316,7 @@ export function encodeLabel(
   // Cross-feed-pad / leading-skip / trailing-skip per plan 08 §6.
   // With empty `printableArea` (today's state) this is byte-identical
   // to the previous `fitBitmapWidth` behaviour.
-  const fitted = composeWireBitmap(bitmap, engine, media);
+  const fitted = composeWireBitmap(bitmap, engine, media, options.printableAreaOverride);
 
   const parts: Uint8Array[] = [];
 
@@ -320,7 +324,14 @@ export function encodeLabel(
   parts.push(buildSetBytesPerLine(bytesPerRow));
   parts.push(buildDensity(density));
   parts.push(buildMode(mode));
-  parts.push(buildSetLabelLength(fitted.heightPx));
+  // Label length is the AUTHORED bitmap height (= the actual label feed
+  // length), NOT the wire-bitmap height. With dead-zone overrides the
+  // wire bitmap is shorter than the label, but the printer still needs
+  // to know the full label length so its feed/cut sequencing lands on
+  // the next gap. Using `fitted.heightPx` here would tell the printer
+  // the label is shorter than it really is and cause the trailing edge
+  // to push past the cut line.
+  parts.push(buildSetLabelLength(bitmap.heightPx));
 
   if (selectRollByte !== undefined) {
     parts.push(buildSelectRoll(selectRollByte));
