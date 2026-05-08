@@ -497,20 +497,17 @@ describe('encodeLabel', () => {
       // see exactly which wire columns the encoder fired.
       const labelWidthDots = 425;
       const bm = createBitmap(labelWidthDots, 4);
-      // Set every pixel in the authored bitmap.
-      for (let y = 0; y < bm.heightPx; y++) {
-        for (let xByte = 0; xByte < Math.ceil(labelWidthDots / 8); xByte++) {
-          bm.data[y * Math.ceil(labelWidthDots / 8) + xByte] = 0xff;
-        }
-      }
-      // Mask the trailing bits in the last byte (per LabelBitmap
-      // invariant: bits past `widthPx` stay zero).
-      const lastBit = labelWidthDots % 8;
-      if (lastBit !== 0) {
-        const mask = (0xff << (8 - lastBit)) & 0xff;
-        const stride = Math.ceil(labelWidthDots / 8);
+      const stride = Math.ceil(labelWidthDots / 8);
+      // Fill the whole buffer with 0xff, then mask the trailing bits
+      // in each row's last byte (per LabelBitmap invariant: bits past
+      // `widthPx` stay zero).
+      (bm.data as Uint8Array).fill(0xff);
+      const trailingBits = labelWidthDots % 8;
+      if (trailingBits !== 0) {
+        const mask = (0xff << (8 - trailingBits)) & 0xff;
         for (let y = 0; y < bm.heightPx; y++) {
-          bm.data[y * stride + (stride - 1)] &= mask;
+          const last = y * stride + (stride - 1);
+          (bm.data as Uint8Array)[last] = (bm.data[last] ?? 0) & mask;
         }
       }
 
