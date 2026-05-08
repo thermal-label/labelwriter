@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createBitmap } from '@mbtech-nl/bitmap';
+import type { DeviceEntry, PrintableArea } from '@thermal-label/contracts';
 import {
   build550JobHeader,
   build550Mode,
@@ -299,6 +300,59 @@ describe('encode550Label', () => {
   it('omits ESC T when speed is unset (firmware default = normal)', () => {
     const out = encode550Label(lw550, bm(672, 4));
     expect(findEscByte(out, 0x74)).toBeUndefined();
+  });
+
+  // Plan 08 §6 (Labelwriter subsection): the 550 encoder mirrors the
+  // 450 dead-zone pipeline. With every DEVICES entry shipping
+  // `printableArea: undefined` today, resolved area is
+  // `ZERO_PRINTABLE_AREA` and the wire output stays byte-identical.
+  describe('printable-area integration (plan 08 §6)', () => {
+    it('field-absent: ESC D widthLines equals bitmap height', () => {
+      const heightPx = 200;
+      const out = encode550Label(lw550, bm(672, heightPx));
+      const escD = findEscByte(out, 0x44);
+      expect(escD).toBeDefined();
+      // Width = u32LE at bytes 4..7 of ESC D = number of raster lines
+      const width =
+        (out[escD! + 4]! |
+          (out[escD! + 5]! << 8) |
+          (out[escD! + 6]! << 16) |
+          (out[escD! + 7]! << 24)) >>>
+        0;
+      expect(width).toBe(heightPx);
+    });
+
+    function deviceWithPrintableArea(printableArea: PrintableArea): DeviceEntry {
+      const baseEngine = lw550.engines[0]!;
+      return {
+        ...lw550,
+        engines: [{ ...baseEngine, printableArea }],
+      };
+    }
+
+    it('populated fields: widthLines drops by leading + trailing dots', () => {
+      const dpi = 300;
+      const leadingMm = (70 * 25.4) / dpi;
+      const trailingMm = (18 * 25.4) / dpi;
+      const dev = deviceWithPrintableArea({
+        leading: leadingMm,
+        trailing: trailingMm,
+        left: 0,
+        right: 0,
+      });
+      const heightPx = 1051;
+      const expectedWireRows = heightPx - 70 - 18;
+      const out = encode550Label(dev, bm(672, heightPx));
+      const escD = findEscByte(out, 0x44);
+      expect(escD).toBeDefined();
+      const width =
+        (out[escD! + 4]! |
+          (out[escD! + 5]! << 8) |
+          (out[escD! + 6]! << 16) |
+          (out[escD! + 7]! << 24)) >>>
+        0;
+      expect(width).toBe(expectedWireRows);
+    });
   });
 });
 

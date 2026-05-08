@@ -100,7 +100,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     }
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
-    const bytes = encodeLabel(this.device, bitmap, options);
+    const bytes = encodeLabel(this.device, bitmap, options, resolvedMedia);
     await this.transport.write(bytes);
   }
 

@@ -1,6 +1,6 @@
-import { padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
-import type { DeviceEntry, PrintEngine } from '@thermal-label/contracts';
-import { UnsupportedOperationError } from '@thermal-label/contracts';
+import { createBitmap, padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
+import type { DeviceEntry, MediaDescriptor, PrintEngine } from '@thermal-label/contracts';
+import { UnsupportedOperationError, getPrintableArea } from '@thermal-label/contracts';
 import type { LabelWriterPrintOptions, Density } from './types.js';
 import { encode550Label } from './protocol-550.js';
 
@@ -135,12 +135,90 @@ export function buildRasterRow(rowBytes: Uint8Array, compress = false): Uint8Arr
   return new Uint8Array(rle);
 }
 
-function fitBitmapWidth(bitmap: LabelBitmap, targetWidth: number): LabelBitmap {
-  if (bitmap.widthPx === targetWidth) return bitmap;
-  if (bitmap.widthPx < targetWidth) {
-    return padBitmap(bitmap, { right: targetWidth - bitmap.widthPx });
+/** Convert mm to dots at the given DPI, rounding to the nearest dot. */
+function mmToDots(mm: number, dpi: number): number {
+  return Math.round((mm * dpi) / 25.4);
+}
+
+/**
+ * Compose the wire bitmap for the LabelWriter family per plan 08 §6
+ * (Labelwriter subsection): **send fewer rows** for the leading /
+ * trailing dead zones (LW's head sits past the leading edge after
+ * form-feed and cannot reverse-feed); cross-feed pad with white
+ * columns inside `headDots`-wide rows. Result is `headDots` ×
+ * `wireRows` where `wireRows = bitmap.heightPx − leadingDots −
+ * trailingDots`. LW labels are left-aligned, so the label's leftmost
+ * reachable dot lands at wire-bitmap col `leftDots`.
+ *
+ * When `getPrintableArea(engine, media)` returns all zeros (today's
+ * state — no `printableArea` populated on any DEVICES entry), this
+ * collapses to the previous `fitBitmapWidth` behaviour: pad to
+ * `headDots` width on the right when narrower, crop when wider, all
+ * rows passed through. Wire output is byte-identical to the
+ * pre-plan-08 encoder until someone populates real values.
+ */
+function composeWireBitmap(
+  bitmap: LabelBitmap,
+  engine: PrintEngine,
+  media: MediaDescriptor | undefined,
+): LabelBitmap {
+  const headDots = engine.headDots;
+  const dpi = engine.dpi;
+  const { leading, trailing, left, right } = getPrintableArea(engine, media);
+  const leadingDots = mmToDots(leading, dpi);
+  const trailingDots = mmToDots(trailing, dpi);
+  const leftDots = mmToDots(left, dpi);
+  const rightDots = mmToDots(right, dpi);
+
+  // Source label width is whatever fits in the head — wider authored
+  // bitmaps are cropped (preserves today's "wider than head crops to
+  // head" behaviour); narrower ones flow into the head's leftmost
+  // dots and the unreached pins stay zero.
+  const labelWidthDots = Math.min(bitmap.widthPx, headDots);
+
+  // Feed direction: skip leading + trailing dead-zone rows. Wire
+  // bitmap is shorter than the authored bitmap by exactly the dead-
+  // zone budget. Clamp at zero in case a future caller hands in a
+  // bitmap shorter than the dead-zone budget — the encoder shouldn't
+  // explode on a degenerate input.
+  const wireRows = Math.max(0, bitmap.heightPx - leadingDots - trailingDots);
+  if (wireRows === 0) return createBitmap(headDots, 0);
+
+  // Cross-feed: copy authored cols [leftDots .. labelWidthDots − rightDots]
+  // (clamped at zero), preserving the left dead-zone as white columns.
+  const sourceColStart = Math.min(leftDots, labelWidthDots);
+  const sourceColEnd = Math.max(sourceColStart, labelWidthDots - rightDots);
+  const sourceColCount = sourceColEnd - sourceColStart;
+
+  // Fast path — all-zero dead-zone is the only state that ships
+  // today, and we must emit byte-identical output. The crop+pad
+  // pipeline below would also be byte-identical in that case, but
+  // staying on the original code path keeps this commit's behavioural
+  // surface zero.
+  if (leadingDots === 0 && trailingDots === 0 && leftDots === 0 && rightDots === 0) {
+    if (bitmap.widthPx === headDots) return bitmap;
+    if (bitmap.widthPx < headDots) {
+      return padBitmap(bitmap, { right: headDots - bitmap.widthPx });
+    }
+    return cropBitmap(bitmap, 0, 0, headDots, bitmap.heightPx);
   }
-  return cropBitmap(bitmap, 0, 0, targetWidth, bitmap.heightPx);
+
+  // Source slice: the authored content that survives the dead-zone.
+  const slice =
+    sourceColCount > 0
+      ? cropBitmap(bitmap, sourceColStart, leadingDots, sourceColCount, wireRows)
+      : createBitmap(0, wireRows);
+
+  // Cross-feed compose: position the slice into the head row.
+  // labelLeftEdgeDot is 0 for LW (left-aligned), so the slice sits at
+  // wire col `sourceColStart` (= leftDots, by construction). Right pad
+  // fills out to headDots; with non-zero rightDots the rightmost
+  // `rightDots` cols of the *label* stay white, and any head pins past
+  // labelWidthDots also stay white (head fires harmlessly into air).
+  const leftPad = sourceColStart;
+  const rightPad = headDots - sourceColStart - sourceColCount;
+  if (leftPad === 0 && rightPad === 0) return slice;
+  return padBitmap(slice, { left: leftPad, right: rightPad });
 }
 
 function concat(...arrays: Uint8Array[]): Uint8Array {
@@ -215,6 +293,7 @@ export function encodeLabel(
   device: DeviceEntry,
   bitmap: LabelBitmap,
   options: LabelWriterPrintOptions = {},
+  media?: MediaDescriptor,
 ): Uint8Array {
   const { density = 'normal', mode = 'text', compress = false, copies = 1 } = options;
 
@@ -225,12 +304,15 @@ export function encodeLabel(
   // header / per-label header / job trailer), so dispatch out before
   // the 450-shaped path.
   if (engine.protocol === 'lw-550') {
-    return encode550Label(device, bitmap, options);
+    return encode550Label(device, bitmap, options, media);
   }
 
   const headDots = engine.headDots;
   const bytesPerRow = headDots / 8;
-  const fitted = fitBitmapWidth(bitmap, headDots);
+  // Cross-feed-pad / leading-skip / trailing-skip per plan 08 §6.
+  // With empty `printableArea` (today's state) this is byte-identical
+  // to the previous `fitBitmapWidth` behaviour.
+  const fitted = composeWireBitmap(bitmap, engine, media);
 
   const parts: Uint8Array[] = [];
 

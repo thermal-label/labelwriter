@@ -1,5 +1,12 @@
-import { padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
-import type { DeviceEntry, PrinterError, PrinterStatus } from '@thermal-label/contracts';
+import { createBitmap, padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
+import type {
+  DeviceEntry,
+  MediaDescriptor,
+  PrintEngine,
+  PrinterError,
+  PrinterStatus,
+} from '@thermal-label/contracts';
+import { getPrintableArea } from '@thermal-label/contracts';
 import type { LabelWriterPrintOptions, Density } from './types.js';
 
 /**
@@ -253,12 +260,62 @@ export function density550Percent(density: Density): number {
   }
 }
 
-function fitBitmapWidth(bitmap: LabelBitmap, targetWidth: number): LabelBitmap {
-  if (bitmap.widthPx === targetWidth) return bitmap;
-  if (bitmap.widthPx < targetWidth) {
-    return padBitmap(bitmap, { right: targetWidth - bitmap.widthPx });
+/** Convert mm to dots at the given DPI, rounding to the nearest dot. */
+function mmToDots(mm: number, dpi: number): number {
+  return Math.round((mm * dpi) / 25.4);
+}
+
+/**
+ * Compose the wire bitmap for the LabelWriter 550 family per plan 08
+ * §6 (Labelwriter subsection): **send fewer rows** for the leading /
+ * trailing dead zones, cross-feed pad with white columns inside
+ * `headDots`-wide rows. See `composeWireBitmap` in `protocol.ts` for
+ * the full rationale — this is the 550-shaped clone, kept here
+ * because the 550 encoder is a deliberate fork (different job header
+ * / `ESC D` block / trailer) and the two protocols don't share
+ * fitting logic.
+ *
+ * With empty `printableArea` (today's state) this is byte-identical
+ * to the previous `fitBitmapWidth` behaviour.
+ */
+function composeWireBitmap550(
+  bitmap: LabelBitmap,
+  engine: PrintEngine,
+  media: MediaDescriptor | undefined,
+): LabelBitmap {
+  const headDots = engine.headDots;
+  const dpi = engine.dpi;
+  const { leading, trailing, left, right } = getPrintableArea(engine, media);
+  const leadingDots = mmToDots(leading, dpi);
+  const trailingDots = mmToDots(trailing, dpi);
+  const leftDots = mmToDots(left, dpi);
+  const rightDots = mmToDots(right, dpi);
+
+  const labelWidthDots = Math.min(bitmap.widthPx, headDots);
+  const wireRows = Math.max(0, bitmap.heightPx - leadingDots - trailingDots);
+  if (wireRows === 0) return createBitmap(headDots, 0);
+
+  const sourceColStart = Math.min(leftDots, labelWidthDots);
+  const sourceColEnd = Math.max(sourceColStart, labelWidthDots - rightDots);
+  const sourceColCount = sourceColEnd - sourceColStart;
+
+  if (leadingDots === 0 && trailingDots === 0 && leftDots === 0 && rightDots === 0) {
+    if (bitmap.widthPx === headDots) return bitmap;
+    if (bitmap.widthPx < headDots) {
+      return padBitmap(bitmap, { right: headDots - bitmap.widthPx });
+    }
+    return cropBitmap(bitmap, 0, 0, headDots, bitmap.heightPx);
   }
-  return cropBitmap(bitmap, 0, 0, targetWidth, bitmap.heightPx);
+
+  const slice =
+    sourceColCount > 0
+      ? cropBitmap(bitmap, sourceColStart, leadingDots, sourceColCount, wireRows)
+      : createBitmap(0, wireRows);
+
+  const leftPad = sourceColStart;
+  const rightPad = headDots - sourceColStart - sourceColCount;
+  if (leftPad === 0 && rightPad === 0) return slice;
+  return padBitmap(slice, { left: leftPad, right: rightPad });
 }
 
 function concat(...arrays: Uint8Array[]): Uint8Array {
@@ -288,6 +345,7 @@ export function encode550Label(
   device: DeviceEntry,
   bitmap: LabelBitmap,
   options: LabelWriterPrintOptions = {},
+  media?: MediaDescriptor,
 ): Uint8Array {
   const engine = device.engines.find(e => e.protocol === 'lw-550');
   if (!engine) {
@@ -296,7 +354,10 @@ export function encode550Label(
 
   const headDots = engine.headDots;
   const bytesPerLine = headDots / 8;
-  const fitted = fitBitmapWidth(bitmap, headDots);
+  // Cross-feed-pad / leading-skip / trailing-skip per plan 08 §6.
+  // With empty `printableArea` (today's state) this is byte-identical
+  // to the previous `fitBitmapWidth` behaviour.
+  const fitted = composeWireBitmap550(bitmap, engine, media);
   const widthLines = fitted.heightPx;
 
   const density = options.density ?? 'normal';
