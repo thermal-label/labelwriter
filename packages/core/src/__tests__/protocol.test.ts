@@ -146,13 +146,37 @@ describe('encodeLabel', () => {
   const device450 = DEVICES.LW_450;
   const device550 = DEVICES.LW_550;
 
+  /**
+   * Strip the chassis `printableArea` from a registry entry so the
+   * encoder treats the wire bitmap as the authored bitmap (no leading
+   * row skip). Used by tests that pre-date the 2026-05-08 LW chassis-
+   * leading-dead-zone population — they exercise byte-shape invariants
+   * that are independent of the leading-skip transform, and need a
+   * `printableArea`-free device to keep the assertions tractable.
+   * Tests that exercise the leading-skip behaviour itself use the real
+   * registry entries (LW devices now ship `leading: 6` mm).
+   */
+  function noPrintableArea(device: DeviceEntry): DeviceEntry {
+    return {
+      ...device,
+      engines: device.engines.map(e => {
+        const next = { ...e };
+        delete (next as { printableArea?: PrintableArea }).printableArea;
+        return next;
+      }),
+    };
+  }
+
+  const device450Bare = noPrintableArea(device450);
+  const device550Bare = noPrintableArea(device550);
+
   function makeBitmap(widthPx: number, heightPx: number): LabelBitmap {
     return createBitmap(widthPx, heightPx);
   }
 
   it('450 device: no job header, starts with reset', () => {
     const bm = makeBitmap(672, 100);
-    const result = encodeLabel(device450, bm);
+    const result = encodeLabel(device450Bare, bm);
     expect(result[0]).toBe(0x1b);
     expect(result[1]).toBe(0x40);
   });
@@ -163,7 +187,7 @@ describe('encodeLabel', () => {
     // this is the dispatch-side guarantee that encodeLabel never falls
     // through to the 450 path for an lw-550 engine.
     const bm = makeBitmap(672, 100);
-    const result = encodeLabel(device550, bm);
+    const result = encodeLabel(device550Bare, bm);
     expect(result[0]).toBe(0x1b);
     expect(result[1]).toBe(0x73);
     // Ends with ESC Q (job trailer), not ESC E (form feed) like the 450.
@@ -180,7 +204,7 @@ describe('encodeLabel', () => {
   it('correct row count matches bitmap height after rotation', () => {
     const heightPx = 100;
     const bm = makeBitmap(672, heightPx);
-    const result = encodeLabel(device450, bm);
+    const result = encodeLabel(device450Bare, bm);
     let rowCount = 0;
     let i = 0;
     while (i < result.length) {
@@ -196,7 +220,7 @@ describe('encodeLabel', () => {
 
   it('copies=2: two form feeds', () => {
     const bm = makeBitmap(672, 10);
-    const result = encodeLabel(device450, bm, { copies: 2 });
+    const result = encodeLabel(device450Bare, bm, { copies: 2 });
     let formFeeds = 0;
     for (let i = 0; i < result.length - 1; i++) {
       if (result[i] === 0x1b && result[i + 1] === 0x45) formFeeds++;
@@ -206,7 +230,7 @@ describe('encodeLabel', () => {
 
   it('bitmap narrower than head: pads to head width', () => {
     const bm = makeBitmap(100, 10);
-    const result = encodeLabel(device450, bm);
+    const result = encodeLabel(device450Bare, bm);
     let rowCount = 0;
     let i = 0;
     while (i < result.length) {
@@ -222,7 +246,7 @@ describe('encodeLabel', () => {
 
   it('bitmap wider than head: crops to head width', () => {
     const bm = makeBitmap(800, 10);
-    const result = encodeLabel(device450, bm);
+    const result = encodeLabel(device450Bare, bm);
     let rowCount = 0;
     let i = 0;
     while (i < result.length) {
@@ -238,7 +262,7 @@ describe('encodeLabel', () => {
 
   it('density and mode options are encoded', () => {
     const bm = makeBitmap(672, 5);
-    const result = encodeLabel(device450, bm, { density: 'high', mode: 'graphics' });
+    const result = encodeLabel(device450Bare, bm, { density: 'high', mode: 'graphics' });
     const bytes = Array.from(result);
     const densityIdx = bytes.findIndex((_b, i) => bytes[i] === 0x1b && bytes[i + 1] === 0x67);
     const modeIdx = bytes.findIndex((_b, i) => bytes[i] === 0x1b && bytes[i + 1] === 0x69);
@@ -248,7 +272,7 @@ describe('encodeLabel', () => {
 
   it('compressed raster rows when compress=true', () => {
     const bm = makeBitmap(672, 5);
-    const result = encodeLabel(device450, bm, { compress: true });
+    const result = encodeLabel(device450Bare, bm, { compress: true });
     const hasCompressed = Array.from(result).includes(0x17);
     expect(hasCompressed).toBe(true);
   });
@@ -264,43 +288,43 @@ describe('encodeLabel', () => {
 
   it("Twin Turbo: explicit engine 'right' emits 0x32 (ASCII '2')", () => {
     const bm = makeBitmap(672, 10);
-    const result = encodeLabel(DEVICES.LW_450_TWIN_TURBO, bm, { engine: 'right' });
+    const result = encodeLabel(noPrintableArea(DEVICES.LW_450_TWIN_TURBO), bm, { engine: 'right' });
     expect(findEscQByte(result)).toBe(0x32);
   });
 
   it("Twin Turbo: explicit engine 'left' emits 0x31 (ASCII '1')", () => {
     const bm = makeBitmap(672, 10);
-    const result = encodeLabel(DEVICES.LW_450_TWIN_TURBO, bm, { engine: 'left' });
+    const result = encodeLabel(noPrintableArea(DEVICES.LW_450_TWIN_TURBO), bm, { engine: 'left' });
     expect(findEscQByte(result)).toBe(0x31);
   });
 
   it("Twin Turbo: engine 'auto' emits 0x30 (ASCII '0')", () => {
     const bm = makeBitmap(672, 10);
-    const result = encodeLabel(DEVICES.LW_450_TWIN_TURBO, bm, { engine: 'auto' });
+    const result = encodeLabel(noPrintableArea(DEVICES.LW_450_TWIN_TURBO), bm, { engine: 'auto' });
     expect(findEscQByte(result)).toBe(0x30);
   });
 
   it('Twin Turbo: omitted engine defaults to auto (0x30)', () => {
     const bm = makeBitmap(672, 10);
-    const result = encodeLabel(DEVICES.LW_450_TWIN_TURBO, bm);
+    const result = encodeLabel(noPrintableArea(DEVICES.LW_450_TWIN_TURBO), bm);
     expect(findEscQByte(result)).toBe(0x30);
   });
 
   it('single-engine device: no ESC q on the wire even with engine: auto', () => {
     const bm = makeBitmap(672, 10);
-    const result = encodeLabel(device450, bm, { engine: 'auto' });
+    const result = encodeLabel(device450Bare, bm, { engine: 'auto' });
     expect(findEscQByte(result)).toBeUndefined();
   });
 
   it('single-engine device: no ESC q on the wire when engine omitted', () => {
     const bm = makeBitmap(672, 10);
-    const result = encodeLabel(device450, bm);
+    const result = encodeLabel(device450Bare, bm);
     expect(findEscQByte(result)).toBeUndefined();
   });
 
   it('Duo: no ESC q (Duo uses interface routing, not address byte)', () => {
     const bm = makeBitmap(672, 10);
-    const result = encodeLabel(DEVICES.LW_450_DUO, bm);
+    const result = encodeLabel(noPrintableArea(DEVICES.LW_450_DUO), bm);
     expect(findEscQByte(result)).toBeUndefined();
   });
 
@@ -344,7 +368,7 @@ describe('encodeLabel', () => {
 
     for (const key of singleRollKeys) {
       it(`${key}: no ESC G (0x1b 0x47)`, () => {
-        const dev = DEVICES[key];
+        const dev = noPrintableArea(DEVICES[key]);
         const headDots = dev.engines[0]!.headDots;
         const bm = makeBitmap(headDots, 8);
         const out = encodeLabel(dev, bm, { copies: 2 });
@@ -352,7 +376,7 @@ describe('encodeLabel', () => {
       });
 
       it(`${key}: no ESC q (0x1b 0x71)`, () => {
-        const dev = DEVICES[key];
+        const dev = noPrintableArea(DEVICES[key]);
         const headDots = dev.engines[0]!.headDots;
         const bm = makeBitmap(headDots, 8);
         const out = encodeLabel(dev, bm);
@@ -360,7 +384,7 @@ describe('encodeLabel', () => {
       });
 
       it(`${key}: ESC D byte matches headDots / 8`, () => {
-        const dev = DEVICES[key];
+        const dev = noPrintableArea(DEVICES[key]);
         const headDots = dev.engines[0]!.headDots;
         const bm = makeBitmap(headDots, 4);
         const out = encodeLabel(dev, bm);
@@ -371,17 +395,18 @@ describe('encodeLabel', () => {
     }
   });
 
-  // Plan 08 §6 (Labelwriter subsection): the encoder now resolves
-  // `printableArea` and crops/pads the wire bitmap accordingly. With
-  // every DEVICES entry shipping `printableArea: undefined` today,
-  // resolved area is `ZERO_PRINTABLE_AREA` and the wire output must
-  // be byte-identical to the previous fit-to-head behaviour.
+  // Plan 08 §6 (Labelwriter subsection): the encoder resolves
+  // `printableArea` and crops/pads the wire bitmap accordingly. As of
+  // 2026-05-08 every LW 3xx/4xx/5xx engine ships `printableArea.leading
+  // = 6 mm` (chassis-mechanical bench-validated value); the field-absent
+  // case is exercised here against a synthesised bare device so the
+  // skip-rows branch and its no-op path stay independently asserted.
   describe('printable-area integration (plan 08 §6)', () => {
     it('field-absent: row count equals bitmap height (skip-rows is a no-op at zero)', () => {
-      const headDots = device450.engines[0]!.headDots;
+      const headDots = device450Bare.engines[0]!.headDots;
       const heightPx = 200;
       const bm = makeBitmap(headDots, heightPx);
-      const out = encodeLabel(device450, bm);
+      const out = encodeLabel(device450Bare, bm);
       let rowCount = 0;
       let i = 0;
       while (i < out.length) {
@@ -396,10 +421,10 @@ describe('encodeLabel', () => {
     });
 
     it('field-absent: ESC L label-length byte equals bitmap height', () => {
-      const headDots = device450.engines[0]!.headDots;
+      const headDots = device450Bare.engines[0]!.headDots;
       const heightPx = 250;
       const bm = makeBitmap(headDots, heightPx);
-      const out = encodeLabel(device450, bm);
+      const out = encodeLabel(device450Bare, bm);
       // ESC L emits little-endian u16; find the bytes directly.
       let escL = -1;
       for (let i = 0; i < out.length - 3; i++) {
@@ -466,8 +491,13 @@ describe('encodeLabel', () => {
       }
       expect(rowCount).toBe(expectedWireRows);
 
-      // ESC L label-length matches the wire bitmap, not the authored
-      // bitmap — the firmware sees the shorter stream.
+      // ESC L label-length is the authored bitmap height (= label
+      // pitch), NOT the shorter wire row count. Plan 08 §6 footer:
+      // sending the wire-row count to ESC L makes the form-feed
+      // think the label is shorter than it really is, which compounds
+      // across consecutive prints. The encoder takes the input
+      // `bitmap.heightPx` (= label pitch) for ESC L and the post-skip
+      // wire count for the raster stream.
       let escL = -1;
       for (let j = 0; j < out.length - 3; j++) {
         if (out[j] === 0x1b && out[j + 1] === 0x4c) {
@@ -477,7 +507,7 @@ describe('encodeLabel', () => {
       }
       expect(escL).toBeGreaterThan(-1);
       const length = (out[escL + 2] ?? 0) | ((out[escL + 3] ?? 0) << 8);
-      expect(length).toBe(expectedWireRows);
+      expect(length).toBe(heightPx);
     });
 
     it('populated fields: cross-feed pad places content at wire col `leftDots`', () => {

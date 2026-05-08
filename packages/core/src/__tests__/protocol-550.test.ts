@@ -162,8 +162,26 @@ describe('density550Percent', () => {
 });
 
 describe('encode550Label', () => {
-  const lw550 = DEVICES.LW_550;
-  const lw5xl = DEVICES.LW_5XL;
+  /**
+   * Strip the chassis `printableArea` from a registry entry so the
+   * encoder treats the wire bitmap as the authored bitmap (no leading
+   * row skip). Tests that exercise byte-shape invariants independent
+   * of the leading-skip transform synthesise a bare device. See the
+   * matching helper in `protocol.test.ts` for rationale.
+   */
+  function noPrintableArea(device: DeviceEntry): DeviceEntry {
+    return {
+      ...device,
+      engines: device.engines.map(e => {
+        const next = { ...e };
+        delete (next as { printableArea?: PrintableArea }).printableArea;
+        return next;
+      }),
+    };
+  }
+
+  const lw550 = noPrintableArea(DEVICES.LW_550);
+  const lw5xl = noPrintableArea(DEVICES.LW_5XL);
 
   const bm = (widthPx: number, heightPx: number): ReturnType<typeof createBitmap> =>
     createBitmap(widthPx, heightPx);
@@ -270,7 +288,7 @@ describe('encode550Label', () => {
   });
 
   it('throws when the device has no lw-550 engine', () => {
-    expect(() => encode550Label(DEVICES.LW_450, bm(672, 4))).toThrow(/lw-550/);
+    expect(() => encode550Label(noPrintableArea(DEVICES.LW_450), bm(672, 4))).toThrow(/lw-550/);
   });
 
   it('does not contain ESC @ (which would reboot the print engine)', () => {
@@ -359,7 +377,10 @@ describe('encode550Label', () => {
 describe('encodeLabel dispatch', () => {
   it('routes lw-550 engines to encode550Label (no ESC @ reset, ends with ESC Q)', async () => {
     const { encodeLabel } = await import('../protocol.js');
-    const out = encodeLabel(DEVICES.LW_550, createBitmap(672, 4));
+    // Bitmap height needs to be > the LW chassis leading dead zone
+    // (6 mm @ 300 dpi = 71 dots) so the wire row count is positive
+    // and the dispatch produces a complete 550 stream.
+    const out = encodeLabel(DEVICES.LW_550, createBitmap(672, 200));
     // 550-shaped: starts with ESC s, ends with ESC Q
     expect(out[0]).toBe(0x1b);
     expect(out[1]).toBe(0x73);

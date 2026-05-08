@@ -161,14 +161,15 @@ function composeWireBitmap(
   bitmap: LabelBitmap,
   engine: PrintEngine,
   media: MediaDescriptor | undefined,
-  override?: import('@thermal-label/contracts').PrintableArea,
 ): LabelBitmap {
   const headDots = engine.headDots;
   const dpi = engine.dpi;
-  // Override wins over getPrintableArea (which itself prefers media-tag
-  // override over engine field). Intent: harness operator dialing in
-  // values per session bypasses the registry default.
-  const { leading, trailing, left, right } = override ?? getPrintableArea(engine, media);
+  // Chassis-mechanical dead zones come from the engine descriptor (with
+  // per-roll media-tag override applied by `getPrintableArea` — LW 5xx
+  // NFC tag exposes per-SKU offsets). Operator-facing per-call overrides
+  // are no longer plumbed here; drivers respect the registry-resolved
+  // values directly.
+  const { leading, trailing, left, right } = getPrintableArea(engine, media);
   const leadingDots = mmToDots(leading, dpi);
   const trailingDots = mmToDots(trailing, dpi);
   const leftDots = mmToDots(left, dpi);
@@ -186,7 +187,7 @@ function composeWireBitmap(
   // bitmap shorter than the dead-zone budget — the encoder shouldn't
   // explode on a degenerate input.
   const wireRows = Math.max(0, bitmap.heightPx - leadingDots - trailingDots);
-  if (wireRows === 0) return createBitmap(headDots, 0);
+  if (wireRows === 0) return { widthPx: headDots, heightPx: 0, data: new Uint8Array(0) };
 
   // Cross-feed: copy authored cols [leftDots .. labelWidthDots − rightDots]
   // (clamped at zero), preserving the left dead-zone as white columns.
@@ -314,9 +315,9 @@ export function encodeLabel(
   const headDots = engine.headDots;
   const bytesPerRow = headDots / 8;
   // Cross-feed-pad / leading-skip / trailing-skip per plan 08 §6.
-  // With empty `printableArea` (today's state) this is byte-identical
-  // to the previous `fitBitmapWidth` behaviour.
-  const fitted = composeWireBitmap(bitmap, engine, media, options.printableAreaOverride);
+  // Resolved entirely from `engine.printableArea` (with per-roll media
+  // override applied internally by `getPrintableArea`).
+  const fitted = composeWireBitmap(bitmap, engine, media);
 
   const parts: Uint8Array[] = [];
 

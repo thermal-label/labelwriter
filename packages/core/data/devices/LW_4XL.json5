@@ -15,6 +15,9 @@
       dpi: 300,
       headDots: 1248,
       mediaCompatibility: ['lw', 'lw-wide'],
+      // Chassis leading dead zone — bench-validated across LW 3xx/4xx/5xx
+      // (2026-05-08). See LW_300.json5 for rationale.
+      printableArea: { leading: 6, trailing: 0, left: 0, right: 0 },
     },
   ],
   support: { status: 'untested' },

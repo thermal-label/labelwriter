@@ -152,27 +152,6 @@ export interface LabelWriterPrintOptions extends PrintOptions {
   jobId?: number;
   rotate?: 'auto' | 0 | 90 | 180 | 270;
   /**
-   * Per-call override for the engine's `printableArea`. When supplied,
-   * `composeWireBitmap` uses these values instead of
-   * `getPrintableArea(engine, media)`. Useful for harness calibration
-   * loops where the operator dials in their printer's actual dead-zone
-   * geometry per session.
-   *
-   * Plan 08 §7a: the override values flow through to the wire bitmap
-   * just like the engine field would; the input authored bitmap is
-   * still expected to be label-sized, and the encoder skips
-   * `printableAreaOverride.leading/trailing` rows + handles the
-   * cross-feed margins.
-   */
-  printableAreaOverride?: import('@thermal-label/contracts').PrintableArea;
-  /**
-   * Per-call override for the engine's `forcedTrailingFeedMm`.
-   * Currently zero on every LW engine (variable form-feed); the
-   * override is here for symmetry with `printableAreaOverride` and so
-   * harness sessions can experiment.
-   */
-  forcedTrailingFeedMmOverride?: number;
-  /**
    * Override the label feed length used by `ESC L`. When the caller
    * pre-strips dead-zone rows from the bitmap (so `bitmap.heightPx`
    * is shorter than the actual label pitch), the printer still needs

@@ -282,11 +282,10 @@ function composeWireBitmap550(
   bitmap: LabelBitmap,
   engine: PrintEngine,
   media: MediaDescriptor | undefined,
-  override?: import('@thermal-label/contracts').PrintableArea,
 ): LabelBitmap {
   const headDots = engine.headDots;
   const dpi = engine.dpi;
-  const { leading, trailing, left, right } = override ?? getPrintableArea(engine, media);
+  const { leading, trailing, left, right } = getPrintableArea(engine, media);
   const leadingDots = mmToDots(leading, dpi);
   const trailingDots = mmToDots(trailing, dpi);
   const leftDots = mmToDots(left, dpi);
@@ -294,7 +293,7 @@ function composeWireBitmap550(
 
   const labelWidthDots = Math.min(bitmap.widthPx, headDots);
   const wireRows = Math.max(0, bitmap.heightPx - leadingDots - trailingDots);
-  if (wireRows === 0) return createBitmap(headDots, 0);
+  if (wireRows === 0) return { widthPx: headDots, heightPx: 0, data: new Uint8Array(0) };
 
   const sourceColStart = Math.min(leftDots, labelWidthDots);
   const sourceColEnd = Math.max(sourceColStart, labelWidthDots - rightDots);

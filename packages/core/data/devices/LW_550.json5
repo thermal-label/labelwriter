@@ -19,6 +19,13 @@
         // comparable mechanism (cassette-ID, RFID auth, etc.).
         genuineMediaRequired: true,
       },
+      // Chassis leading dead zone — bench-validated across LW 3xx/4xx/5xx
+      // (2026-05-08). See LW_300.json5 for rationale. The 5xx NFC tag
+      // can additionally provide per-roll `printableHorizontalOffsetMm`
+      // / `printableVerticalOffsetMm`; `getPrintableArea(engine, media)`
+      // prefers tag-supplied values when present and falls back to this
+      // engine default otherwise.
+      printableArea: { leading: 6, trailing: 0, left: 0, right: 0 },
     },
   ],
   hardwareQuirks: 'NFC-based roll authentication: refuses non-genuine rolls outright. On genuine rolls, the NFC-defined length is authoritative — host claims to print at a different length are silently overridden, manifesting as a misprint at NFC dimensions. Apps that compare detected vs selected media should warn the user before sending.',

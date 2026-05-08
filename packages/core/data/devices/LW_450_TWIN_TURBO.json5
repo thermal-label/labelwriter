@@ -17,6 +17,9 @@
       headDots: 672,
       mediaCompatibility: ['lw'],
       bind: { address: 0x31 },
+      // Chassis leading dead zone — bench-validated across LW 3xx/4xx/5xx
+      // (2026-05-08). See LW_300.json5 for rationale.
+      printableArea: { leading: 6, trailing: 0, left: 0, right: 0 },
     },
     {
       role: 'right',
@@ -25,6 +28,7 @@
       headDots: 672,
       mediaCompatibility: ['lw'],
       bind: { address: 0x32 },
+      printableArea: { leading: 6, trailing: 0, left: 0, right: 0 },
     },
   ],
   support: { status: 'untested' },

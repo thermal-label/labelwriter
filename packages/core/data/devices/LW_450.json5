@@ -6,7 +6,16 @@
     usb: { vid: '0x0922', pid: '0x0020' },
   },
   engines: [
-    { role: 'primary', protocol: 'lw-450', dpi: 300, headDots: 672, mediaCompatibility: ['lw'] },
+    {
+      role: 'primary',
+      protocol: 'lw-450',
+      dpi: 300,
+      headDots: 672,
+      mediaCompatibility: ['lw'],
+      // Chassis leading dead zone — bench-validated across LW 3xx/4xx/5xx
+      // (2026-05-08). See LW_300.json5 for rationale.
+      printableArea: { leading: 6, trailing: 0, left: 0, right: 0 },
+    },
   ],
   support: { status: 'untested' },
 }

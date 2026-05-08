@@ -16,6 +16,13 @@
       // 464 dots / 58 bytes per dymo-cups-drivers (clamps from 1.57" × 300 = 471).
       headDots: 464,
       mediaCompatibility: ['lw'],
+      // Chassis-physical leading dead zone — bench-validated 2026-05-08
+      // across LW 330 Turbo / 400 / 450; the head sits ~6 mm past the
+      // leading edge after partial pull-back. Single value applies to
+      // every LW 3xx/4xx/5xx engine in the registry. Other axes stay 0.
+      // `forcedTrailingFeedMm` left absent — LW family uses variable
+      // form-feed (`ESC E` to next tear bar).
+      printableArea: { leading: 6, trailing: 0, left: 0, right: 0 },
     },
   ],
   support: { status: 'untested' },
