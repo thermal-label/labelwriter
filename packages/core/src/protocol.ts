@@ -324,14 +324,19 @@ export function encodeLabel(
   parts.push(buildSetBytesPerLine(bytesPerRow));
   parts.push(buildDensity(density));
   parts.push(buildMode(mode));
-  // Label length is the AUTHORED bitmap height (= the actual label feed
-  // length), NOT the wire-bitmap height. With dead-zone overrides the
-  // wire bitmap is shorter than the label, but the printer still needs
-  // to know the full label length so its feed/cut sequencing lands on
-  // the next gap. Using `fitted.heightPx` here would tell the printer
-  // the label is shorter than it really is and cause the trailing edge
-  // to push past the cut line.
-  parts.push(buildSetLabelLength(bitmap.heightPx));
+  // Label length = the actual label feed pitch the printer's form-feed
+  // and cut sequencing need to know. Order:
+  //   1. `options.labelLengthDots` — caller-supplied override, used
+  //      when the caller has pre-stripped dead-zone rows (so
+  //      `bitmap.heightPx` is shorter than the label pitch). Pass
+  //      `media.lengthDots` here when stripping.
+  //   2. `bitmap.heightPx` — the input bitmap height when the caller
+  //      hasn't pre-stripped (encoder does the strip itself OR no
+  //      strip is happening).
+  // Sending `fitted.heightPx` (the post-strip wire height) would tell
+  // the printer the label is shorter than it really is and cause the
+  // form-feed offset to compound across consecutive prints.
+  parts.push(buildSetLabelLength(options.labelLengthDots ?? bitmap.heightPx));
 
   if (selectRollByte !== undefined) {
     parts.push(buildSelectRoll(selectRollByte));

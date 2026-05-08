@@ -172,6 +172,17 @@ export interface LabelWriterPrintOptions extends PrintOptions {
    * harness sessions can experiment.
    */
   forcedTrailingFeedMmOverride?: number;
+  /**
+   * Override the label feed length used by `ESC L`. When the caller
+   * pre-strips dead-zone rows from the bitmap (so `bitmap.heightPx`
+   * is shorter than the actual label pitch), the printer still needs
+   * the actual pitch for form-feed / cut sequencing — otherwise the
+   * cut lands inside the printed region and the offset compounds
+   * across consecutive prints. Pass the original authored bitmap
+   * height (= `media.lengthDots`) here when stripping rows; omit when
+   * the encoder is doing the strip itself.
+   */
+  labelLengthDots?: number;
 }
 
 /**
