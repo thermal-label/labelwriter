@@ -26,7 +26,7 @@
       protocol: 'd1-tape',
       dpi: 180,
       headDots: 128,
-      mediaCompatibility: ['d1', 'd1-wide'],
+      mediaCompatibility: ['d1', 'd1-wide', 'd1-24'],
       capabilities: { autocut: true },
       bind: { usb: { bInterfaceNumber: 1 } },
     },

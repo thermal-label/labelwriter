@@ -28,6 +28,7 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = resolve(SCRIPT_DIR, '..');
 const DEVICES_DIR = resolve(PACKAGE_ROOT, 'data/devices');
 const MEDIA_FILE = resolve(PACKAGE_ROOT, 'data/media.json5');
+const D1_MEDIA_JSON = resolve(PACKAGE_ROOT, '../../../d1-core/data/media.json');
 const DEVICES_JSON = resolve(PACKAGE_ROOT, 'data/devices.json');
 const MEDIA_JSON = resolve(PACKAGE_ROOT, 'data/media.json');
 const DEVICES_TS = resolve(PACKAGE_ROOT, 'src/devices.generated.ts');
@@ -41,46 +42,8 @@ const LEGACY_SUPPORT_STATUS = new Set(['verified', 'partial', 'broken', 'unteste
 const VERIFICATION_RUNGS = new Set(['verified', 'partial', 'unsupported']);
 const MAX_ISSUES_PER_CELL = 2;
 const TRANSPORT_KEYS = new Set(['usb', 'tcp', 'serial', 'bluetooth-spp', 'bluetooth-gatt']);
-const MEDIA_TYPE = new Set(['die-cut', 'continuous', 'tape']);
-const KNOWN_TARGET_MODELS = new Set(['lw', 'lw-wide', 'd1', 'd1-wide']);
-const D1_MATERIALS = new Set(['standard', 'permanent-polyester', 'flexible-nylon', 'durable']);
-const D1_TAPE_COLORS = new Set([
-  'white',
-  'clear',
-  'yellow',
-  'blue',
-  'green',
-  'red',
-  'black',
-  'orange',
-]);
-const D1_TAPE_WIDTHS = new Set([6, 9, 12, 19, 24]);
-
-// Mirror of `tapeTypeFor` in @thermal-label/d1-core — keep in sync
-// with d1-core/src/tape-type.ts. Source-of-truth + JSDoc + spec
-// citation live there; this duplicate lets the generator bake the
-// wire byte into each D1 descriptor at compile time so runtime
-// callers don't recompute. Per LW 400 Series Tech Ref p.24.
-function tapeColourFor(background, text) {
-  if (text === 'black') {
-    if (background === 'white' || background === 'clear') return 0;
-    if (background === 'blue') return 1;
-    if (background === 'red') return 2;
-    if (background === 'yellow') return 4;
-    if (background === 'green') return 6;
-    return 0;
-  }
-  if (text === 'white') {
-    if (background === 'clear') return 9;
-    if (background === 'black') return 10;
-    return 0;
-  }
-  if (background === 'white' || background === 'clear') {
-    if (text === 'blue') return 11;
-    if (text === 'red') return 12;
-  }
-  return 0;
-}
+const MEDIA_TYPE = new Set(['die-cut', 'continuous']);
+const KNOWN_TARGET_MODELS = new Set(['lw', 'lw-wide', 'd1', 'd1-wide', 'd1-24']);
 
 const errors = [];
 const fail = (where, msg) => errors.push(`${where}: ${msg}`);
@@ -214,31 +177,6 @@ function legacyToVerifications(entry) {
 
 // `expandVerifications` is imported from `@thermal-label/contracts`.
 
-// Apply tape-entry defaults in place (category, tapeWidthMm,
-// tapeColour). No-op for paper entries. Called before validation so
-// rules see the fully-defaulted shape.
-//
-// `targetModels` is intentionally NOT defaulted — D1 cartridges are
-// a cross-driver substrate (LabelWriter Duo today, potentially a
-// LabelManager driver tomorrow), so each entry declares its own
-// substrate tags. A default would silently encode "this registry
-// belongs to the Duo" and force any future shared consumer to
-// duplicate or override the rule.
-function applyTapeDefaults(entry) {
-  if (entry?.type !== 'tape') return;
-  if (entry.category === undefined) entry.category = 'cartridge';
-  if (entry.tapeWidthMm === undefined && typeof entry.widthMm === 'number') {
-    entry.tapeWidthMm = entry.widthMm;
-  }
-  if (
-    entry.tapeColour === undefined &&
-    typeof entry.background === 'string' &&
-    typeof entry.text === 'string'
-  ) {
-    entry.tapeColour = tapeColourFor(entry.background, entry.text);
-  }
-}
-
 function validateMediaEntry(entry, idx) {
   const where = `media[${idx}]${entry?.key ? ` (${entry.key})` : ''}`;
 
@@ -257,27 +195,6 @@ function validateMediaEntry(entry, idx) {
   } else if (entry?.type === 'continuous') {
     if (entry.heightMm !== undefined) fail(where, 'continuous media must omit heightMm');
     if (entry.lengthDots !== undefined) fail(where, 'continuous media must omit lengthDots');
-  } else if (entry?.type === 'tape') {
-    if (entry.heightMm !== undefined) fail(where, 'tape media must omit heightMm');
-    if (entry.lengthDots !== undefined) fail(where, 'tape media must omit lengthDots');
-    if (!D1_TAPE_WIDTHS.has(entry.widthMm)) {
-      fail(where, `tape widthMm must be one of ${[...D1_TAPE_WIDTHS].join('|')}`);
-    }
-    if (entry.tapeWidthMm !== entry.widthMm) {
-      fail(where, 'tape tapeWidthMm must equal widthMm');
-    }
-    if (!D1_MATERIALS.has(entry.material)) {
-      fail(where, `tape material must be one of ${[...D1_MATERIALS].join('|')}`);
-    }
-    if (!D1_TAPE_COLORS.has(entry.background)) {
-      fail(where, `tape background must be a D1TapeColor (${[...D1_TAPE_COLORS].join('|')})`);
-    }
-    if (!D1_TAPE_COLORS.has(entry.text)) {
-      fail(where, `tape text must be a D1TapeColor (${[...D1_TAPE_COLORS].join('|')})`);
-    }
-    if (typeof entry.tapeColour !== 'number') {
-      fail(where, 'tape tapeColour must be numeric (defaulted from background+text)');
-    }
   }
 
   if (!Array.isArray(entry?.targetModels) || entry.targetModels.length === 0) {
@@ -335,7 +252,6 @@ try {
 const seenMediaKeys = new Set();
 const seenMediaIds = new Set();
 mediaList.forEach((entry, i) => {
-  applyTapeDefaults(entry);
   validateMediaEntry(entry, i);
   if (entry?.key) {
     if (seenMediaKeys.has(entry.key)) fail(`media[${i}]`, `duplicate key "${entry.key}"`);
@@ -346,6 +262,39 @@ mediaList.forEach((entry, i) => {
     seenMediaIds.add(entry.id);
   }
 });
+
+// ─── merge d1-core tape catalogue ─────────────────────────────────────
+//
+// Read d1-core's compiled `data/media.json` and append every tape
+// entry to our local paper list. The compile-time merge gives the
+// generated MEDIA registry a literal-typed key union covering both
+// paper and tape; the alternative — runtime merge in `src/media.ts`
+// — would erase the literal types. d1-core's compile-data must run
+// first; the prebuild step on this package's `package.json` calls
+// it via the workspace override link.
+let d1Media = [];
+try {
+  const parsed = JSON.parse(readFileSync(D1_MEDIA_JSON, 'utf8'));
+  if (!Array.isArray(parsed?.media)) {
+    fail('d1-core media.json', 'expected `.media` to be an array');
+  } else {
+    d1Media = parsed.media;
+  }
+} catch (err) {
+  fail('d1-core media.json', `read error: ${err.message} — run \`pnpm --dir ../../../d1-core run compile-data\` first`);
+}
+
+for (const [i, entry] of d1Media.entries()) {
+  if (entry?.key && seenMediaKeys.has(entry.key)) {
+    fail(`d1-core media[${i}]`, `key "${entry.key}" collides with a labelwriter paper entry`);
+  }
+  if (entry?.key) seenMediaKeys.add(entry.key);
+  if (entry?.id && seenMediaIds.has(entry.id)) {
+    fail(`d1-core media[${i}]`, `id "${entry.id}" collides with a labelwriter paper entry`);
+  }
+  if (entry?.id) seenMediaIds.add(entry.id);
+  mediaList.push(entry);
+}
 
 // ─── emit ─────────────────────────────────────────────────────────────
 

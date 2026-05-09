@@ -26,6 +26,10 @@ export const D1_TAPE_COLOR_HEX: Record<D1TapeColor, string | null> = {
   red: '#E30613',
   black: '#000000',
   orange: '#F39200',
+  brown: '#7A4521',
+  grey: '#9D9D9C',
+  metallic: '#B5B7B8',
+  purple: '#8A4F9E',
 };
 
 function isTape(m: { type: string }): m is LabelWriterTapeMedia {

@@ -20,36 +20,33 @@ media diagnostics (SKU number, label count remaining, counterfeit
 detection). Genuine DYMO consumables are enforced in firmware. See
 [LW 550 raster](./lw-550).
 
-## [`d1-tape`](./duo-tape) — LabelWriter Duo tape engine
+## `d1-tape` — LabelWriter Duo tape engine
 
-The LabelWriter Duo's tape-side engine (the chassis also has a 672-dot
-label engine on a separate USB interface, which speaks `lw-450`).
-Closely related to the [LabelManager D1
-protocol](https://thermal-label.github.io/labelmanager/protocol) —
-same `SYN`-row framing and `ESC C` / `ESC D` opcodes — but uses
-`ESC E` for cutting and returns an 8-byte status reply. See
-[Duo tape](./duo-tape) for the deltas.
+The Duo's tape-side engine speaks the standard D1 protocol — same
+encoder, same 1-byte status, same opcode vocabulary as a standalone
+LabelManager (the Duo is electrically a LabelManager + LabelWriter
+sharing one cable). Documented separately in
+[`@thermal-label/d1-core`](https://thermal-label.github.io/d1-core/protocol).
+
+The label side of the same chassis lives on a different USB interface
+and speaks `lw-450`.
 
 ## When to use which encoder
 
 The driver dispatches automatically:
 
 ```ts
-encodeLabel(device, bitmap, options); // 450 + 550 (label engines)
-encodeDuoTapeLabel(device, bitmap, opts); // d1-tape (Duo tape engine)
+encodeLabel(device, bitmap, options, media);
+// engine.protocol === 'lw-450'  → 450 byte stream
+// engine.protocol === 'lw-550'  → 550 byte stream
+// engine.protocol === 'd1-tape' → d1-core's buildPrinterStream
 ```
 
-`encodeLabel` reads `engine.protocol` and forks between the 450 and
-550 byte streams internally. The Duo tape side has its own entry
-point because routing it through `encodeLabel` would obscure the
-interface-number selection that callers need to be explicit about.
+The encoder source:
 
-The encoder source lives in `packages/core/src/`:
-
-| File                 | Covers                                         |
-| -------------------- | ---------------------------------------------- |
-| `protocol.ts`        | `lw-450` encoder + dispatch                    |
-| `protocol-550.ts`    | `lw-550` encoder, SKU / engine-version parsers |
-| `duo-tape.ts`        | `d1-tape` Duo tape encoder                     |
-| `duo-tape-status.ts` | `d1-tape` 8-byte status parser                 |
-| `status.ts`          | 1-byte (450) / 32-byte (550) status parsers    |
+| File                 | Covers                                                 |
+| -------------------- | ------------------------------------------------------ |
+| `protocol.ts`        | `lw-450` encoder + the unified dispatcher              |
+| `protocol-550.ts`    | `lw-550` encoder, SKU / engine-version parsers         |
+| `status.ts`          | 1-byte (450) / 32-byte (550) status parsers            |
+| `@thermal-label/d1-core` | `d1-tape` encoder + 1-byte status parser           |
