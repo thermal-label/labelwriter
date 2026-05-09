@@ -26,6 +26,13 @@
       mediaCompatibility: ['d1', 'd1-wide', 'd1-24'],
       capabilities: { autocut: true },
       bind: { usb: { bInterfaceNumber: 1 } },
+      // D1 cassette dead-zone defaults — Duo tape side is
+      // electrically a LabelManager. See LM_PNP.json5 for the
+      // geometry rationale (centred-strip math: leading 0 + 16mm
+      // trailing pad → 8mm leading + 8mm trailing per cut strip in
+      // steady state). Bench-confirm per chassis as needed.
+      printableArea: { leading: 0, trailing: 0, left: 0, right: 0 },
+      forcedTrailingFeedMm: 16,
     },
   ],
   support: { status: 'untested' },
