@@ -12,9 +12,11 @@ import {
   buildErrorRecovery,
   buildStatusRequest,
   createPreviewOffline,
+  D1_STATUS_REQUEST,
   encodeLabel,
   isDuoTapeEngine,
   isEngineDrivable,
+  parseD1Status,
   parseEngineVersion,
   parseSkuInfo,
   parseStatus,
@@ -38,10 +40,6 @@ import {
   type Transport,
   type TransportType,
 } from '@thermal-label/labelwriter-core';
-import {
-  STATUS_REQUEST as D1_STATUS_REQUEST,
-  parseStatus as parseD1Status,
-} from '@thermal-label/d1-core';
 import { MediaNotSpecifiedError, UnsupportedOperationError } from '@thermal-label/contracts';
 
 export interface LabelWriterPrinterOptions {

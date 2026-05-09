@@ -82,9 +82,6 @@ importers:
       '@thermal-label/contracts':
         specifier: link:../../../contracts
         version: link:../../../contracts
-      '@thermal-label/d1-core':
-        specifier: link:../../../d1-core
-        version: link:../../../d1-core
       '@thermal-label/labelwriter-core':
         specifier: workspace:*
         version: link:../core
