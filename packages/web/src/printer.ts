@@ -11,9 +11,12 @@ import {
   buildErrorRecovery,
   buildStatusRequest,
   createPreviewOffline,
+  D1_STATUS_REQUEST,
   encodeLabel,
   findDevice,
+  isDuoTapeEngine,
   isEngineDrivable,
+  parseD1Status,
   parseSkuInfo,
   parseStatus,
   pickRotation,
@@ -27,6 +30,7 @@ import {
   type MediaDescriptor,
   type PreviewOptions,
   type PreviewResult,
+  type PrintEngine,
   type PrinterAdapter,
   type PrinterStatus,
   type RawImageData,
@@ -36,29 +40,100 @@ import {
 import { MediaNotSpecifiedError, UnsupportedOperationError } from '@thermal-label/contracts';
 import { WebUsbTransport } from '@thermal-label/transport/web';
 
+const D1_STATUS_BYTE_COUNT = 1;
+
+/**
+ * Minimum bytes to request from the bulk-IN endpoint on a status read.
+ *
+ * Chromium's WebUSB hangs `transferIn(ep, n)` when `n` is below the
+ * endpoint's `wMaxPacketSize`; the transfer waits for an aligned packet
+ * that never arrives because the device sent a short packet. The LW Duo's
+ * IF 0 has 16-byte bulk packets and surfaced the bug — bare `read(1)`
+ * never returned. Reading ≥ one packet lets the short-packet terminator
+ * complete the transfer normally.
+ *
+ * 16 covers the smallest packet size we've observed on this driver
+ * family. The status parsers only look at the leading byte (450) or the
+ * leading 32 bytes (550), so overreading is harmless.
+ */
+const STATUS_READ_MIN_LENGTH = 16;
+
+/**
+ * Read deadline for `getStatus()` transport reads. Matches the harness's
+ * pre-v2 `STATUS_POLL_TIMEOUT_MS` so observable timing on healthy
+ * devices is unchanged; the deadline only fires when the device fails
+ * to respond at all (e.g. the LW Duo's label engine on a stale claim,
+ * which is `unverified` in the registry).
+ *
+ * Without this, `transport.read()` would hang forever on a
+ * non-responsive device, and the harness's poll loop guards
+ * `inFlight`-style — one hung read silently freezes every subsequent
+ * tick. A timeout converts the hang into a transport failure that
+ * the poll loop's catch path absorbs (keeping the LAST snapshot).
+ *
+ * Node's `getStatus()` is currently untimed (see
+ * `packages/node/src/printer.ts:294-311`); CLI consumers there
+ * surface hangs differently and the maintainer is aware of the
+ * discrepancy. Out of scope for this fix.
+ */
+const STATUS_READ_TIMEOUT_MS = 2000;
+
 export interface RequestOptions {
   filters?: USBDeviceFilter[];
+}
+
+export interface WebLabelWriterPrinterOptions {
+  /**
+   * The engine this instance is scoped to. Defaults to `device.engines[0]`
+   * — back-compat for single-engine LWs (3xx/4xx/5xx) and the Twin Turbo
+   * (single shared transport, in-band ESC q routing on the primary).
+   *
+   * For multi-interface composite devices (Duo family — `label` on IF 0,
+   * `tape` on IF 1) callers must construct ONE instance per engine,
+   * each with its own `Transport` claimed against the engine's
+   * `bind.usb.bInterfaceNumber`. The encoder dispatches by
+   * `engine.protocol`, so per-engine `print()` writes the correct
+   * protocol bytes (lw-450 vs d1-tape) to the correct endpoint.
+   */
+  engine?: PrintEngine;
 }
 
 /**
  * WebUSB `PrinterAdapter` for Dymo LabelWriter printers.
  *
- * Thin wrapper around the shared `WebUsbTransport`. Mirrors the node
- * driver's `pickRotation` wiring: rectangular die-cut media auto-rotates
- * landscape input via the media's `defaultOrientation` hint.
+ * Each instance is scoped to **one** `PrintEngine`. Single-engine
+ * devices (most of the LW family) get one instance; multi-interface
+ * composite devices (Duo: `label` on IF 0, `tape` on IF 1) get one
+ * instance per engine, each holding its own transport. `requestPrinters()`
+ * returns a `Record<role, PrinterAdapter>` covering every drivable
+ * engine on the picked device.
+ *
+ * Mirrors the node driver's `pickRotation` wiring: rectangular die-cut
+ * media auto-rotates landscape input via the media's
+ * `defaultOrientation` hint.
  */
 export class WebLabelWriterPrinter implements PrinterAdapter {
   readonly family = 'labelwriter' as const;
   readonly device: DeviceEntry;
+  readonly engine: PrintEngine;
   readonly engines: Readonly<Record<string, LabelWriterEngineHandle>>;
 
   private readonly transport: Transport;
   private lastStatus: PrinterStatus | undefined;
 
-  constructor(device: DeviceEntry, transport: Transport) {
+  constructor(
+    device: DeviceEntry,
+    transport: Transport,
+    options: WebLabelWriterPrinterOptions = {},
+  ) {
     this.device = device;
     this.transport = transport;
-    this.engines = buildEngineHandles(device, this);
+    const engine = options.engine ?? device.engines[0];
+    if (!engine) {
+      throw new Error(`Device ${device.key} has no engines.`);
+    }
+    this.engine = engine;
+    this.engines = buildEngineHandles(device, engine, this);
   }
 
   get model(): string {
@@ -74,10 +149,29 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     media?: MediaDescriptor,
     options?: LabelWriterPrintOptions,
   ): Promise<void> {
+    // Each instance is scoped to a single engine; default the encoder
+    // dispatch to that engine when the caller didn't specify one. The
+    // shell calls `print(rgba, media, { engine: role })` explicitly,
+    // but ad-hoc consumers using the bare adapter shouldn't have to
+    // know the role.
+    const requestedEngine = options?.engine ?? this.engine.role;
+    const effectiveEngine =
+      requestedEngine === this.engine.role
+        ? this.engine
+        : resolveRequestedEngine(this.device, requestedEngine);
+
+    if (effectiveEngine.role !== this.engine.role) {
+      throw new Error(
+        `WebLabelWriterPrinter for engine "${this.engine.role}" cannot print on engine ` +
+          `"${effectiveEngine.role}". Construct a separate instance via requestPrinters() ` +
+          `for the other engine.`,
+      );
+    }
+
     // 550 family: acquire the print lock and check printer health
     // before sending the job. See the node driver for the full
     // contract. Released by `ESC Q` in the job trailer.
-    if (this.device.engines[0]?.protocol === 'lw-550') {
+    if (this.engine.protocol === 'lw-550') {
       await this.acquire550Lock();
     }
 
@@ -86,7 +180,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // 550 status doesn't carry media dimensions — those live in the
     // NFC SKU dump (ESC U). Best-effort fetch when no explicit media
     // was passed and no prior `getMedia()` populated the cache.
-    if (!resolvedMedia && this.device.engines[0]?.protocol === 'lw-550') {
+    if (!resolvedMedia && this.engine.protocol === 'lw-550') {
       try {
         const sku = await this.getMedia();
         if (sku) resolvedMedia = skuInfoToMedia(sku);
@@ -100,7 +194,10 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     }
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
-    const bytes = encodeLabel(this.device, bitmap, options, resolvedMedia);
+    // Force `engine` to this instance's role so the encoder dispatches
+    // on the right protocol (lw-450 / lw-550 / d1-tape).
+    const encodeOptions: LabelWriterPrintOptions = { ...options, engine: this.engine.role };
+    const bytes = encodeLabel(this.device, bitmap, encodeOptions, resolvedMedia);
     await this.transport.write(bytes);
   }
 
@@ -133,7 +230,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
    * full contract.
    */
   async getMedia(): Promise<SkuInfo | undefined> {
-    if (this.device.engines[0]?.protocol !== 'lw-550') {
+    if (this.engine.protocol !== 'lw-550') {
       throw new UnsupportedOperationError(
         `getMedia on ${this.device.key}`,
         `ESC U (Get SKU Information) is only supported on lw-550 devices.`,
@@ -172,9 +269,43 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     });
   }
 
+  /**
+   * Status read for this instance's scoped engine. Dispatches by
+   * `engine.protocol`:
+   *
+   * - `d1-tape` (Duo tape side) — `SYN` request, 1-byte reply parsed
+   *   via `@thermal-label/d1-core`.
+   * - `lw-450` / `lw-550` — `ESC A`-shaped request, multi-byte reply
+   *   parsed via labelwriter-core.
+   *
+   * Pre-refactor this was hardcoded to `device.engines[0].protocol`,
+   * which on the Duo always meant `lw-450` and silently corrupted the
+   * tape engine's status byte stream. The per-engine instance now
+   * routes by its own engine.
+   */
   async getStatus(): Promise<PrinterStatus> {
+    if (isDuoTapeEngine(this.engine)) {
+      await this.transport.write(D1_STATUS_REQUEST);
+      const bytes = await this.transport.read(
+        Math.max(D1_STATUS_BYTE_COUNT, STATUS_READ_MIN_LENGTH),
+        STATUS_READ_TIMEOUT_MS,
+      );
+      const status = parseD1Status(bytes);
+      this.lastStatus = status;
+      return status;
+    }
     await this.transport.write(buildStatusRequest(this.device));
-    const bytes = await this.transport.read(statusByteCount(this.device));
+    // Read at least one full bulk-IN packet. Chromium's WebUSB hangs
+    // `transferIn(ep, n)` when `n < wMaxPacketSize` — observed on the
+    // LW Duo's IF 0 (16-byte packets): read(1) waited indefinitely.
+    // parseStatus450 only inspects byte 0 and parseStatus550 reads 32,
+    // so reading 16+ bytes is safe on every lw-* device.
+    const bytes = await this.transport.read(
+      Math.max(statusByteCount(this.device), STATUS_READ_MIN_LENGTH),
+      STATUS_READ_TIMEOUT_MS,
+    );
+    // eslint-disable-next-line no-console
+    console.debug(`[lw-web] getStatus read role=${this.engine.role} len=${bytes.length}`);
     const status = parseStatus(this.device, bytes);
     if (this.lastStatus?.detectedMedia && !status.detectedMedia) {
       this.lastStatus = { ...status, detectedMedia: this.lastStatus.detectedMedia };
@@ -194,9 +325,17 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
    * 550 family sends `ESC Q` (release pending job + host lock); 450
    * family sends the legacy 85×ESC + ESC A sync-flush. Drains the
    * device-appropriate status response in either case.
+   *
+   * D1 tape engines have no protocol-level recovery sequence — calling
+   * recover on a tape-scoped instance is a no-op.
    */
   async recover(): Promise<void> {
-    if (this.device.engines[0]?.protocol === 'lw-550') {
+    if (isDuoTapeEngine(this.engine)) {
+      // No documented recovery sequence for d1-tape; the Duo's tape
+      // side resets via mechanical cassette removal/reinsert.
+      return;
+    }
+    if (this.engine.protocol === 'lw-550') {
       await this.transport.write(build550Recovery());
     } else {
       await this.transport.write(buildErrorRecovery());
@@ -215,25 +354,43 @@ interface LabelWriterPrintParent {
 
 function buildEngineHandles(
   device: DeviceEntry,
+  scopedEngine: PrintEngine,
   parent: LabelWriterPrintParent,
 ): Readonly<Record<string, LabelWriterEngineHandle>> {
+  // Per-engine instance: expose ONLY the scoped engine in the handles
+  // map. Pre-refactor this enumerated every drivable engine on the
+  // device, but a per-engine instance can only reach its own — the
+  // others live behind sibling instances returned by `requestPrinters()`.
   const handles: Record<string, LabelWriterEngineHandle> = {};
-  for (const engine of device.engines) {
-    if (!isEngineDrivable(engine)) continue;
-    const role = engine.role;
-    handles[role] = {
-      role,
-      engine,
-      print(
-        image: RawImageData,
-        media?: MediaDescriptor,
-        options?: Omit<LabelWriterPrintOptions, 'engine'>,
-      ): Promise<void> {
-        return parent.print(image, media, { ...options, engine: role });
-      },
-    };
-  }
+  if (!isEngineDrivable(scopedEngine)) return handles;
+  const role = scopedEngine.role;
+  handles[role] = {
+    role,
+    engine: scopedEngine,
+    print(
+      image: RawImageData,
+      media?: MediaDescriptor,
+      options?: Omit<LabelWriterPrintOptions, 'engine'>,
+    ): Promise<void> {
+      return parent.print(image, media, { ...options, engine: role });
+    },
+  };
+  // Reference `device` to silence unused-arg lints; kept in the
+  // signature so future per-handle context (e.g. cross-engine callbacks)
+  // doesn't need a refactor.
+  void device;
   return handles;
+}
+
+function resolveRequestedEngine(device: DeviceEntry, requested: string): PrintEngine {
+  const found = device.engines.find(e => e.role === requested);
+  if (!found) {
+    const roles = device.engines.map(e => e.role).join(', ');
+    throw new Error(
+      `Device ${device.key} has no engine with role "${requested}". Available: ${roles}.`,
+    );
+  }
+  return found;
 }
 
 function buildLabelWriterFilters(): USBDeviceFilter[] {
@@ -255,8 +412,16 @@ export const DEFAULT_FILTERS: USBDeviceFilter[] = buildLabelWriterFilters();
 /**
  * Show the browser's USB picker and wrap the selected device.
  *
- * Requires a user gesture. The selected `USBDevice` is handed to
- * `WebUsbTransport.fromDevice()`, which opens it and claims interface 0.
+ * Requires a user gesture. Returns the **primary** engine adapter — for
+ * single-engine devices that's the only adapter; for the Duo it's the
+ * label engine (the `lw-*` one). To get every engine adapter on a
+ * multi-interface device, call `requestPrinters()` instead.
+ *
+ * Pre-refactor this returned a single instance that routed every print
+ * through one transport — fine for single-interface devices, but the
+ * Duo's tape engine emitted D1 bytes onto the label endpoint. The
+ * per-engine refactor narrows this entry to "primary engine only" and
+ * promotes `requestPrinters()` for full multi-engine coverage.
  */
 export async function requestPrinter(options: RequestOptions = {}): Promise<WebLabelWriterPrinter> {
   const filters = options.filters ?? DEFAULT_FILTERS;
@@ -265,18 +430,158 @@ export async function requestPrinter(options: RequestOptions = {}): Promise<WebL
 }
 
 /**
+ * Show the browser's USB picker and return one `PrinterAdapter` per
+ * drivable engine on the selected device, keyed by engine role.
+ *
+ * - Single-engine devices (3xx/4xx/5xx, Twin Turbo) → 1-key record.
+ * - Multi-interface composites (Duo family — `label` on IF 0, `tape`
+ *   on IF 1) → N-key record, one transport per engine, one adapter
+ *   per transport.
+ *
+ * Each adapter is fully scoped to its engine: `print()` defaults
+ * `options.engine` to that role; `getStatus()` uses that engine's
+ * protocol; `close()` closes that engine's transport. The harness shell
+ * stores the whole record and rebinds the active adapter when the
+ * operator flips engine tabs.
+ *
+ * Engines that fail to claim (browser refused the interface, IF
+ * already held by another driver) are omitted from the returned
+ * record. Callers should check `Object.keys(printers)` against the
+ * device's engine list to surface partial-claim warnings —
+ * "rails not walls": the operator can still drive whichever engines
+ * did open.
+ */
+export async function requestPrinters(
+  options: RequestOptions = {},
+): Promise<Record<string, WebLabelWriterPrinter>> {
+  const filters = options.filters ?? DEFAULT_FILTERS;
+  const usbDevice = await navigator.usb.requestDevice({ filters });
+  return fromUSBDeviceAll(usbDevice);
+}
+
+/**
  * Wrap an already-selected `USBDevice` (e.g. from
- * `navigator.usb.getDevices()`).
+ * `navigator.usb.getDevices()`) and return the **primary** engine's
+ * adapter. The primary is the first `lw-*` engine on the device, or
+ * the first drivable engine if none speak `lw-*`.
  *
  * @throws when the VID/PID is not in the LabelWriter registry.
  */
 export async function fromUSBDevice(usbDevice: USBDevice): Promise<WebLabelWriterPrinter> {
+  const all = await fromUSBDeviceAll(usbDevice);
+  // Prefer the lw-* primary so existing single-printer callers (tests,
+  // ad-hoc consumers) keep getting a label-class adapter on the Duo.
+  const roles = Object.keys(all);
+  const labelClass = roles.find(r => {
+    const printer = all[r]!;
+    return printer.engine.protocol !== 'd1-tape';
+  });
+  const pickedRole = labelClass ?? roles[0];
+  if (!pickedRole) {
+    throw new Error(
+      `Device ${usbDevice.vendorId.toString(16)}:${usbDevice.productId.toString(16)} ` +
+        `had no drivable engines.`,
+    );
+  }
+  // Close the unselected engines so we don't leak transports — the
+  // back-compat caller asked for one adapter, not the whole record.
+  for (const role of roles) {
+    if (role === pickedRole) continue;
+    try {
+      await all[role]!.close();
+    } catch {
+      // Best-effort.
+    }
+  }
+  return all[pickedRole]!;
+}
+
+/**
+ * Wrap an already-selected `USBDevice` and return one adapter per
+ * drivable engine. Public surface for `requestPrinters()`; exported so
+ * harnesses that already hold a `USBDevice` (e.g. picked-up via
+ * `navigator.usb.getDevices()` on a returning visit) can skip the
+ * picker.
+ */
+export async function fromUSBDeviceAll(
+  usbDevice: USBDevice,
+): Promise<Record<string, WebLabelWriterPrinter>> {
   const descriptor = findDevice(usbDevice.vendorId, usbDevice.productId);
   if (!descriptor) {
     throw new Error(
       `Unsupported USB device: VID=0x${usbDevice.vendorId.toString(16)} PID=0x${usbDevice.productId.toString(16)}`,
     );
   }
-  const transport = await WebUsbTransport.fromDevice(usbDevice);
-  return new WebLabelWriterPrinter(descriptor, transport);
+
+  const out: Record<string, WebLabelWriterPrinter> = {};
+
+  // Determine which interface(s) to open. Multi-interface composites
+  // (Duo family) declare distinct `bind.usb.bInterfaceNumber` per
+  // engine — open one transport per engine. Single-interface devices
+  // (everything else) open IF 0 once and share it across every drivable
+  // engine on the device (Twin Turbo: `left` + `right` both ride the
+  // single `lw-450` endpoint, in-band ESC q routes the firmware).
+  const interfaces = collectEngineInterfaces(descriptor);
+  if (interfaces.size > 1) {
+    // Per-engine transports. Each WebLabelWriterPrinter holds its own.
+    const failures: string[] = [];
+    for (const engine of descriptor.engines) {
+      if (!isEngineDrivable(engine)) continue;
+      const ifn = engine.bind?.usb?.bInterfaceNumber;
+      if (ifn === undefined) continue;
+      try {
+        const transport = await WebUsbTransport.fromDevice(usbDevice, { interfaceNumber: ifn });
+        out[engine.role] = new WebLabelWriterPrinter(descriptor, transport, { engine });
+      } catch (err) {
+        const detail = err instanceof Error ? err.message : String(err);
+        failures.push(`engine "${engine.role}" (IF ${String(ifn)}): ${detail}`);
+      }
+    }
+    if (Object.keys(out).length === 0) {
+      throw new Error(
+        `${descriptor.name}: could not open any USB interfaces (${failures.join('; ')}).`,
+      );
+    }
+    if (failures.length > 0) {
+      // Partial claim — at least one engine opened but others failed.
+      // Surface so the harness / smoke-tester sees which engine is
+      // missing instead of silently degrading to a one-engine map.
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[labelwriter-web] ${descriptor.name}: partial-claim — opened [${Object.keys(out).join(', ')}], ` +
+          `failed ${failures.join('; ')}.`,
+      );
+    }
+    return out;
+  }
+
+  // Single-interface — open IF 0 (or the first engine's bind) and
+  // share across every drivable engine. Each engine still gets its own
+  // adapter instance so the encoder dispatch + status routing is
+  // engine-scoped, but the transport object itself is shared.
+  const firstBind = descriptor.engines.find(e => e.bind?.usb?.bInterfaceNumber !== undefined)?.bind
+    ?.usb?.bInterfaceNumber;
+  const transport =
+    firstBind !== undefined
+      ? await WebUsbTransport.fromDevice(usbDevice, { interfaceNumber: firstBind })
+      : await WebUsbTransport.fromDevice(usbDevice);
+
+  for (const engine of descriptor.engines) {
+    if (!isEngineDrivable(engine)) continue;
+    out[engine.role] = new WebLabelWriterPrinter(descriptor, transport, { engine });
+  }
+  return out;
+}
+
+/**
+ * Build the set of distinct USB interface numbers declared across a
+ * device's engines. >1 means we need per-engine transports.
+ */
+function collectEngineInterfaces(device: DeviceEntry): Set<number> {
+  const set = new Set<number>();
+  for (const engine of device.engines) {
+    const ifn = engine.bind?.usb?.bInterfaceNumber;
+    if (ifn !== undefined) set.add(ifn);
+  }
+  return set;
 }
