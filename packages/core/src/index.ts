@@ -57,6 +57,15 @@ export {
   ROLL_BYTE_AUTO,
 } from './protocol.js';
 export { STATUS_REQUEST, buildStatusRequest, parseStatus, statusByteCount } from './status.js';
+// D1 status helpers re-exported under aliased names so `labelwriter-web`
+// (and node) can drive the Duo's tape engine without taking a direct dep
+// on `@thermal-label/d1-core`. labelwriter-core owns the protocol surface
+// for every engine declared by labelwriter devices, including the Duo's
+// `d1-tape` side.
+export {
+  STATUS_REQUEST as D1_STATUS_REQUEST,
+  parseStatus as parseD1Status,
+} from '@thermal-label/d1-core';
 export {
   build550JobHeader,
   build550Mode,

@@ -51,10 +51,15 @@ export function buildStatusRequest(device: DeviceEntry, lock: 0 | 1 | 2 = 0): Ui
  *   bit 6  Paper jam
  *   bit 7  Printer error (jam, invalid sequence, and so on)
  *
- * Healthy idle printer returns 0x03 (Ready + Top of form).
+ * Healthy idle printer returns 0x03 (Ready + Top of form) — this is
+ * what the harness sees on a healthy idle printer between jobs.
  *
  * Bit 0 is *active-high ready*, not *paper out* — a 0 means not ready,
- * a 1 means ready. Bit 1 (top of form) is informational, not an error.
+ * a 1 means ready. Per the spec, "ready to print" requires both bit 0
+ * AND bit 1 (top of form): bit 0 alone (0x01) means the printer is
+ * mid-job and hasn't fed to top-of-form yet, so the harness must not
+ * dispatch another job until both bits are set together. Bit 1 is
+ * therefore load-bearing for the ready derivation, not informational.
  * Earlier revisions of this parser read bits 0/1/2 with the wrong
  * polarity and the wrong meanings, which surfaced "no paper" / "busy"
  * / "label too long" toasts on healthy 400-series and 330-era units.
@@ -65,7 +70,8 @@ export function buildStatusRequest(device: DeviceEntry, lock: 0 | 1 | 2 = 0): Ui
  */
 function parseStatus450(bytes: Uint8Array): PrinterStatus {
   const b = bytes[0] ?? 0;
-  const ready = (b & 0x01) !== 0;
+  const readyBit = (b & 0x01) !== 0;
+  const topOfForm = (b & 0x02) !== 0;
   const noPaper = (b & 0x20) !== 0;
   const paperJam = (b & 0x40) !== 0;
   const printerError = (b & 0x80) !== 0;
@@ -76,12 +82,20 @@ function parseStatus450(bytes: Uint8Array): PrinterStatus {
   if (printerError && !noPaper && !paperJam) {
     errors.push({ code: 'printer_error', message: 'Printer reported an error' });
   }
-  if (!ready && errors.length === 0) {
+  // Bit 0 set without bit 1 = mid-job, not at top of form. Surface
+  // not_ready so the harness doesn't dispatch another job before the
+  // printer has fed to top-of-form.
+  if (readyBit && !topOfForm && errors.length === 0) {
+    errors.push({ code: 'not_ready', message: 'Printer mid-job (not at top of form)' });
+  }
+  if (!readyBit && errors.length === 0) {
     errors.push({ code: 'not_ready', message: 'Printer not ready' });
   }
 
+  const ready = readyBit && topOfForm && errors.length === 0;
+
   return {
-    ready: ready && errors.length === 0,
+    ready,
     mediaLoaded: !noPaper,
     errors,
     rawBytes: bytes,

@@ -33,19 +33,34 @@ describe('parseStatus — 450 series', () => {
     expect(status.errors.map(e => e.code)).toContain('not_ready');
   });
 
-  it('reports ready when only bit 0 is set (mid-job, not at top of form)', () => {
+  it('reports not_ready when only bit 0 is set (mid-job, not at top of form)', () => {
+    // Mid-job, not at top of form, still has paper, still no jam — but
+    // strict spec semantic is that "ready to print" requires bits 0+1
+    // together (0x03). Surface not_ready so the harness doesn't dispatch
+    // another job before the printer has fed to top-of-form.
     const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x01]));
-    expect(status.ready).toBe(true);
+    expect(status.ready).toBe(false);
     expect(status.mediaLoaded).toBe(true);
-    expect(status.errors).toEqual([]);
+    expect(status.errors.map(e => e.code)).toContain('not_ready');
   });
 
-  it('does not surface errors when bit 2 (reserved) is set on a healthy printer', () => {
-    // Pre-spec units (LW 330 Turbo) sometimes return 0x05 (Ready + bit 2)
-    // — bit 2 is "Not used" per the 450 spec, so we ignore it.
+  it('reports not_ready when only bit 1 is set (top of form but ready bit clear)', () => {
+    // Edge case: bit 1 alone (0x02) — top-of-form asserted but the
+    // ready bit is clear. Strict spec semantic requires both bits, so
+    // this still surfaces not_ready.
+    const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x02]));
+    expect(status.ready).toBe(false);
+    expect(status.errors.map(e => e.code)).toContain('not_ready');
+  });
+
+  it('reports not_ready when bit 2 (reserved) is set with bit 0 but bit 1 is clear', () => {
+    // Pre-spec units (LW 330 Turbo) sometimes return 0x05 (bits 0+2).
+    // Bit 2 is "Not used" per the 450 spec, and the new strict ready
+    // semantic requires bit 1 (top of form) — which 0x05 lacks — so
+    // this should surface not_ready (mid-job).
     const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x05]));
-    expect(status.ready).toBe(true);
-    expect(status.errors).toEqual([]);
+    expect(status.ready).toBe(false);
+    expect(status.errors.map(e => e.code)).toContain('not_ready');
   });
 
   it('surfaces no_media when bit 5 (No paper) is set', () => {
@@ -87,10 +102,22 @@ describe('parseStatus — 450 series', () => {
     expect(status.errors).toEqual([]);
   });
 
-  it('treats the LW 330 Turbo 0x05 response as ready (regression: was misread as paper-out + label-too-long)', () => {
+  it('LW 330 Turbo 0x05 response surfaces not_ready under the strict spec semantic', () => {
+    // Original regression: this fixture was added when the parser
+    // misread 0x05 as paper-out + label-too-long; the fix at the time
+    // was to ignore bit 2 (reserved) and accept bit 0 alone as ready.
+    // The new strict ready semantic requires bits 0+1 together (0x03),
+    // and 0x05 = bits 0+2 lacks bit 1, so this now reports not_ready.
+    //
+    // TODO(maintainer): confirm whether the LW 330 Turbo genuinely
+    // returns 0x05 on a healthy idle printer (in which case bit 2 may
+    // mean "top of form" on that family — spec drift), or whether the
+    // captured fixture was actually 0x07 (bits 0+1+2). If the former,
+    // the parser needs a 330-Turbo branch; if the latter, flip this
+    // fixture to 0x07 and re-assert ready=true.
     const status = parseStatus(DEVICES.LW_330_TURBO, new Uint8Array([0x05]));
-    expect(status.ready).toBe(true);
-    expect(status.errors).toEqual([]);
+    expect(status.ready).toBe(false);
+    expect(status.errors.map(e => e.code)).toContain('not_ready');
   });
 });
 
