@@ -9,3 +9,6 @@ docs/api/
 packages/core/data/devices.json
 packages/core/data/media.json
 packages/core/src/*.generated.ts
+
+pnpm-lock.yaml
+**/pnpm-lock.yaml
