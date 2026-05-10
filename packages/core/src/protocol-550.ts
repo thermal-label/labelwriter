@@ -52,10 +52,19 @@ import type { LabelWriterPrintOptions, Density } from './types.js';
  *   `density550Percent`. Hardware-tune later if needed.
  */
 
+/**
+ * LW 550-family framing byte. Per-command opcodes (`0x73` for ESC s,
+ * `0x44` for ESC D, …) stay inline in their single-call-site builders
+ * — the function name already labels them. The 550 raster format
+ * carries no `SYN` / `ETB` framing (see `encode550Label`), so only
+ * `ESC` recurs.
+ */
+const ESC = 0x1b;
+
 /** `ESC s` — Start of Print Job. 4-byte job ID, little-endian. */
 export function build550JobHeader(jobId: number): Uint8Array {
   return new Uint8Array([
-    0x1b,
+    ESC,
     0x73,
     jobId & 0xff,
     (jobId >> 8) & 0xff,
@@ -66,7 +75,7 @@ export function build550JobHeader(jobId: number): Uint8Array {
 
 /** `ESC h` (text) / `ESC i` (graphics) — Select Output Mode. */
 export function build550Mode(mode: 'text' | 'graphics'): Uint8Array {
-  return new Uint8Array([0x1b, mode === 'graphics' ? 0x69 : 0x68]);
+  return new Uint8Array([ESC, mode === 'graphics' ? 0x69 : 0x68]);
 }
 
 /** `ESC C <duty>` — Set Print Density (0..200, default 100). */
@@ -74,23 +83,23 @@ export function build550Density(duty: number): Uint8Array {
   if (!Number.isInteger(duty) || duty < 0 || duty > 200) {
     throw new RangeError(`density duty must be 0..200 (got ${String(duty)})`);
   }
-  return new Uint8Array([0x1b, 0x43, duty]);
+  return new Uint8Array([ESC, 0x43, duty]);
 }
 
 /** `ESC e` — Reset Print Density to 100 %. */
 export function build550ResetDensity(): Uint8Array {
-  return new Uint8Array([0x1b, 0x65]);
+  return new Uint8Array([ESC, 0x65]);
 }
 
 /** `ESC T <speed>` — Content Type / speed mode. 0x10 normal, 0x20 high. */
 export function build550ContentType(speed: 'normal' | 'high'): Uint8Array {
-  return new Uint8Array([0x1b, 0x74, speed === 'high' ? 0x20 : 0x10]);
+  return new Uint8Array([ESC, 0x74, speed === 'high' ? 0x20 : 0x10]);
 }
 
 /** `ESC n <index>` — Set Label Index. 4-byte u32, little-endian. */
 export function build550LabelIndex(index: number): Uint8Array {
   return new Uint8Array([
-    0x1b,
+    ESC,
     0x6e,
     index & 0xff,
     (index >> 8) & 0xff,
@@ -125,7 +134,7 @@ export function build550LabelHeader(
   const bpp = options.bpp ?? 1;
   const alignment = options.alignment ?? 2;
   return new Uint8Array([
-    0x1b,
+    ESC,
     0x44,
     bpp,
     alignment,
@@ -142,17 +151,17 @@ export function build550LabelHeader(
 
 /** `ESC G` — Feed to Print Head (between labels in a multi-label job). */
 export function build550ShortFormFeed(): Uint8Array {
-  return new Uint8Array([0x1b, 0x47]);
+  return new Uint8Array([ESC, 0x47]);
 }
 
 /** `ESC E` — Feed to Tear Position (last label of a job). */
 export function build550FormFeed(): Uint8Array {
-  return new Uint8Array([0x1b, 0x45]);
+  return new Uint8Array([ESC, 0x45]);
 }
 
 /** `ESC Q` — End of Print Job. Mandatory trailer; releases host lock. */
 export function build550EndJob(): Uint8Array {
-  return new Uint8Array([0x1b, 0x51]);
+  return new Uint8Array([ESC, 0x51]);
 }
 
 /**
@@ -164,22 +173,22 @@ export function build550EndJob(): Uint8Array {
  *   2 = status query between labels in an active job (does not block)
  */
 export function build550StatusRequest(lock: 0 | 1 | 2 = 0): Uint8Array {
-  return new Uint8Array([0x1b, 0x41, lock]);
+  return new Uint8Array([ESC, 0x41, lock]);
 }
 
 /** `ESC U` — Get SKU Information. Response is a 63-byte structure. */
 export function build550GetSku(): Uint8Array {
-  return new Uint8Array([0x1b, 0x55]);
+  return new Uint8Array([ESC, 0x55]);
 }
 
 /** `ESC V` — Get Engine Version. Response is a 34-byte HW/FW/PID block. */
 export function build550GetVersion(): Uint8Array {
-  return new Uint8Array([0x1b, 0x56]);
+  return new Uint8Array([ESC, 0x56]);
 }
 
 /** `ESC @` — Restart Print Engine. **Destructive — reboots the engine.** */
 export function build550Restart(): Uint8Array {
-  return new Uint8Array([0x1b, 0x40]);
+  return new Uint8Array([ESC, 0x40]);
 }
 
 /**
@@ -191,7 +200,7 @@ export function build550Restart(): Uint8Array {
  * destructive.
  */
 export function build550Recovery(): Uint8Array {
-  return new Uint8Array([0x1b, 0x51]);
+  return new Uint8Array([ESC, 0x51]);
 }
 
 /**
@@ -202,7 +211,7 @@ export function build550Recovery(): Uint8Array {
  * engine can write these bytes directly via `transport.write()`.
  */
 export function build550FactoryReset(): Uint8Array {
-  return new Uint8Array([0x1b, 0x2a]);
+  return new Uint8Array([ESC, 0x2a]);
 }
 
 /**
@@ -216,7 +225,7 @@ export function build550SetLabelCount(count: number): Uint8Array {
   if (!Number.isInteger(count) || count < 0 || count > 0xff) {
     throw new RangeError(`label count must be an integer 0..255 (got ${String(count)})`);
   }
-  return new Uint8Array([0x1b, 0x6f, count]);
+  return new Uint8Array([ESC, 0x6f, count]);
 }
 
 /**

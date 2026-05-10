@@ -6,6 +6,15 @@ import type { LabelWriterPrintOptions, LabelWriterTapeMedia, Density } from './t
 import { encode550Label } from './protocol-550.js';
 
 /**
+ * LW 450-family framing bytes that recur across builders. Per-command
+ * opcodes (`0x44` for ESC D, `0x4c` for ESC L, …) stay inline in their
+ * single-call-site builders — the function name already labels them.
+ */
+const ESC = 0x1b;
+const SYN = 0x16;
+const ETB = 0x17;
+
+/**
  * Wire byte for `ESC q 0x30` — automatic roll selection on the Twin
  * Turbo. The firmware picks an available roll. See LW 450 Series Tech
  * Ref p.16.
@@ -53,33 +62,33 @@ export function isDuoTapeEngine(engine: PrintEngine): boolean {
 }
 
 export function buildReset(): Uint8Array {
-  return new Uint8Array([0x1b, 0x40]);
+  return new Uint8Array([ESC, 0x40]);
 }
 
 export function buildSetBytesPerLine(n: number): Uint8Array {
-  return new Uint8Array([0x1b, 0x44, n]);
+  return new Uint8Array([ESC, 0x44, n]);
 }
 
 export function buildSetLabelLength(dots: number): Uint8Array {
-  return new Uint8Array([0x1b, 0x4c, dots & 0xff, (dots >> 8) & 0xff]);
+  return new Uint8Array([ESC, 0x4c, dots & 0xff, (dots >> 8) & 0xff]);
 }
 
 export function buildDensity(density: Density): Uint8Array {
   const byte =
     density === 'light' ? 0x63 : density === 'medium' ? 0x64 : density === 'high' ? 0x67 : 0x65;
-  return new Uint8Array([0x1b, byte]);
+  return new Uint8Array([ESC, byte]);
 }
 
 export function buildMode(mode: 'text' | 'graphics'): Uint8Array {
-  return new Uint8Array([0x1b, mode === 'graphics' ? 0x69 : 0x68]);
+  return new Uint8Array([ESC, mode === 'graphics' ? 0x69 : 0x68]);
 }
 
 export function buildFormFeed(): Uint8Array {
-  return new Uint8Array([0x1b, 0x45]);
+  return new Uint8Array([ESC, 0x45]);
 }
 
 export function buildShortFormFeed(): Uint8Array {
-  return new Uint8Array([0x1b, 0x47]);
+  return new Uint8Array([ESC, 0x47]);
 }
 
 /**
@@ -94,12 +103,12 @@ export function buildShortFormFeed(): Uint8Array {
  * `ROLL_BYTE_AUTO` covers the auto case.
  */
 export function buildSelectRoll(byte: number): Uint8Array {
-  return new Uint8Array([0x1b, 0x71, byte]);
+  return new Uint8Array([ESC, 0x71, byte]);
 }
 
 export function buildJobHeader(jobId: number): Uint8Array {
   return new Uint8Array([
-    0x1b,
+    ESC,
     0x73,
     jobId & 0xff,
     (jobId >> 8) & 0xff,
@@ -110,8 +119,8 @@ export function buildJobHeader(jobId: number): Uint8Array {
 
 export function buildErrorRecovery(): Uint8Array {
   const buf = new Uint8Array(87);
-  buf.fill(0x1b, 0, 85);
-  buf[85] = 0x1b;
+  buf.fill(ESC, 0, 85);
+  buf[85] = ESC;
   buf[86] = 0x41;
   return buf;
 }
@@ -119,12 +128,12 @@ export function buildErrorRecovery(): Uint8Array {
 export function buildRasterRow(rowBytes: Uint8Array, compress = false): Uint8Array {
   if (!compress) {
     const out = new Uint8Array(1 + rowBytes.length);
-    out[0] = 0x16;
+    out[0] = SYN;
     out.set(rowBytes, 1);
     return out;
   }
 
-  const rle: number[] = [0x17];
+  const rle: number[] = [ETB];
   const totalBits = rowBytes.length * 8;
   let i = 0;
   while (i < totalBits) {
