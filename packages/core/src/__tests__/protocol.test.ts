@@ -185,7 +185,7 @@ describe('encodeLabel', () => {
     // The 550 spec defines ESC @ as "Restart Print Engine" (destructive).
     // Detailed 550 encoder behaviour is asserted in protocol-550.test.ts;
     // this is the dispatch-side guarantee that encodeLabel never falls
-    // through to the 450 path for an lw-550 engine.
+    // through to the 450 path for an lw5-raster engine.
     const bm = makeBitmap(672, 100);
     const result = encodeLabel(device550Bare, bm);
     expect(result[0]).toBe(0x1b);
@@ -339,7 +339,7 @@ describe('encodeLabel', () => {
     const bm = makeBitmap(128, 10);
     const bytes = encodeLabel(DEVICES.LW_450_DUO, bm, { engine: 'tape' });
     // d1-core wire shape begins with `ESC C n` (tape-type selector),
-    // not the lw-450 `ESC @` reset.
+    // not the lw-raster `ESC @` reset.
     expect(bytes[0]).toBe(0x1b);
     expect(bytes[1]).toBe(0x43);
     // Final byte is `ESC A` (status query) — d1-core terminator.

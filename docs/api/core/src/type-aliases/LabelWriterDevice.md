@@ -6,11 +6,11 @@
 
 # Type Alias: LabelWriterDevice
 
-> **LabelWriterDevice** = `DeviceEntry`
+> **LabelWriterDevice** = [`DeviceEntry`](../interfaces/DeviceEntry.md)
 
 Dymo LabelWriter device descriptor.
 
 Alias of the cross-driver `DeviceEntry` shape; LabelWriter entries
-declare `family: 'labelwriter'` and use protocol tags `'lw-450'`,
-`'lw-550'`, or `'d1-tape'` (Duo tape engine) on each `engines[]`
+declare `family: 'labelwriter'` and use protocol tags `'lw-raster'`,
+`'lw5-raster'`, or `'d1-tape'` (Duo tape engine) on each `engines[]`
 element.

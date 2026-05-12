@@ -13,7 +13,7 @@
   engines: [
     {
       role: 'primary',
-      protocol: 'lw-550',
+      protocol: 'lw5-raster',
       dpi: 300,
       headDots: 1248,
       mediaCompatibility: ['lw', 'lw-wide'],

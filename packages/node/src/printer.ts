@@ -139,7 +139,7 @@ export class LabelWriterPrinter implements PrinterAdapter {
     // `encodeLabel` dispatches on `engine.protocol` and routes
     // `d1-tape` through `@thermal-label/d1-core`'s `buildPrinterStream`;
     // tape engines skip the 550-only lock + SKU-fallback paths via
-    // the `engine.protocol === 'lw-550'` guards.
+    // the `engine.protocol === 'lw5-raster'` guards.
 
     // 550 family: acquire the print lock and check printer health
     // before sending the job. The lock is what prevents concurrent
@@ -147,7 +147,7 @@ export class LabelWriterPrinter implements PrinterAdapter {
     // call is effectively a free status check (no other host can
     // race anyway, but the response surfaces no-media / jam / cover-
     // open conditions before we waste cycles encoding the bitmap).
-    if (engine.protocol === 'lw-550') {
+    if (engine.protocol === 'lw5-raster') {
       await this.acquire550Lock(transport);
     }
 
@@ -156,7 +156,7 @@ export class LabelWriterPrinter implements PrinterAdapter {
     // 550 status doesn't carry media dimensions — those live in the
     // NFC SKU dump (ESC U). Best-effort fetch when no explicit media
     // was passed and no prior `getMedia()` populated the cache.
-    if (!resolvedMedia && engine.protocol === 'lw-550') {
+    if (!resolvedMedia && engine.protocol === 'lw5-raster') {
       const sku = await this.tryFetchSkuMedia();
       if (sku) resolvedMedia = sku;
     }
@@ -213,10 +213,10 @@ export class LabelWriterPrinter implements PrinterAdapter {
    * fails (no media present, counterfeit, or comm failure).
    */
   async getMedia(): Promise<SkuInfo | undefined> {
-    if (this.device.engines[0]?.protocol !== 'lw-550') {
+    if (this.device.engines[0]?.protocol !== 'lw5-raster') {
       throw new UnsupportedOperationError(
         `getMedia on ${this.device.key}`,
-        `ESC U (Get SKU Information) is only supported on lw-550 devices.`,
+        `ESC U (Get SKU Information) is only supported on lw5-raster devices.`,
       );
     }
     await this.primaryTransport.write(build550GetSku());
@@ -252,10 +252,10 @@ export class LabelWriterPrinter implements PrinterAdapter {
    * for surfacing FW version in diagnostics.
    */
   async getEngineVersion(): Promise<EngineVersion | undefined> {
-    if (this.device.engines[0]?.protocol !== 'lw-550') {
+    if (this.device.engines[0]?.protocol !== 'lw5-raster') {
       throw new UnsupportedOperationError(
         `getEngineVersion on ${this.device.key}`,
-        `ESC V (Get Print Engine Version) is only supported on lw-550 devices.`,
+        `ESC V (Get Print Engine Version) is only supported on lw5-raster devices.`,
       );
     }
     await this.primaryTransport.write(build550GetVersion());
@@ -324,7 +324,7 @@ export class LabelWriterPrinter implements PrinterAdapter {
    * Driver-specific escape hatch — not on `PrinterAdapter`.
    *
    * Protocol-aware:
-   * - **450 family** (`lw-450`): the documented 85×ESC +
+   * - **450 family** (`lw-raster`): the documented 85×ESC +
    *   ESC A sequence to flush a wedged sync state. Reads back the
    *   1-byte status response.
    * - **550 family**: `ESC Q` to release any pending job state and
@@ -335,7 +335,7 @@ export class LabelWriterPrinter implements PrinterAdapter {
    * use `build550Restart()` directly with `transport.write()`.
    */
   async recover(): Promise<void> {
-    if (this.device.engines[0]?.protocol === 'lw-550') {
+    if (this.device.engines[0]?.protocol === 'lw5-raster') {
       await this.primaryTransport.write(build550Recovery());
     } else {
       await this.primaryTransport.write(buildErrorRecovery());

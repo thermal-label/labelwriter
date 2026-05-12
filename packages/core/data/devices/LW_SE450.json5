@@ -11,7 +11,7 @@
     serial: { defaultBaud: 9600, supportedBauds: [9600] },
   },
   engines: [
-    { role: 'primary', protocol: 'lw-450', dpi: 203, headDots: 448, mediaCompatibility: ['lw'] },
+    { role: 'primary', protocol: 'lw-raster', dpi: 203, headDots: 448, mediaCompatibility: ['lw'] },
   ],
   // SE450 firmware rejects ESC G (short form feed) and ESC q (roll select)
   // — they are no-ops on this single-roll embedded variant. The encoder

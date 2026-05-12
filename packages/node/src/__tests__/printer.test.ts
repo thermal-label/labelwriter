@@ -221,7 +221,7 @@ describe('LabelWriterPrinter', () => {
     it('throws UnsupportedOperationError on non-550 devices', async () => {
       const { transport } = makeTransport();
       const printer = new LabelWriterPrinter(device450, transport, 'usb');
-      await expect(printer.getMedia()).rejects.toThrow(/lw-550/);
+      await expect(printer.getMedia()).rejects.toThrow(/lw5-raster/);
     });
 
     it('550: writes ESC U, reads 63 bytes, returns parsed SKU', async () => {

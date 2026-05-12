@@ -29,10 +29,10 @@ describe('findDevice', () => {
 });
 
 describe('device properties', () => {
-  it('lw-450 protocol engines do not declare genuineMediaRequired', () => {
+  it('lw-raster protocol engines do not declare genuineMediaRequired', () => {
     for (const device of Object.values(DEVICES)) {
       const protocols = device.engines.map(e => e.protocol);
-      if (protocols.every(p => p === 'lw-450')) {
+      if (protocols.every(p => p === 'lw-raster')) {
         for (const e of device.engines) {
           expect(e.capabilities?.genuineMediaRequired).toBeFalsy();
         }
@@ -40,10 +40,10 @@ describe('device properties', () => {
     }
   });
 
-  it('lw-550 protocol engines declare genuineMediaRequired: true', () => {
+  it('lw5-raster protocol engines declare genuineMediaRequired: true', () => {
     for (const device of Object.values(DEVICES)) {
       for (const engine of device.engines) {
-        if (engine.protocol === 'lw-550') {
+        if (engine.protocol === 'lw5-raster') {
           expect(engine.capabilities?.genuineMediaRequired).toBe(true);
         }
       }

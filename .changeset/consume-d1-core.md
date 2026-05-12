@@ -25,7 +25,7 @@ Removed (replaced by d1-core): `buildDuoReset`, `buildDuoSetTapeType`,
 `buildDuoRasterRow`, `encodeDuoTapeLabel`, `parseDuoTapeStatus`,
 `DUO_TAPE_STATUS_BYTE_COUNT`, `DuoTapePrintOptions`, `tapeColourFor`.
 The `buildDuoReset` (`ESC @`) opcode never existed in D1 firmware and
-the 8-byte status reply was a misattribution from the lw-450 label
+the 8-byte status reply was a misattribution from the lw-raster label
 engine — both fall away with d1-core. UI helpers
 (`D1_TAPE_COLOR_HEX`, `allTapeMedia`, width-keyed lookups) are
 preserved.

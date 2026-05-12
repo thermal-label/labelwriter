@@ -6,7 +6,7 @@
 
 # Type Alias: D1TapeColor
 
-> **D1TapeColor** = `"white"` \| `"clear"` \| `"yellow"` \| `"blue"` \| `"green"` \| `"red"` \| `"black"` \| `"orange"`
+> **D1TapeColor** = `"white"` \| `"clear"` \| `"yellow"` \| `"blue"` \| `"green"` \| `"red"` \| `"black"` \| `"orange"` \| `"brown"` \| `"grey"` \| `"metallic"` \| `"purple"`
 
 Symbolic colour names for D1 cartridges. Drives docs / preview
 rendering via `D1_TAPE_COLOR_HEX`. Wire-format colour selection

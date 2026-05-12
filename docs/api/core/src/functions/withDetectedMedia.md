@@ -6,7 +6,7 @@
 
 # Function: withDetectedMedia()
 
-> **withDetectedMedia**(`status`, `sku`): `PrinterStatus`
+> **withDetectedMedia**(`status`, `sku`): [`PrinterStatus`](../interfaces/PrinterStatus.md)
 
 Decorate a parsed status response with `detectedMedia` derived from
 a freshly-fetched SKU dump. Used by the driver after `getMedia()`
@@ -17,7 +17,7 @@ something to fall back to.
 
 ### status
 
-`PrinterStatus`
+[`PrinterStatus`](../interfaces/PrinterStatus.md)
 
 ### sku
 
@@ -25,4 +25,4 @@ something to fall back to.
 
 ## Returns
 
-`PrinterStatus`
+[`PrinterStatus`](../interfaces/PrinterStatus.md)

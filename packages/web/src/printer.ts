@@ -93,7 +93,7 @@ export interface WebLabelWriterPrinterOptions {
    * each with its own `Transport` claimed against the engine's
    * `bind.usb.bInterfaceNumber`. The encoder dispatches by
    * `engine.protocol`, so per-engine `print()` writes the correct
-   * protocol bytes (lw-450 vs d1-tape) to the correct endpoint.
+   * protocol bytes (lw-raster vs d1-tape) to the correct endpoint.
    */
   engine?: PrintEngine;
 }
@@ -171,7 +171,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // 550 family: acquire the print lock and check printer health
     // before sending the job. See the node driver for the full
     // contract. Released by `ESC Q` in the job trailer.
-    if (this.engine.protocol === 'lw-550') {
+    if (this.engine.protocol === 'lw5-raster') {
       await this.acquire550Lock();
     }
 
@@ -180,7 +180,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // 550 status doesn't carry media dimensions — those live in the
     // NFC SKU dump (ESC U). Best-effort fetch when no explicit media
     // was passed and no prior `getMedia()` populated the cache.
-    if (!resolvedMedia && this.engine.protocol === 'lw-550') {
+    if (!resolvedMedia && this.engine.protocol === 'lw5-raster') {
       try {
         const sku = await this.getMedia();
         if (sku) resolvedMedia = skuInfoToMedia(sku);
@@ -195,7 +195,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
     // Force `engine` to this instance's role so the encoder dispatches
-    // on the right protocol (lw-450 / lw-550 / d1-tape).
+    // on the right protocol (lw-raster / lw5-raster / d1-tape).
     const encodeOptions: LabelWriterPrintOptions = { ...options, engine: this.engine.role };
     const bytes = encodeLabel(this.device, bitmap, encodeOptions, resolvedMedia);
     await this.transport.write(bytes);
@@ -230,10 +230,10 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
    * full contract.
    */
   async getMedia(): Promise<SkuInfo | undefined> {
-    if (this.engine.protocol !== 'lw-550') {
+    if (this.engine.protocol !== 'lw5-raster') {
       throw new UnsupportedOperationError(
         `getMedia on ${this.device.key}`,
-        `ESC U (Get SKU Information) is only supported on lw-550 devices.`,
+        `ESC U (Get SKU Information) is only supported on lw5-raster devices.`,
       );
     }
     await this.transport.write(build550GetSku());
@@ -275,11 +275,11 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
    *
    * - `d1-tape` (Duo tape side) — `SYN` request, 1-byte reply parsed
    *   via `@thermal-label/d1-core`.
-   * - `lw-450` / `lw-550` — `ESC A`-shaped request, multi-byte reply
+   * - `lw-raster` / `lw5-raster` — `ESC A`-shaped request, multi-byte reply
    *   parsed via labelwriter-core.
    *
    * Pre-refactor this was hardcoded to `device.engines[0].protocol`,
-   * which on the Duo always meant `lw-450` and silently corrupted the
+   * which on the Duo always meant `lw-raster` and silently corrupted the
    * tape engine's status byte stream. The per-engine instance now
    * routes by its own engine.
    */
@@ -335,7 +335,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
       // side resets via mechanical cassette removal/reinsert.
       return;
     }
-    if (this.engine.protocol === 'lw-550') {
+    if (this.engine.protocol === 'lw5-raster') {
       await this.transport.write(build550Recovery());
     } else {
       await this.transport.write(buildErrorRecovery());
@@ -520,7 +520,7 @@ export async function fromUSBDeviceAll(
   // engine — open one transport per engine. Single-interface devices
   // (everything else) open IF 0 once and share it across every drivable
   // engine on the device (Twin Turbo: `left` + `right` both ride the
-  // single `lw-450` endpoint, in-band ESC q routes the firmware).
+  // single `lw-raster` endpoint, in-band ESC q routes the firmware).
   const interfaces = collectEngineInterfaces(descriptor);
   if (interfaces.size > 1) {
     // Per-engine transports. Each WebLabelWriterPrinter holds its own.

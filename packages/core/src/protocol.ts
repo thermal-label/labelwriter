@@ -23,7 +23,7 @@ export const ROLL_BYTE_AUTO = 0x30;
 
 /**
  * Engine protocols this encoder + dispatch path produces correct byte
- * streams for. `lw-450` covers the entire pre-CUPS / 300-series /
+ * streams for. `lw-raster` covers the entire pre-CUPS / 300-series /
  * 400-series / 450-series / EL family — the byte streams `encodeLabel`
  * emits are accepted by all of them. The 300-series firmware is known
  * to reject `ESC G` (short form feed) and unconditional `ESC q`
@@ -34,14 +34,14 @@ export const ROLL_BYTE_AUTO = 0x30;
  * `LabelWriterEngineCapabilities`) rather than reintroducing a
  * separate protocol tag.
  *
- * `lw-550` is dispatched to `protocol-550.ts` — a fundamentally
+ * `lw5-raster` is dispatched to `protocol-550.ts` — a fundamentally
  * different print job structure (ESC s / ESC n / ESC D 12-byte header
- * / ESC Q) that does not share bytes with the 450 family. `d1-tape`
+ * / ESC Q) that does not share bytes with the classic family. `d1-tape`
  * (Duo's tape side) is dispatched to `@thermal-label/d1-core`'s
  * `buildPrinterStream` — same encoder the labelmanager driver uses,
  * since the Duo's tape engine is electrically a LabelManager.
  */
-const SUPPORTED_PROTOCOLS = new Set(['lw-450', 'lw-550', 'd1-tape']);
+const SUPPORTED_PROTOCOLS = new Set(['lw-raster', 'lw5-raster', 'd1-tape']);
 
 /**
  * Whether *this module's* `encodeLabel` produces a correct byte stream
@@ -328,7 +328,7 @@ export function encodeLabel(
   // 550 family uses a fundamentally different job structure (job
   // header / per-label header / job trailer), so dispatch out before
   // the 450-shaped path.
-  if (engine.protocol === 'lw-550') {
+  if (engine.protocol === 'lw5-raster') {
     return encode550Label(device, bitmap, options, media);
   }
 

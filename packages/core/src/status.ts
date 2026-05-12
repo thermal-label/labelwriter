@@ -31,7 +31,7 @@ export const STATUS_REQUEST = new Uint8Array([0x1b, 0x41]);
  *   2 = status query between labels in an active job
  */
 export function buildStatusRequest(device: DeviceEntry, lock: 0 | 1 | 2 = 0): Uint8Array {
-  return deviceProtocol(device) === 'lw-550'
+  return deviceProtocol(device) === 'lw5-raster'
     ? new Uint8Array([0x1b, 0x41, lock])
     : new Uint8Array([0x1b, 0x41]);
 }
@@ -243,7 +243,7 @@ function parseStatus550(bytes: Uint8Array): PrinterStatus {
  * the transport. The two protocols differ — 450 is one byte, 550 is 32.
  */
 export function parseStatus(device: DeviceEntry, bytes: Uint8Array): PrinterStatus {
-  return deviceProtocol(device) === 'lw-550' ? parseStatus550(bytes) : parseStatus450(bytes);
+  return deviceProtocol(device) === 'lw5-raster' ? parseStatus550(bytes) : parseStatus450(bytes);
 }
 
 /**
@@ -252,7 +252,7 @@ export function parseStatus(device: DeviceEntry, bytes: Uint8Array): PrinterStat
  * (per `LW 550 Technical Reference.pdf` p.8 + 13-15).
  */
 export function statusByteCount(device: DeviceEntry): number {
-  return deviceProtocol(device) === 'lw-550' ? 32 : 1;
+  return deviceProtocol(device) === 'lw5-raster' ? 32 : 1;
 }
 
 export { deviceProtocol };

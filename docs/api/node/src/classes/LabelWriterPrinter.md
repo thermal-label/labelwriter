@@ -25,7 +25,7 @@ now (the tape encoder does its own width-fit).
 
 ## Implements
 
-- `PrinterAdapter`
+- [`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md)
 
 ## Constructors
 
@@ -37,15 +37,15 @@ now (the tape encoder does its own width-fit).
 
 ##### device
 
-`DeviceEntry`
+[`DeviceEntry`](../../../core/src/interfaces/DeviceEntry.md)
 
 ##### transport
 
-`Transport`
+[`Transport`](../../../core/src/interfaces/Transport.md)
 
 ##### transportType
 
-`TransportType`
+[`TransportType`](../../../core/src/type-aliases/TransportType.md)
 
 ##### options?
 
@@ -59,7 +59,7 @@ now (the tape encoder does its own width-fit).
 
 ### device
 
-> `readonly` **device**: `DeviceEntry`
+> `readonly` **device**: [`DeviceEntry`](../../../core/src/interfaces/DeviceEntry.md)
 
 The device entry for the connected printer.
 
@@ -69,7 +69,7 @@ raw TCP connection to a known IP).
 
 #### Implementation of
 
-`PrinterAdapter.device`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`device`](../../../core/src/interfaces/PrinterAdapter.md#device)
 
 ***
 
@@ -87,13 +87,13 @@ Driver family identifier, e.g. `'brother-ql'` or `'labelwriter'`.
 
 #### Implementation of
 
-`PrinterAdapter.family`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`family`](../../../core/src/interfaces/PrinterAdapter.md#family)
 
 ***
 
 ### transportType
 
-> `readonly` **transportType**: `TransportType`
+> `readonly` **transportType**: [`TransportType`](../../../core/src/type-aliases/TransportType.md)
 
 ## Accessors
 
@@ -109,9 +109,11 @@ Whether the printer is currently connected.
 
 `boolean`
 
+Whether the printer is currently connected.
+
 #### Implementation of
 
-`PrinterAdapter.connected`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`connected`](../../../core/src/interfaces/PrinterAdapter.md#connected)
 
 ***
 
@@ -127,9 +129,11 @@ Human-readable model name from the driver's device registry.
 
 `string`
 
+Human-readable model name from the driver's device registry.
+
 #### Implementation of
 
-`PrinterAdapter.model`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`model`](../../../core/src/interfaces/PrinterAdapter.md#model)
 
 ## Methods
 
@@ -145,13 +149,13 @@ Close the connection. Always call in `finally` blocks.
 
 #### Implementation of
 
-`PrinterAdapter.close`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`close`](../../../core/src/interfaces/PrinterAdapter.md#close)
 
 ***
 
 ### createPreview()
 
-> **createPreview**(`image`, `options?`): `Promise`\<`PreviewResult`\>
+> **createPreview**(`image`, `options?`): `Promise`\<[`PreviewResult`](../../../core/src/interfaces/PreviewResult.md)\>
 
 Generate a preview showing how this printer would reproduce the
 design on the given media. Returns separated 1bpp planes with
@@ -176,7 +180,7 @@ For offline preview without a live connection, use the static
 
 ##### options?
 
-`PreviewOptions`
+[`PreviewOptions`](../../../core/src/interfaces/PreviewOptions.md)
 
 — optional media override. If media is omitted, uses
   detected media from the last `getStatus()`. If no status is
@@ -185,11 +189,11 @@ For offline preview without a live connection, use the static
 
 #### Returns
 
-`Promise`\<`PreviewResult`\>
+`Promise`\<[`PreviewResult`](../../../core/src/interfaces/PreviewResult.md)\>
 
 #### Implementation of
 
-`PrinterAdapter.createPreview`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`createPreview`](../../../core/src/interfaces/PrinterAdapter.md#createpreview)
 
 ***
 
@@ -229,17 +233,17 @@ fails (no media present, counterfeit, or comm failure).
 
 ### getStatus()
 
-> **getStatus**(): `Promise`\<`PrinterStatus`\>
+> **getStatus**(): `Promise`\<[`PrinterStatus`](../../../core/src/interfaces/PrinterStatus.md)\>
 
 Query printer status including detected media.
 
 #### Returns
 
-`Promise`\<`PrinterStatus`\>
+`Promise`\<[`PrinterStatus`](../../../core/src/interfaces/PrinterStatus.md)\>
 
 #### Implementation of
 
-`PrinterAdapter.getStatus`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`getStatus`](../../../core/src/interfaces/PrinterAdapter.md#getstatus)
 
 ***
 
@@ -280,7 +284,7 @@ between sequential `print()` calls within the same session).
 
 ##### media?
 
-`MediaDescriptor`
+[`MediaDescriptor`](../../../core/src/interfaces/MediaDescriptor.md)
 
 — which media to print on. Determines dimensions,
   margins, and colour mode. If omitted, uses detected media from
@@ -302,7 +306,7 @@ MediaNotSpecifiedError if no media is known.
 
 #### Implementation of
 
-`PrinterAdapter.print`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`print`](../../../core/src/interfaces/PrinterAdapter.md#print)
 
 ***
 
@@ -314,7 +318,7 @@ Send the error-recovery byte sequence and drain the response.
 Driver-specific escape hatch — not on `PrinterAdapter`.
 
 Protocol-aware:
-- **450 family** (`lw-450`): the documented 85×ESC +
+- **450 family** (`lw-raster`): the documented 85×ESC +
   ESC A sequence to flush a wedged sync state. Reads back the
   1-byte status response.
 - **550 family**: `ESC Q` to release any pending job state and

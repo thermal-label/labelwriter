@@ -14,8 +14,8 @@ export type Density = 'light' | 'medium' | 'normal' | 'high';
  * Dymo LabelWriter device descriptor.
  *
  * Alias of the cross-driver `DeviceEntry` shape; LabelWriter entries
- * declare `family: 'labelwriter'` and use protocol tags `'lw-450'`,
- * `'lw-550'`, or `'d1-tape'` (Duo tape engine) on each `engines[]`
+ * declare `family: 'labelwriter'` and use protocol tags `'lw-raster'`,
+ * `'lw5-raster'`, or `'d1-tape'` (Duo tape engine) on each `engines[]`
  * element.
  */
 export type LabelWriterDevice = DeviceEntry;
@@ -190,10 +190,10 @@ export interface LabelWriterPrintOptions extends PrintOptions {
  * `getStatus()` queries the engine over its own transport — relevant
  * on the Duo, where the tape engine sits on its own USB interface and
  * speaks D1 (1-byte status reply via `@thermal-label/d1-core`) while
- * the label engine speaks lw-450 (1-byte) or lw-550 (32-byte).
+ * the label engine speaks lw-raster (1-byte) or lw5-raster (32-byte).
  *
  * Adapters expose engines whose protocol the encoder dispatch handles
- * (`lw-450` / `lw-550` natively; `d1-tape` via d1-core). Tape engines
+ * (`lw-raster` / `lw5-raster` natively; `d1-tape` via d1-core). Tape engines
  * only appear when a tape transport is provided to the adapter —
  * without one, the engine is declared in the registry but unreachable.
  */

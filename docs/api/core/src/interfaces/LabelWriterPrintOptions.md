@@ -26,13 +26,25 @@ bypasses it.
 
 ## Extends
 
-- `PrintOptions`
+- [`PrintOptions`](PrintOptions.md)
 
 ## Properties
 
 ### compress?
 
 > `optional` **compress?**: `boolean`
+
+***
+
+### copies?
+
+> `optional` **copies?**: `number`
+
+Number of copies to print. Default 1.
+
+#### Inherited from
+
+[`PrintOptions`](PrintOptions.md).[`copies`](PrintOptions.md#copies)
 
 ***
 
@@ -50,7 +62,7 @@ additional values such as `'medium'` or `'high'`. Drivers throw
 
 #### Overrides
 
-`PrintOptions.density`
+[`PrintOptions`](PrintOptions.md).[`density`](PrintOptions.md#density)
 
 ***
 
@@ -65,13 +77,28 @@ this. See `LabelWriterPrintOptions` JSDoc above for the full shape.
 
 #### Overrides
 
-`PrintOptions.engine`
+[`PrintOptions`](PrintOptions.md).[`engine`](PrintOptions.md#engine)
 
 ***
 
 ### jobId?
 
 > `optional` **jobId?**: `number`
+
+***
+
+### labelLengthDots?
+
+> `optional` **labelLengthDots?**: `number`
+
+Override the label feed length used by `ESC L`. When the caller
+pre-strips dead-zone rows from the bitmap (so `bitmap.heightPx`
+is shorter than the actual label pitch), the printer still needs
+the actual pitch for form-feed / cut sequencing — otherwise the
+cut lands inside the printed region and the offset compounds
+across consecutive prints. Pass the original authored bitmap
+height (= `media.lengthDots`) here when stripping rows; omit when
+the encoder is doing the strip itself.
 
 ***
 

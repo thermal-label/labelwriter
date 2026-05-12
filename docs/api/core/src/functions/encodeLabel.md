@@ -6,13 +6,13 @@
 
 # Function: encodeLabel()
 
-> **encodeLabel**(`device`, `bitmap`, `options?`): `Uint8Array`
+> **encodeLabel**(`device`, `bitmap`, `options?`, `media?`): `Uint8Array`
 
 ## Parameters
 
 ### device
 
-`DeviceEntry`
+[`DeviceEntry`](../interfaces/DeviceEntry.md)
 
 ### bitmap
 
@@ -21,6 +21,10 @@
 ### options?
 
 [`LabelWriterPrintOptions`](../interfaces/LabelWriterPrintOptions.md) = `{}`
+
+### media?
+
+[`MediaDescriptor`](../interfaces/MediaDescriptor.md)
 
 ## Returns
 

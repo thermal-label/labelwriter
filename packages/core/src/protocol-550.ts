@@ -18,7 +18,7 @@ import type { LabelWriterPrintOptions, Density } from './types.js';
  * 450 family — different command bytes, different feed semantics, an
  * explicit job header / trailer, and a per-label `ESC D` block with
  * a 12-byte header in front of the raster payload. Trying to share
- * the 450 encoder with `if protocol === 'lw-550'` branches produced
+ * the classic encoder with `if protocol === 'lw5-raster'` branches produced
  * a job stream that the 550 firmware cannot parse; this module is
  * the clean fork.
  *
@@ -356,9 +356,9 @@ export function encode550Label(
   options: LabelWriterPrintOptions = {},
   media?: MediaDescriptor,
 ): Uint8Array {
-  const engine = device.engines.find(e => e.protocol === 'lw-550');
+  const engine = device.engines.find(e => e.protocol === 'lw5-raster');
   if (!engine) {
-    throw new Error(`Device ${device.key} has no engine with protocol "lw-550".`);
+    throw new Error(`Device ${device.key} has no engine with protocol "lw5-raster".`);
   }
 
   const headDots = engine.headDots;

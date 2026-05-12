@@ -6,7 +6,7 @@
 
 # Variable: REGISTRY\_LW
 
-> `const` **REGISTRY\_LW**: `DeviceRegistry` = `REGISTRY`
+> `const` **REGISTRY\_LW**: [`DeviceRegistry`](../interfaces/DeviceRegistry.md) = `REGISTRY`
 
 Aggregated LabelWriter device registry.
 

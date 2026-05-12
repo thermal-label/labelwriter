@@ -38,7 +38,7 @@ export { DEVICES, REGISTRY_LW, findDevice } from './devices.js';
  * keeps device-list filters simple — a Duo is fully drivable from
  * this driver alone.
  */
-export const PROTOCOLS: ReadonlySet<string> = new Set(['lw-450', 'lw-550', 'd1-tape']);
+export const PROTOCOLS: ReadonlySet<string> = new Set(['lw-raster', 'lw5-raster', 'd1-tape']);
 export { DEFAULT_MEDIA, MEDIA, findMediaByDimensions } from './media.js';
 export { ROTATE_DIRECTION } from './orientation.js';
 export {

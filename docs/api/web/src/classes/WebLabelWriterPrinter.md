@@ -8,29 +8,40 @@
 
 WebUSB `PrinterAdapter` for Dymo LabelWriter printers.
 
-Thin wrapper around the shared `WebUsbTransport`. Mirrors the node
-driver's `pickRotation` wiring: rectangular die-cut media auto-rotates
-landscape input via the media's `defaultOrientation` hint.
+Each instance is scoped to **one** `PrintEngine`. Single-engine
+devices (most of the LW family) get one instance; multi-interface
+composite devices (Duo: `label` on IF 0, `tape` on IF 1) get one
+instance per engine, each holding its own transport. `requestPrinters()`
+returns a `Record<role, PrinterAdapter>` covering every drivable
+engine on the picked device.
+
+Mirrors the node driver's `pickRotation` wiring: rectangular die-cut
+media auto-rotates landscape input via the media's
+`defaultOrientation` hint.
 
 ## Implements
 
-- `PrinterAdapter`
+- [`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md)
 
 ## Constructors
 
 ### Constructor
 
-> **new WebLabelWriterPrinter**(`device`, `transport`): `WebLabelWriterPrinter`
+> **new WebLabelWriterPrinter**(`device`, `transport`, `options?`): `WebLabelWriterPrinter`
 
 #### Parameters
 
 ##### device
 
-`DeviceEntry`
+[`DeviceEntry`](../../../core/src/interfaces/DeviceEntry.md)
 
 ##### transport
 
-`Transport`
+[`Transport`](../../../core/src/interfaces/Transport.md)
+
+##### options?
+
+[`WebLabelWriterPrinterOptions`](../interfaces/WebLabelWriterPrinterOptions.md) = `{}`
 
 #### Returns
 
@@ -40,7 +51,7 @@ landscape input via the media's `defaultOrientation` hint.
 
 ### device
 
-> `readonly` **device**: `DeviceEntry`
+> `readonly` **device**: [`DeviceEntry`](../../../core/src/interfaces/DeviceEntry.md)
 
 The device entry for the connected printer.
 
@@ -50,7 +61,13 @@ raw TCP connection to a known IP).
 
 #### Implementation of
 
-`PrinterAdapter.device`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`device`](../../../core/src/interfaces/PrinterAdapter.md#device)
+
+***
+
+### engine
+
+> `readonly` **engine**: [`PrintEngine`](../../../core/src/interfaces/PrintEngine.md)
 
 ***
 
@@ -68,7 +85,7 @@ Driver family identifier, e.g. `'brother-ql'` or `'labelwriter'`.
 
 #### Implementation of
 
-`PrinterAdapter.family`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`family`](../../../core/src/interfaces/PrinterAdapter.md#family)
 
 ## Accessors
 
@@ -84,9 +101,11 @@ Whether the printer is currently connected.
 
 `boolean`
 
+Whether the printer is currently connected.
+
 #### Implementation of
 
-`PrinterAdapter.connected`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`connected`](../../../core/src/interfaces/PrinterAdapter.md#connected)
 
 ***
 
@@ -102,9 +121,11 @@ Human-readable model name from the driver's device registry.
 
 `string`
 
+Human-readable model name from the driver's device registry.
+
 #### Implementation of
 
-`PrinterAdapter.model`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`model`](../../../core/src/interfaces/PrinterAdapter.md#model)
 
 ## Methods
 
@@ -120,13 +141,13 @@ Close the connection. Always call in `finally` blocks.
 
 #### Implementation of
 
-`PrinterAdapter.close`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`close`](../../../core/src/interfaces/PrinterAdapter.md#close)
 
 ***
 
 ### createPreview()
 
-> **createPreview**(`image`, `options?`): `Promise`\<`PreviewResult`\>
+> **createPreview**(`image`, `options?`): `Promise`\<[`PreviewResult`](../../../core/src/interfaces/PreviewResult.md)\>
 
 Generate a preview showing how this printer would reproduce the
 design on the given media. Returns separated 1bpp planes with
@@ -151,7 +172,7 @@ For offline preview without a live connection, use the static
 
 ##### options?
 
-`PreviewOptions`
+[`PreviewOptions`](../../../core/src/interfaces/PreviewOptions.md)
 
 — optional media override. If media is omitted, uses
   detected media from the last `getStatus()`. If no status is
@@ -160,11 +181,11 @@ For offline preview without a live connection, use the static
 
 #### Returns
 
-`Promise`\<`PreviewResult`\>
+`Promise`\<[`PreviewResult`](../../../core/src/interfaces/PreviewResult.md)\>
 
 #### Implementation of
 
-`PrinterAdapter.createPreview`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`createPreview`](../../../core/src/interfaces/PrinterAdapter.md#createpreview)
 
 ***
 
@@ -184,17 +205,28 @@ full contract.
 
 ### getStatus()
 
-> **getStatus**(): `Promise`\<`PrinterStatus`\>
+> **getStatus**(): `Promise`\<[`PrinterStatus`](../../../core/src/interfaces/PrinterStatus.md)\>
 
-Query printer status including detected media.
+Status read for this instance's scoped engine. Dispatches by
+`engine.protocol`:
+
+- `d1-tape` (Duo tape side) — `SYN` request, 1-byte reply parsed
+  via `@thermal-label/d1-core`.
+- `lw-raster` / `lw5-raster` — `ESC A`-shaped request, multi-byte reply
+  parsed via labelwriter-core.
+
+Pre-refactor this was hardcoded to `device.engines[0].protocol`,
+which on the Duo always meant `lw-raster` and silently corrupted the
+tape engine's status byte stream. The per-engine instance now
+routes by its own engine.
 
 #### Returns
 
-`Promise`\<`PrinterStatus`\>
+`Promise`\<[`PrinterStatus`](../../../core/src/interfaces/PrinterStatus.md)\>
 
 #### Implementation of
 
-`PrinterAdapter.getStatus`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`getStatus`](../../../core/src/interfaces/PrinterAdapter.md#getstatus)
 
 ***
 
@@ -235,7 +267,7 @@ between sequential `print()` calls within the same session).
 
 ##### media?
 
-`MediaDescriptor`
+[`MediaDescriptor`](../../../core/src/interfaces/MediaDescriptor.md)
 
 — which media to print on. Determines dimensions,
   margins, and colour mode. If omitted, uses detected media from
@@ -257,7 +289,7 @@ MediaNotSpecifiedError if no media is known.
 
 #### Implementation of
 
-`PrinterAdapter.print`
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`print`](../../../core/src/interfaces/PrinterAdapter.md#print)
 
 ***
 
@@ -270,6 +302,9 @@ Driver-specific recovery sequence — mirror of the node driver.
 550 family sends `ESC Q` (release pending job + host lock); 450
 family sends the legacy 85×ESC + ESC A sync-flush. Drains the
 device-appropriate status response in either case.
+
+D1 tape engines have no protocol-level recovery sequence — calling
+recover on a tape-scoped instance is a no-op.
 
 #### Returns
 

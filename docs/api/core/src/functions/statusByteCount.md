@@ -16,7 +16,7 @@ response. 1 byte for the 450 family, 32 for the 550 family
 
 ### device
 
-`DeviceEntry`
+[`DeviceEntry`](../interfaces/DeviceEntry.md)
 
 ## Returns
 

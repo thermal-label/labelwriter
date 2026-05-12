@@ -6,7 +6,7 @@
 
 # Function: encode550Label()
 
-> **encode550Label**(`device`, `bitmap`, `options?`): `Uint8Array`
+> **encode550Label**(`device`, `bitmap`, `options?`, `media?`): `Uint8Array`
 
 Encode a complete 550-protocol print job for one or more copies.
 
@@ -23,7 +23,7 @@ carry the 450's `SYN` / `ETB` framing and therefore cannot RLE.
 
 ### device
 
-`DeviceEntry`
+[`DeviceEntry`](../interfaces/DeviceEntry.md)
 
 ### bitmap
 
@@ -32,6 +32,10 @@ carry the 450's `SYN` / `ETB` framing and therefore cannot RLE.
 ### options?
 
 [`LabelWriterPrintOptions`](../interfaces/LabelWriterPrintOptions.md) = `{}`
+
+### media?
+
+[`MediaDescriptor`](../interfaces/MediaDescriptor.md)
 
 ## Returns
 

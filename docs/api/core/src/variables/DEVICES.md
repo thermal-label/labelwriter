@@ -6,4 +6,4 @@
 
 # Variable: DEVICES
 
-> `const` **DEVICES**: `Record`\<`DeviceKey`, `DeviceEntry`\>
+> `const` **DEVICES**: `Record`\<`DeviceKey`, `RegistryDeviceEntry`\>

@@ -8,16 +8,15 @@
 
 > **isDuoTapeEngine**(`engine`): `boolean`
 
-Whether an engine speaks the Duo tape protocol.
-
-Adapters use this to route tape engines through `encodeDuoTapeLabel`
-instead of the label-side `encodeLabel`.
+Whether an engine speaks the D1 tape protocol (the Duo's tape
+side). Used by adapters to route status queries through d1-core's
+1-byte parser instead of the 450/550 multi-byte parsers.
 
 ## Parameters
 
 ### engine
 
-`PrintEngine`
+[`PrintEngine`](../interfaces/PrintEngine.md)
 
 ## Returns
 

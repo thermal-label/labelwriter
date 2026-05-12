@@ -70,7 +70,7 @@ Lives next to `headDots` in the engine descriptor:
 ```ts
 {
   role: 'primary',
-  protocol: 'lw-450',
+  protocol: 'lw-raster',
   dpi: 300,
   headDots: 672,
   leadingEdgeOffsetMm: 6,   // un-printable strip at label start
@@ -255,7 +255,7 @@ graduate to top-level engine fields per a contracts shape change.
   (the trailing-edge bar was already past the gap). Would need a
   separate pattern with content tucked against the trailing edge to
   measure.
-- **Does the 6 mm leading offset apply across the whole lw-450
+- **Does the 6 mm leading offset apply across the whole lw-raster
   protocol family, or is it 330-specific?** Twin Turbo, 4XL, 550, 5XL
   could each differ. Dymo's CUPS PPDs declare per-printer
   `Page.LeadingMargin` values — sourcing those is the cheapest path
@@ -283,4 +283,4 @@ graduate to top-level engine fields per a contracts shape change.
   encoder's `heightPx` fallback is correct. Field stays optional.
 - **Auto-calibration via the printer's gap sensor.** The 550-series
   `ESC U` "get media info" pulls dimensions from the NFC tag, which
-  is the strategic answer. Out of scope for this lw-450 fix.
+  is the strategic answer. Out of scope for this lw-raster fix.

@@ -10,7 +10,7 @@
   engines: [
     {
       role: 'primary',
-      protocol: 'lw-450',
+      protocol: 'lw-raster',
       dpi: 300,
       headDots: 672,
       mediaCompatibility: ['lw'],

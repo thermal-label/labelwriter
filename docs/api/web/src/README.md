@@ -13,6 +13,7 @@
 ## Interfaces
 
 - [RequestOptions](interfaces/RequestOptions.md)
+- [WebLabelWriterPrinterOptions](interfaces/WebLabelWriterPrinterOptions.md)
 
 ## Variables
 
@@ -21,4 +22,6 @@
 ## Functions
 
 - [fromUSBDevice](functions/fromUSBDevice.md)
+- [fromUSBDeviceAll](functions/fromUSBDeviceAll.md)
 - [requestPrinter](functions/requestPrinter.md)
+- [requestPrinters](functions/requestPrinters.md)

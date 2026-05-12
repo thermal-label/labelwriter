@@ -287,8 +287,8 @@ describe('encode550Label', () => {
     expect(indices).toEqual([0, 1, 2]);
   });
 
-  it('throws when the device has no lw-550 engine', () => {
-    expect(() => encode550Label(noPrintableArea(DEVICES.LW_450), bm(672, 4))).toThrow(/lw-550/);
+  it('throws when the device has no lw5-raster engine', () => {
+    expect(() => encode550Label(noPrintableArea(DEVICES.LW_450), bm(672, 4))).toThrow(/lw5-raster/);
   });
 
   it('does not contain ESC @ (which would reboot the print engine)', () => {
@@ -375,7 +375,7 @@ describe('encode550Label', () => {
 });
 
 describe('encodeLabel dispatch', () => {
-  it('routes lw-550 engines to encode550Label (no ESC @ reset, ends with ESC Q)', async () => {
+  it('routes lw5-raster engines to encode550Label (no ESC @ reset, ends with ESC Q)', async () => {
     const { encodeLabel } = await import('../protocol.js');
     // Bitmap height needs to be > the LW chassis leading dead zone
     // (6 mm @ 300 dpi = 71 dots) so the wire row count is positive

@@ -9,7 +9,9 @@
 > **fromUSBDevice**(`usbDevice`): `Promise`\<[`WebLabelWriterPrinter`](../classes/WebLabelWriterPrinter.md)\>
 
 Wrap an already-selected `USBDevice` (e.g. from
-`navigator.usb.getDevices()`).
+`navigator.usb.getDevices()`) and return the **primary** engine's
+adapter. The primary is the first `lw-*` engine on the device, or
+the first drivable engine if none speak `lw-*`.
 
 ## Parameters
 

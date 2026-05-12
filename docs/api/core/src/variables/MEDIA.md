@@ -282,9 +282,17 @@
 
 > `readonly` **background**: `"orange"` = `"orange"`
 
+#### DURABLE\_BLACK\_ON\_ORANGE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### DURABLE\_BLACK\_ON\_ORANGE\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### DURABLE\_BLACK\_ON\_ORANGE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### DURABLE\_BLACK\_ON\_ORANGE\_12.id
 
@@ -296,15 +304,35 @@
 
 #### DURABLE\_BLACK\_ON\_ORANGE\_12.name
 
-> `readonly` **name**: `"12mm Durable Black on Orange"` = `"12mm Durable Black on Orange"`
+> `readonly` **name**: `"12mm Durable Black on Orange (D1)"` = `"12mm Durable Black on Orange (D1)"`
+
+#### DURABLE\_BLACK\_ON\_ORANGE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### DURABLE\_BLACK\_ON\_ORANGE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### DURABLE\_BLACK\_ON\_ORANGE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### DURABLE\_BLACK\_ON\_ORANGE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### DURABLE\_BLACK\_ON\_ORANGE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### DURABLE\_BLACK\_ON\_ORANGE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### DURABLE\_BLACK\_ON\_ORANGE\_12.skus
 
 > `readonly` **skus**: readonly \[`"1978367"`\]
-
-#### DURABLE\_BLACK\_ON\_ORANGE\_12.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
 
 #### DURABLE\_BLACK\_ON\_ORANGE\_12.tapeWidthMm
 
@@ -334,9 +362,17 @@
 
 > `readonly` **background**: `"white"` = `"white"`
 
+#### DURABLE\_BLACK\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### DURABLE\_BLACK\_ON\_WHITE\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### DURABLE\_BLACK\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### DURABLE\_BLACK\_ON\_WHITE\_12.id
 
@@ -348,15 +384,35 @@
 
 #### DURABLE\_BLACK\_ON\_WHITE\_12.name
 
-> `readonly` **name**: `"12mm Durable Black on White"` = `"12mm Durable Black on White"`
+> `readonly` **name**: `"12mm Durable Black on White (D1)"` = `"12mm Durable Black on White (D1)"`
+
+#### DURABLE\_BLACK\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### DURABLE\_BLACK\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### DURABLE\_BLACK\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### DURABLE\_BLACK\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### DURABLE\_BLACK\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### DURABLE\_BLACK\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### DURABLE\_BLACK\_ON\_WHITE\_12.skus
 
 > `readonly` **skus**: readonly \[`"1978364"`\]
-
-#### DURABLE\_BLACK\_ON\_WHITE\_12.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
 
 #### DURABLE\_BLACK\_ON\_WHITE\_12.tapeWidthMm
 
@@ -386,9 +442,17 @@
 
 > `readonly` **background**: `"black"` = `"black"`
 
+#### DURABLE\_WHITE\_ON\_BLACK\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### DURABLE\_WHITE\_ON\_BLACK\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### DURABLE\_WHITE\_ON\_BLACK\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### DURABLE\_WHITE\_ON\_BLACK\_12.id
 
@@ -400,15 +464,35 @@
 
 #### DURABLE\_WHITE\_ON\_BLACK\_12.name
 
-> `readonly` **name**: `"12mm Durable White on Black"` = `"12mm Durable White on Black"`
+> `readonly` **name**: `"12mm Durable White on Black (D1)"` = `"12mm Durable White on Black (D1)"`
+
+#### DURABLE\_WHITE\_ON\_BLACK\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### DURABLE\_WHITE\_ON\_BLACK\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### DURABLE\_WHITE\_ON\_BLACK\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### DURABLE\_WHITE\_ON\_BLACK\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### DURABLE\_WHITE\_ON\_BLACK\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### DURABLE\_WHITE\_ON\_BLACK\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### DURABLE\_WHITE\_ON\_BLACK\_12.skus
 
 > `readonly` **skus**: readonly \[`"1978365"`\]
-
-#### DURABLE\_WHITE\_ON\_BLACK\_12.tapeColour
-
-> `readonly` **tapeColour**: `10` = `10`
 
 #### DURABLE\_WHITE\_ON\_BLACK\_12.tapeWidthMm
 
@@ -438,9 +522,17 @@
 
 > `readonly` **background**: `"red"` = `"red"`
 
+#### DURABLE\_WHITE\_ON\_RED\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### DURABLE\_WHITE\_ON\_RED\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### DURABLE\_WHITE\_ON\_RED\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### DURABLE\_WHITE\_ON\_RED\_12.id
 
@@ -452,15 +544,35 @@
 
 #### DURABLE\_WHITE\_ON\_RED\_12.name
 
-> `readonly` **name**: `"12mm Durable White on Red"` = `"12mm Durable White on Red"`
+> `readonly` **name**: `"12mm Durable White on Red (D1)"` = `"12mm Durable White on Red (D1)"`
+
+#### DURABLE\_WHITE\_ON\_RED\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### DURABLE\_WHITE\_ON\_RED\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### DURABLE\_WHITE\_ON\_RED\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### DURABLE\_WHITE\_ON\_RED\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### DURABLE\_WHITE\_ON\_RED\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### DURABLE\_WHITE\_ON\_RED\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### DURABLE\_WHITE\_ON\_RED\_12.skus
 
 > `readonly` **skus**: readonly \[`"1978366"`\]
-
-#### DURABLE\_WHITE\_ON\_RED\_12.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
 
 #### DURABLE\_WHITE\_ON\_RED\_12.tapeWidthMm
 
@@ -530,55 +642,83 @@
 
 > `readonly` **widthMm**: `14` = `14`
 
-### FLEXIBLE\_BLACK\_ON\_WHITE\_12
+### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12
 
-> `readonly` **FLEXIBLE\_BLACK\_ON\_WHITE\_12**: `object`
+> `readonly` **FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12**: `object`
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.background
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.background
 
 > `readonly` **background**: `"white"` = `"white"`
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.category
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.id
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.id
 
 > `readonly` **id**: `"d1-flexible-bw-12"` = `"d1-flexible-bw-12"`
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.material
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.material
 
 > `readonly` **material**: `"flexible-nylon"` = `"flexible-nylon"`
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.name
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.name
 
-> `readonly` **name**: `"12mm Flexible Black on White"` = `"12mm Flexible Black on White"`
+> `readonly` **name**: `"12mm Flexible Black on White (D1)"` = `"12mm Flexible Black on White (D1)"`
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.skus
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.skus
 
 > `readonly` **skus**: readonly \[`"16953"`, `"S0718040"`\]
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
-
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.tapeWidthMm
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.tapeWidthMm
 
 > `readonly` **tapeWidthMm**: `12` = `12`
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.targetModels
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.targetModels
 
 > `readonly` **targetModels**: readonly \[`"d1"`\]
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.text
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.text
 
 > `readonly` **text**: `"black"` = `"black"`
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.type
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.type
 
 > `readonly` **type**: `"tape"` = `"tape"`
 
-#### FLEXIBLE\_BLACK\_ON\_WHITE\_12.widthMm
+#### FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.widthMm
 
 > `readonly` **widthMm**: `12` = `12`
 
@@ -994,55 +1134,83 @@
 
 > `readonly` **widthMm**: `62` = `62`
 
-### PERMANENT\_BLACK\_ON\_WHITE\_12
+### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12
 
-> `readonly` **PERMANENT\_BLACK\_ON\_WHITE\_12**: `object`
+> `readonly` **PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12**: `object`
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.background
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.background
 
 > `readonly` **background**: `"white"` = `"white"`
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.category
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.id
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.id
 
 > `readonly` **id**: `"d1-permanent-bw-12"` = `"d1-permanent-bw-12"`
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.material
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.material
 
 > `readonly` **material**: `"permanent-polyester"` = `"permanent-polyester"`
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.name
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.name
 
-> `readonly` **name**: `"12mm Permanent Black on White"` = `"12mm Permanent Black on White"`
+> `readonly` **name**: `"12mm Permanent Black on White (D1)"` = `"12mm Permanent Black on White (D1)"`
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.skus
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.skus
 
 > `readonly` **skus**: readonly \[`"16955"`\]
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
-
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.tapeWidthMm
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.tapeWidthMm
 
 > `readonly` **tapeWidthMm**: `12` = `12`
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.targetModels
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.targetModels
 
 > `readonly` **targetModels**: readonly \[`"d1"`\]
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.text
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.text
 
 > `readonly` **text**: `"black"` = `"black"`
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.type
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.type
 
 > `readonly` **type**: `"tape"` = `"tape"`
 
-#### PERMANENT\_BLACK\_ON\_WHITE\_12.widthMm
+#### PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.widthMm
 
 > `readonly` **widthMm**: `12` = `12`
 
@@ -1227,6 +1395,3846 @@
 > `readonly` **type**: `"die-cut"` = `"die-cut"`
 
 #### RETURN\_ADDRESS.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12
+
+> `readonly` **RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12**: `object`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.id
+
+> `readonly` **id**: `"rhino-nylon-bw-12"` = `"rhino-nylon-bw-12"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.material
+
+> `readonly` **material**: `"rhino-flexible-nylon"` = `"rhino-flexible-nylon"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.name
+
+> `readonly` **name**: `"12mm Rhino Flexible Nylon Black on White"` = `"12mm Rhino Flexible Nylon Black on White"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.skus
+
+> `readonly` **skus**: readonly \[`"18488"`\]
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19
+
+> `readonly` **RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19**: `object`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.id
+
+> `readonly` **id**: `"rhino-nylon-bw-19"` = `"rhino-nylon-bw-19"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.material
+
+> `readonly` **material**: `"rhino-flexible-nylon"` = `"rhino-flexible-nylon"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.name
+
+> `readonly` **name**: `"19mm Rhino Flexible Nylon Black on White"` = `"19mm Rhino Flexible Nylon Black on White"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.skus
+
+> `readonly` **skus**: readonly \[`"18489"`\]
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_WHITE\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12
+
+> `readonly` **RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12**: `object`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.background
+
+> `readonly` **background**: `"yellow"` = `"yellow"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.id
+
+> `readonly` **id**: `"rhino-nylon-by-12"` = `"rhino-nylon-by-12"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.material
+
+> `readonly` **material**: `"rhino-flexible-nylon"` = `"rhino-flexible-nylon"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.name
+
+> `readonly` **name**: `"12mm Rhino Flexible Nylon Black on Yellow"` = `"12mm Rhino Flexible Nylon Black on Yellow"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.skus
+
+> `readonly` **skus**: readonly \[`"18490"`\]
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19
+
+> `readonly` **RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19**: `object`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.background
+
+> `readonly` **background**: `"yellow"` = `"yellow"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.id
+
+> `readonly` **id**: `"rhino-nylon-by-19"` = `"rhino-nylon-by-19"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.material
+
+> `readonly` **material**: `"rhino-flexible-nylon"` = `"rhino-flexible-nylon"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.name
+
+> `readonly` **name**: `"19mm Rhino Flexible Nylon Black on Yellow"` = `"19mm Rhino Flexible Nylon Black on Yellow"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.skus
+
+> `readonly` **skus**: readonly \[`"18491"`\]
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_FLEXIBLE\_NYLON\_BLACK\_ON\_YELLOW\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12
+
+> `readonly` **RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.id
+
+> `readonly` **id**: `"rhino-hs-bw-12"` = `"rhino-hs-bw-12"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.material
+
+> `readonly` **material**: `"rhino-heat-shrink"` = `"rhino-heat-shrink"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.name
+
+> `readonly` **name**: `"12mm Rhino Heat-Shrink Black on White"` = `"12mm Rhino Heat-Shrink Black on White"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.skus
+
+> `readonly` **skus**: readonly \[`"18055"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19
+
+> `readonly` **RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.id
+
+> `readonly` **id**: `"rhino-hs-bw-19"` = `"rhino-hs-bw-19"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.material
+
+> `readonly` **material**: `"rhino-heat-shrink"` = `"rhino-heat-shrink"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.name
+
+> `readonly` **name**: `"19mm Rhino Heat-Shrink Black on White"` = `"19mm Rhino Heat-Shrink Black on White"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.skus
+
+> `readonly` **skus**: readonly \[`"18057"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6
+
+> `readonly` **RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.bytesPerLine
+
+> `readonly` **bytesPerLine**: `4` = `4`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.id
+
+> `readonly` **id**: `"rhino-hs-bw-6"` = `"rhino-hs-bw-6"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.material
+
+> `readonly` **material**: `"rhino-heat-shrink"` = `"rhino-heat-shrink"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.name
+
+> `readonly` **name**: `"6mm Rhino Heat-Shrink Black on White"` = `"6mm Rhino Heat-Shrink Black on White"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.printableDots
+
+> `readonly` **printableDots**: `32` = `32`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.skus
+
+> `readonly` **skus**: readonly \[`"18051"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `6` = `6`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_6.widthMm
+
+> `readonly` **widthMm**: `6` = `6`
+
+### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9
+
+> `readonly` **RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.bytesPerLine
+
+> `readonly` **bytesPerLine**: `6` = `6`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.id
+
+> `readonly` **id**: `"rhino-hs-bw-9"` = `"rhino-hs-bw-9"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.material
+
+> `readonly` **material**: `"rhino-heat-shrink"` = `"rhino-heat-shrink"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.name
+
+> `readonly` **name**: `"9mm Rhino Heat-Shrink Black on White"` = `"9mm Rhino Heat-Shrink Black on White"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.printableDots
+
+> `readonly` **printableDots**: `48` = `48`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.skus
+
+> `readonly` **skus**: readonly \[`"18053"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `9` = `9`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_WHITE\_9.widthMm
+
+> `readonly` **widthMm**: `9` = `9`
+
+### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12
+
+> `readonly` **RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.background
+
+> `readonly` **background**: `"yellow"` = `"yellow"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.id
+
+> `readonly` **id**: `"rhino-hs-by-12"` = `"rhino-hs-by-12"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.material
+
+> `readonly` **material**: `"rhino-heat-shrink"` = `"rhino-heat-shrink"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.name
+
+> `readonly` **name**: `"12mm Rhino Heat-Shrink Black on Yellow"` = `"12mm Rhino Heat-Shrink Black on Yellow"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.skus
+
+> `readonly` **skus**: readonly \[`"18056"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19
+
+> `readonly` **RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.background
+
+> `readonly` **background**: `"yellow"` = `"yellow"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.id
+
+> `readonly` **id**: `"rhino-hs-by-19"` = `"rhino-hs-by-19"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.material
+
+> `readonly` **material**: `"rhino-heat-shrink"` = `"rhino-heat-shrink"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.name
+
+> `readonly` **name**: `"19mm Rhino Heat-Shrink Black on Yellow"` = `"19mm Rhino Heat-Shrink Black on Yellow"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.skus
+
+> `readonly` **skus**: readonly \[`"18058"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6
+
+> `readonly` **RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.background
+
+> `readonly` **background**: `"yellow"` = `"yellow"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.bytesPerLine
+
+> `readonly` **bytesPerLine**: `4` = `4`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.id
+
+> `readonly` **id**: `"rhino-hs-by-6"` = `"rhino-hs-by-6"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.material
+
+> `readonly` **material**: `"rhino-heat-shrink"` = `"rhino-heat-shrink"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.name
+
+> `readonly` **name**: `"6mm Rhino Heat-Shrink Black on Yellow"` = `"6mm Rhino Heat-Shrink Black on Yellow"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.printableDots
+
+> `readonly` **printableDots**: `32` = `32`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.skus
+
+> `readonly` **skus**: readonly \[`"18052"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `6` = `6`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_6.widthMm
+
+> `readonly` **widthMm**: `6` = `6`
+
+### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9
+
+> `readonly` **RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.background
+
+> `readonly` **background**: `"yellow"` = `"yellow"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.bytesPerLine
+
+> `readonly` **bytesPerLine**: `6` = `6`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.id
+
+> `readonly` **id**: `"rhino-hs-by-9"` = `"rhino-hs-by-9"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.material
+
+> `readonly` **material**: `"rhino-heat-shrink"` = `"rhino-heat-shrink"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.name
+
+> `readonly` **name**: `"9mm Rhino Heat-Shrink Black on Yellow"` = `"9mm Rhino Heat-Shrink Black on Yellow"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.printableDots
+
+> `readonly` **printableDots**: `48` = `48`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.skus
+
+> `readonly` **skus**: readonly \[`"18054"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `9` = `9`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_HEAT\_SHRINK\_BLACK\_ON\_YELLOW\_9.widthMm
+
+> `readonly` **widthMm**: `9` = `9`
+
+### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12
+
+> `readonly` **RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12**: `object`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.id
+
+> `readonly` **id**: `"rhino-tag-bw-12"` = `"rhino-tag-bw-12"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.material
+
+> `readonly` **material**: `"rhino-non-adhesive-tag"` = `"rhino-non-adhesive-tag"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.name
+
+> `readonly` **name**: `"12mm Rhino Non-Adhesive Tag Black on White"` = `"12mm Rhino Non-Adhesive Tag Black on White"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.skus
+
+> `readonly` **skus**: readonly \[`"18113"`\]
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6
+
+> `readonly` **RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6**: `object`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.bytesPerLine
+
+> `readonly` **bytesPerLine**: `4` = `4`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.id
+
+> `readonly` **id**: `"rhino-tag-bw-6"` = `"rhino-tag-bw-6"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.material
+
+> `readonly` **material**: `"rhino-non-adhesive-tag"` = `"rhino-non-adhesive-tag"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.name
+
+> `readonly` **name**: `"6mm Rhino Non-Adhesive Tag Black on White"` = `"6mm Rhino Non-Adhesive Tag Black on White"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.printableDots
+
+> `readonly` **printableDots**: `32` = `32`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.skus
+
+> `readonly` **skus**: readonly \[`"18111"`\]
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `6` = `6`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_NON\_ADHESIVE\_TAG\_BLACK\_ON\_WHITE\_6.widthMm
+
+> `readonly` **widthMm**: `6` = `6`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.background
+
+> `readonly` **background**: `"clear"` = `"clear"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.id
+
+> `readonly` **id**: `"rhino-permanent-bclr-12"` = `"rhino-permanent-bclr-12"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.name
+
+> `readonly` **name**: `"12mm Rhino Permanent Polyester Black on Clear"` = `"12mm Rhino Permanent Polyester Black on Clear"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.skus
+
+> `readonly` **skus**: readonly \[`"622289"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.background
+
+> `readonly` **background**: `"clear"` = `"clear"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.id
+
+> `readonly` **id**: `"rhino-permanent-bclr-19"` = `"rhino-permanent-bclr-19"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.name
+
+> `readonly` **name**: `"19mm Rhino Permanent Polyester Black on Clear"` = `"19mm Rhino Permanent Polyester Black on Clear"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.skus
+
+> `readonly` **skus**: readonly \[`"622290"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.background
+
+> `readonly` **background**: `"clear"` = `"clear"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.bytesPerLine
+
+> `readonly` **bytesPerLine**: `4` = `4`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.id
+
+> `readonly` **id**: `"rhino-permanent-bclr-6"` = `"rhino-permanent-bclr-6"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.name
+
+> `readonly` **name**: `"6mm Rhino Permanent Polyester Black on Clear"` = `"6mm Rhino Permanent Polyester Black on Clear"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.printableDots
+
+> `readonly` **printableDots**: `32` = `32`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.skus
+
+> `readonly` **skus**: readonly \[`"1805440"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `6` = `6`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_6.widthMm
+
+> `readonly` **widthMm**: `6` = `6`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.background
+
+> `readonly` **background**: `"clear"` = `"clear"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.bytesPerLine
+
+> `readonly` **bytesPerLine**: `6` = `6`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.id
+
+> `readonly` **id**: `"rhino-permanent-bclr-9"` = `"rhino-permanent-bclr-9"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.name
+
+> `readonly` **name**: `"9mm Rhino Permanent Polyester Black on Clear"` = `"9mm Rhino Permanent Polyester Black on Clear"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.printableDots
+
+> `readonly` **printableDots**: `48` = `48`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.skus
+
+> `readonly` **skus**: readonly \[`"18508"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `9` = `9`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_CLEAR\_9.widthMm
+
+> `readonly` **widthMm**: `9` = `9`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.background
+
+> `readonly` **background**: `"metallic"` = `"metallic"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.id
+
+> `readonly` **id**: `"rhino-permanent-bmtl-12"` = `"rhino-permanent-bmtl-12"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.name
+
+> `readonly` **name**: `"12mm Rhino Permanent Polyester Black on Metallic"` = `"12mm Rhino Permanent Polyester Black on Metallic"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.skus
+
+> `readonly` **skus**: readonly \[`"18486"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.background
+
+> `readonly` **background**: `"metallic"` = `"metallic"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.id
+
+> `readonly` **id**: `"rhino-permanent-bmtl-19"` = `"rhino-permanent-bmtl-19"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.name
+
+> `readonly` **name**: `"19mm Rhino Permanent Polyester Black on Metallic"` = `"19mm Rhino Permanent Polyester Black on Metallic"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.skus
+
+> `readonly` **skus**: readonly \[`"18487"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.background
+
+> `readonly` **background**: `"metallic"` = `"metallic"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.bytesPerLine
+
+> `readonly` **bytesPerLine**: `4` = `4`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.id
+
+> `readonly` **id**: `"rhino-permanent-bmtl-6"` = `"rhino-permanent-bmtl-6"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.name
+
+> `readonly` **name**: `"6mm Rhino Permanent Polyester Black on Metallic"` = `"6mm Rhino Permanent Polyester Black on Metallic"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.printableDots
+
+> `readonly` **printableDots**: `32` = `32`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.skus
+
+> `readonly` **skus**: readonly \[`"1805441"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `6` = `6`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_6.widthMm
+
+> `readonly` **widthMm**: `6` = `6`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.background
+
+> `readonly` **background**: `"metallic"` = `"metallic"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.bytesPerLine
+
+> `readonly` **bytesPerLine**: `6` = `6`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.id
+
+> `readonly` **id**: `"rhino-permanent-bmtl-9"` = `"rhino-permanent-bmtl-9"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.name
+
+> `readonly` **name**: `"9mm Rhino Permanent Polyester Black on Metallic"` = `"9mm Rhino Permanent Polyester Black on Metallic"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.printableDots
+
+> `readonly` **printableDots**: `48` = `48`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.skus
+
+> `readonly` **skus**: readonly \[`"18485"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `9` = `9`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_METALLIC\_9.widthMm
+
+> `readonly` **widthMm**: `9` = `9`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.id
+
+> `readonly` **id**: `"rhino-permanent-bw-12"` = `"rhino-permanent-bw-12"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.name
+
+> `readonly` **name**: `"12mm Rhino Permanent Polyester Black on White"` = `"12mm Rhino Permanent Polyester Black on White"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.skus
+
+> `readonly` **skus**: readonly \[`"18483"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.id
+
+> `readonly` **id**: `"rhino-permanent-bw-19"` = `"rhino-permanent-bw-19"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.name
+
+> `readonly` **name**: `"19mm Rhino Permanent Polyester Black on White"` = `"19mm Rhino Permanent Polyester Black on White"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.skus
+
+> `readonly` **skus**: readonly \[`"18484"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.bytesPerLine
+
+> `readonly` **bytesPerLine**: `4` = `4`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.id
+
+> `readonly` **id**: `"rhino-permanent-bw-6"` = `"rhino-permanent-bw-6"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.name
+
+> `readonly` **name**: `"6mm Rhino Permanent Polyester Black on White"` = `"6mm Rhino Permanent Polyester Black on White"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.printableDots
+
+> `readonly` **printableDots**: `32` = `32`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.skus
+
+> `readonly` **skus**: readonly \[`"1805442"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `6` = `6`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_6.widthMm
+
+> `readonly` **widthMm**: `6` = `6`
+
+### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9
+
+> `readonly` **RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.bytesPerLine
+
+> `readonly` **bytesPerLine**: `6` = `6`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.id
+
+> `readonly` **id**: `"rhino-permanent-bw-9"` = `"rhino-permanent-bw-9"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.material
+
+> `readonly` **material**: `"rhino-permanent-polyester"` = `"rhino-permanent-polyester"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.name
+
+> `readonly` **name**: `"9mm Rhino Permanent Polyester Black on White"` = `"9mm Rhino Permanent Polyester Black on White"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.printableDots
+
+> `readonly` **printableDots**: `48` = `48`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.skus
+
+> `readonly` **skus**: readonly \[`"18482"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `9` = `9`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_PERMANENT\_POLYESTER\_BLACK\_ON\_WHITE\_9.widthMm
+
+> `readonly` **widthMm**: `9` = `9`
+
+### RHINO\_VINYL\_BLACK\_ON\_GREY\_12
+
+> `readonly` **RHINO\_VINYL\_BLACK\_ON\_GREY\_12**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.background
+
+> `readonly` **background**: `"grey"` = `"grey"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.id
+
+> `readonly` **id**: `"rhino-vinyl-bgry-12"` = `"rhino-vinyl-bgry-12"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.name
+
+> `readonly` **name**: `"12mm Rhino Vinyl Black on Grey"` = `"12mm Rhino Vinyl Black on Grey"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.skus
+
+> `readonly` **skus**: readonly \[`"1805413"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_VINYL\_BLACK\_ON\_GREY\_19
+
+> `readonly` **RHINO\_VINYL\_BLACK\_ON\_GREY\_19**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.background
+
+> `readonly` **background**: `"grey"` = `"grey"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.id
+
+> `readonly` **id**: `"rhino-vinyl-bgry-19"` = `"rhino-vinyl-bgry-19"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.name
+
+> `readonly` **name**: `"19mm Rhino Vinyl Black on Grey"` = `"19mm Rhino Vinyl Black on Grey"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.skus
+
+> `readonly` **skus**: readonly \[`"1805419"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_GREY\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12
+
+> `readonly` **RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.background
+
+> `readonly` **background**: `"orange"` = `"orange"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.id
+
+> `readonly` **id**: `"rhino-vinyl-bo-12"` = `"rhino-vinyl-bo-12"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.name
+
+> `readonly` **name**: `"12mm Rhino Vinyl Black on Orange"` = `"12mm Rhino Vinyl Black on Orange"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.skus
+
+> `readonly` **skus**: readonly \[`"18435"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19
+
+> `readonly` **RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.background
+
+> `readonly` **background**: `"orange"` = `"orange"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.id
+
+> `readonly` **id**: `"rhino-vinyl-bo-19"` = `"rhino-vinyl-bo-19"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.name
+
+> `readonly` **name**: `"19mm Rhino Vinyl Black on Orange"` = `"19mm Rhino Vinyl Black on Orange"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.skus
+
+> `readonly` **skus**: readonly \[`"18436"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_ORANGE\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12
+
+> `readonly` **RHINO\_VINYL\_BLACK\_ON\_WHITE\_12**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.id
+
+> `readonly` **id**: `"rhino-vinyl-bw-12"` = `"rhino-vinyl-bw-12"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.name
+
+> `readonly` **name**: `"12mm Rhino Vinyl Black on White"` = `"12mm Rhino Vinyl Black on White"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.skus
+
+> `readonly` **skus**: readonly \[`"18444"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19
+
+> `readonly` **RHINO\_VINYL\_BLACK\_ON\_WHITE\_19**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.id
+
+> `readonly` **id**: `"rhino-vinyl-bw-19"` = `"rhino-vinyl-bw-19"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.name
+
+> `readonly` **name**: `"19mm Rhino Vinyl Black on White"` = `"19mm Rhino Vinyl Black on White"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.skus
+
+> `readonly` **skus**: readonly \[`"18445"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9
+
+> `readonly` **RHINO\_VINYL\_BLACK\_ON\_WHITE\_9**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.background
+
+> `readonly` **background**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.bytesPerLine
+
+> `readonly` **bytesPerLine**: `6` = `6`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.id
+
+> `readonly` **id**: `"rhino-vinyl-bw-9"` = `"rhino-vinyl-bw-9"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.name
+
+> `readonly` **name**: `"9mm Rhino Vinyl Black on White"` = `"9mm Rhino Vinyl Black on White"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.printableDots
+
+> `readonly` **printableDots**: `48` = `48`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.skus
+
+> `readonly` **skus**: readonly \[`"18443"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `9` = `9`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_WHITE\_9.widthMm
+
+> `readonly` **widthMm**: `9` = `9`
+
+### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12
+
+> `readonly` **RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.background
+
+> `readonly` **background**: `"yellow"` = `"yellow"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.id
+
+> `readonly` **id**: `"rhino-vinyl-by-12"` = `"rhino-vinyl-by-12"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.name
+
+> `readonly` **name**: `"12mm Rhino Vinyl Black on Yellow"` = `"12mm Rhino Vinyl Black on Yellow"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.skus
+
+> `readonly` **skus**: readonly \[`"18432"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19
+
+> `readonly` **RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.background
+
+> `readonly` **background**: `"yellow"` = `"yellow"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.id
+
+> `readonly` **id**: `"rhino-vinyl-by-19"` = `"rhino-vinyl-by-19"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.name
+
+> `readonly` **name**: `"19mm Rhino Vinyl Black on Yellow"` = `"19mm Rhino Vinyl Black on Yellow"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.skus
+
+> `readonly` **skus**: readonly \[`"18433"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.text
+
+> `readonly` **text**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_BLACK\_ON\_YELLOW\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_BLACK\_12**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.background
+
+> `readonly` **background**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.id
+
+> `readonly` **id**: `"rhino-vinyl-wbk-12"` = `"rhino-vinyl-wbk-12"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.name
+
+> `readonly` **name**: `"12mm Rhino Vinyl White on Black"` = `"12mm Rhino Vinyl White on Black"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.skus
+
+> `readonly` **skus**: readonly \[`"1805435"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_BLACK\_19**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.background
+
+> `readonly` **background**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.id
+
+> `readonly` **id**: `"rhino-vinyl-wbk-19"` = `"rhino-vinyl-wbk-19"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.name
+
+> `readonly` **name**: `"19mm Rhino Vinyl White on Black"` = `"19mm Rhino Vinyl White on Black"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.skus
+
+> `readonly` **skus**: readonly \[`"1805436"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_BLACK\_9**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.background
+
+> `readonly` **background**: `"black"` = `"black"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.bytesPerLine
+
+> `readonly` **bytesPerLine**: `6` = `6`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.id
+
+> `readonly` **id**: `"rhino-vinyl-wbk-9"` = `"rhino-vinyl-wbk-9"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.name
+
+> `readonly` **name**: `"9mm Rhino Vinyl White on Black"` = `"9mm Rhino Vinyl White on Black"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.printableDots
+
+> `readonly` **printableDots**: `48` = `48`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.skus
+
+> `readonly` **skus**: readonly \[`"1805437"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `9` = `9`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLACK\_9.widthMm
+
+> `readonly` **widthMm**: `9` = `9`
+
+### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_BLUE\_12**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.background
+
+> `readonly` **background**: `"blue"` = `"blue"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.id
+
+> `readonly` **id**: `"rhino-vinyl-wbl-12"` = `"rhino-vinyl-wbl-12"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.name
+
+> `readonly` **name**: `"12mm Rhino Vinyl White on Blue"` = `"12mm Rhino Vinyl White on Blue"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.skus
+
+> `readonly` **skus**: readonly \[`"1805243"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_BLUE\_19**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.background
+
+> `readonly` **background**: `"blue"` = `"blue"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.id
+
+> `readonly` **id**: `"rhino-vinyl-wbl-19"` = `"rhino-vinyl-wbl-19"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.name
+
+> `readonly` **name**: `"19mm Rhino Vinyl White on Blue"` = `"19mm Rhino Vinyl White on Blue"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.skus
+
+> `readonly` **skus**: readonly \[`"1805417"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BLUE\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_BROWN\_12**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.background
+
+> `readonly` **background**: `"brown"` = `"brown"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.id
+
+> `readonly` **id**: `"rhino-vinyl-wbrn-12"` = `"rhino-vinyl-wbrn-12"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.name
+
+> `readonly` **name**: `"12mm Rhino Vinyl White on Brown"` = `"12mm Rhino Vinyl White on Brown"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.skus
+
+> `readonly` **skus**: readonly \[`"1805412"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_BROWN\_19**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.background
+
+> `readonly` **background**: `"brown"` = `"brown"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.id
+
+> `readonly` **id**: `"rhino-vinyl-wbrn-19"` = `"rhino-vinyl-wbrn-19"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.name
+
+> `readonly` **name**: `"19mm Rhino Vinyl White on Brown"` = `"19mm Rhino Vinyl White on Brown"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.skus
+
+> `readonly` **skus**: readonly \[`"1805418"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_BROWN\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_GREEN\_12**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.background
+
+> `readonly` **background**: `"green"` = `"green"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.id
+
+> `readonly` **id**: `"rhino-vinyl-wgrn-12"` = `"rhino-vinyl-wgrn-12"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.name
+
+> `readonly` **name**: `"12mm Rhino Vinyl White on Green"` = `"12mm Rhino Vinyl White on Green"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.skus
+
+> `readonly` **skus**: readonly \[`"1805414"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_GREEN\_19**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.background
+
+> `readonly` **background**: `"green"` = `"green"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.id
+
+> `readonly` **id**: `"rhino-vinyl-wgrn-19"` = `"rhino-vinyl-wgrn-19"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.name
+
+> `readonly` **name**: `"19mm Rhino Vinyl White on Green"` = `"19mm Rhino Vinyl White on Green"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.skus
+
+> `readonly` **skus**: readonly \[`"1805420"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_GREEN\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.background
+
+> `readonly` **background**: `"purple"` = `"purple"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.id
+
+> `readonly` **id**: `"rhino-vinyl-wprp-12"` = `"rhino-vinyl-wprp-12"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.name
+
+> `readonly` **name**: `"12mm Rhino Vinyl White on Purple"` = `"12mm Rhino Vinyl White on Purple"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.skus
+
+> `readonly` **skus**: readonly \[`"1805415"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.background
+
+> `readonly` **background**: `"purple"` = `"purple"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.id
+
+> `readonly` **id**: `"rhino-vinyl-wprp-19"` = `"rhino-vinyl-wprp-19"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.name
+
+> `readonly` **name**: `"19mm Rhino Vinyl White on Purple"` = `"19mm Rhino Vinyl White on Purple"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.skus
+
+> `readonly` **skus**: readonly \[`"1805421"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_PURPLE\_19.widthMm
+
+> `readonly` **widthMm**: `19` = `19`
+
+### RHINO\_VINYL\_WHITE\_ON\_RED\_12
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_RED\_12**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.background
+
+> `readonly` **background**: `"red"` = `"red"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.id
+
+> `readonly` **id**: `"rhino-vinyl-wr-12"` = `"rhino-vinyl-wr-12"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.name
+
+> `readonly` **name**: `"12mm Rhino Vinyl White on Red"` = `"12mm Rhino Vinyl White on Red"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.skus
+
+> `readonly` **skus**: readonly \[`"1805416"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_12.widthMm
+
+> `readonly` **widthMm**: `12` = `12`
+
+### RHINO\_VINYL\_WHITE\_ON\_RED\_19
+
+> `readonly` **RHINO\_VINYL\_WHITE\_ON\_RED\_19**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.background
+
+> `readonly` **background**: `"red"` = `"red"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.category
+
+> `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.id
+
+> `readonly` **id**: `"rhino-vinyl-wr-19"` = `"rhino-vinyl-wr-19"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.material
+
+> `readonly` **material**: `"rhino-vinyl"` = `"rhino-vinyl"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.name
+
+> `readonly` **name**: `"19mm Rhino Vinyl White on Red"` = `"19mm Rhino Vinyl White on Red"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.skus
+
+> `readonly` **skus**: readonly \[`"1805422"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.tapeWidthMm
+
+> `readonly` **tapeWidthMm**: `19` = `19`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.targetModels
+
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.text
+
+> `readonly` **text**: `"white"` = `"white"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.type
+
+> `readonly` **type**: `"tape"` = `"tape"`
+
+#### RHINO\_VINYL\_WHITE\_ON\_RED\_19.widthMm
 
 > `readonly` **widthMm**: `19` = `19`
 
@@ -1430,9 +5438,17 @@
 
 > `readonly` **background**: `"blue"` = `"blue"`
 
+#### STANDARD\_BLACK\_ON\_BLUE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### STANDARD\_BLACK\_ON\_BLUE\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_BLUE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_BLUE\_12.id
 
@@ -1444,15 +5460,35 @@
 
 #### STANDARD\_BLACK\_ON\_BLUE\_12.name
 
-> `readonly` **name**: `"12mm Black on Blue"` = `"12mm Black on Blue"`
+> `readonly` **name**: `"12mm Black on Blue (D1)"` = `"12mm Black on Blue (D1)"`
+
+#### STANDARD\_BLACK\_ON\_BLUE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### STANDARD\_BLACK\_ON\_BLUE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_BLUE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_BLUE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_BLUE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_BLUE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_BLUE\_12.skus
 
 > `readonly` **skus**: readonly \[`"45016"`, `"S0720560"`\]
-
-#### STANDARD\_BLACK\_ON\_BLUE\_12.tapeColour
-
-> `readonly` **tapeColour**: `1` = `1`
 
 #### STANDARD\_BLACK\_ON\_BLUE\_12.tapeWidthMm
 
@@ -1482,9 +5518,17 @@
 
 > `readonly` **background**: `"clear"` = `"clear"`
 
+#### STANDARD\_BLACK\_ON\_CLEAR\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### STANDARD\_BLACK\_ON\_CLEAR\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_12.id
 
@@ -1496,15 +5540,35 @@
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_12.name
 
-> `readonly` **name**: `"12mm Black on Clear"` = `"12mm Black on Clear"`
+> `readonly` **name**: `"12mm Black on Clear (D1)"` = `"12mm Black on Clear (D1)"`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_12.skus
 
 > `readonly` **skus**: readonly \[`"45010"`\]
-
-#### STANDARD\_BLACK\_ON\_CLEAR\_12.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_12.tapeWidthMm
 
@@ -1534,9 +5598,17 @@
 
 > `readonly` **background**: `"clear"` = `"clear"`
 
+#### STANDARD\_BLACK\_ON\_CLEAR\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
 #### STANDARD\_BLACK\_ON\_CLEAR\_19.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_19.id
 
@@ -1548,15 +5620,35 @@
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_19.name
 
-> `readonly` **name**: `"19mm Black on Clear"` = `"19mm Black on Clear"`
+> `readonly` **name**: `"19mm Black on Clear (D1)"` = `"19mm Black on Clear (D1)"`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_19.skus
 
-> `readonly` **skus**: readonly \[`"45803"`, `"S0720820"`\]
-
-#### STANDARD\_BLACK\_ON\_CLEAR\_19.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
+> `readonly` **skus**: readonly \[`"S0720820"`\]
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_19.tapeWidthMm
 
@@ -1564,7 +5656,7 @@
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_19.targetModels
 
-> `readonly` **targetModels**: readonly \[`"d1"`\]
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_19.text
 
@@ -1586,9 +5678,17 @@
 
 > `readonly` **background**: `"clear"` = `"clear"`
 
+#### STANDARD\_BLACK\_ON\_CLEAR\_9.bytesPerLine
+
+> `readonly` **bytesPerLine**: `6` = `6`
+
 #### STANDARD\_BLACK\_ON\_CLEAR\_9.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_9.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_9.id
 
@@ -1600,15 +5700,35 @@
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_9.name
 
-> `readonly` **name**: `"9mm Black on Clear"` = `"9mm Black on Clear"`
+> `readonly` **name**: `"9mm Black on Clear (D1)"` = `"9mm Black on Clear (D1)"`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_9.printableDots
+
+> `readonly` **printableDots**: `48` = `48`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_9.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_9.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_9.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_9.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_CLEAR\_9.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_9.skus
 
 > `readonly` **skus**: readonly \[`"40910"`, `"S0720670"`\]
-
-#### STANDARD\_BLACK\_ON\_CLEAR\_9.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_CLEAR\_9.tapeWidthMm
 
@@ -1638,9 +5758,17 @@
 
 > `readonly` **background**: `"green"` = `"green"`
 
+#### STANDARD\_BLACK\_ON\_GREEN\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### STANDARD\_BLACK\_ON\_GREEN\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_GREEN\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_GREEN\_12.id
 
@@ -1652,15 +5780,35 @@
 
 #### STANDARD\_BLACK\_ON\_GREEN\_12.name
 
-> `readonly` **name**: `"12mm Black on Green"` = `"12mm Black on Green"`
+> `readonly` **name**: `"12mm Black on Green (D1)"` = `"12mm Black on Green (D1)"`
+
+#### STANDARD\_BLACK\_ON\_GREEN\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### STANDARD\_BLACK\_ON\_GREEN\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_GREEN\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_GREEN\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_GREEN\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_GREEN\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_GREEN\_12.skus
 
 > `readonly` **skus**: readonly \[`"45019"`, `"S0720590"`\]
-
-#### STANDARD\_BLACK\_ON\_GREEN\_12.tapeColour
-
-> `readonly` **tapeColour**: `6` = `6`
 
 #### STANDARD\_BLACK\_ON\_GREEN\_12.tapeWidthMm
 
@@ -1690,9 +5838,17 @@
 
 > `readonly` **background**: `"red"` = `"red"`
 
+#### STANDARD\_BLACK\_ON\_RED\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### STANDARD\_BLACK\_ON\_RED\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_RED\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_RED\_12.id
 
@@ -1704,15 +5860,35 @@
 
 #### STANDARD\_BLACK\_ON\_RED\_12.name
 
-> `readonly` **name**: `"12mm Black on Red"` = `"12mm Black on Red"`
+> `readonly` **name**: `"12mm Black on Red (D1)"` = `"12mm Black on Red (D1)"`
+
+#### STANDARD\_BLACK\_ON\_RED\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### STANDARD\_BLACK\_ON\_RED\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_RED\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_RED\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_RED\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_RED\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_RED\_12.skus
 
 > `readonly` **skus**: readonly \[`"45017"`, `"S0720570"`\]
-
-#### STANDARD\_BLACK\_ON\_RED\_12.tapeColour
-
-> `readonly` **tapeColour**: `2` = `2`
 
 #### STANDARD\_BLACK\_ON\_RED\_12.tapeWidthMm
 
@@ -1742,9 +5918,17 @@
 
 > `readonly` **background**: `"white"` = `"white"`
 
+#### STANDARD\_BLACK\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### STANDARD\_BLACK\_ON\_WHITE\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_12.id
 
@@ -1756,15 +5940,35 @@
 
 #### STANDARD\_BLACK\_ON\_WHITE\_12.name
 
-> `readonly` **name**: `"12mm Black on White"` = `"12mm Black on White"`
+> `readonly` **name**: `"12mm Black on White (D1)"` = `"12mm Black on White (D1)"`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_12.skus
 
 > `readonly` **skus**: readonly \[`"45013"`\]
-
-#### STANDARD\_BLACK\_ON\_WHITE\_12.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_12.tapeWidthMm
 
@@ -1794,9 +5998,17 @@
 
 > `readonly` **background**: `"white"` = `"white"`
 
+#### STANDARD\_BLACK\_ON\_WHITE\_19.bytesPerLine
+
+> `readonly` **bytesPerLine**: `12` = `12`
+
 #### STANDARD\_BLACK\_ON\_WHITE\_19.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_19.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_19.id
 
@@ -1808,15 +6020,35 @@
 
 #### STANDARD\_BLACK\_ON\_WHITE\_19.name
 
-> `readonly` **name**: `"19mm Black on White"` = `"19mm Black on White"`
+> `readonly` **name**: `"19mm Black on White (D1)"` = `"19mm Black on White (D1)"`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_19.printableDots
+
+> `readonly` **printableDots**: `96` = `96`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_19.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_19.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_19.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_19.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_19.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_19.skus
 
-> `readonly` **skus**: readonly \[`"45800"`\]
-
-#### STANDARD\_BLACK\_ON\_WHITE\_19.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
+> `readonly` **skus**: readonly \[`"45800"`, `"45803"`\]
 
 #### STANDARD\_BLACK\_ON\_WHITE\_19.tapeWidthMm
 
@@ -1824,7 +6056,7 @@
 
 #### STANDARD\_BLACK\_ON\_WHITE\_19.targetModels
 
-> `readonly` **targetModels**: readonly \[`"d1"`\]
+> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
 
 #### STANDARD\_BLACK\_ON\_WHITE\_19.text
 
@@ -1846,9 +6078,17 @@
 
 > `readonly` **background**: `"white"` = `"white"`
 
+#### STANDARD\_BLACK\_ON\_WHITE\_24.bytesPerLine
+
+> `readonly` **bytesPerLine**: `16` = `16`
+
 #### STANDARD\_BLACK\_ON\_WHITE\_24.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_24.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_24.id
 
@@ -1860,15 +6100,35 @@
 
 #### STANDARD\_BLACK\_ON\_WHITE\_24.name
 
-> `readonly` **name**: `"24mm Black on White"` = `"24mm Black on White"`
+> `readonly` **name**: `"24mm Black on White (D1)"` = `"24mm Black on White (D1)"`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_24.printableDots
+
+> `readonly` **printableDots**: `128` = `128`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_24.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_24.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_24.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_24.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_24.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_24.skus
 
 > `readonly` **skus**: readonly \[`"53713"`, `"S0720930"`\]
-
-#### STANDARD\_BLACK\_ON\_WHITE\_24.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_24.tapeWidthMm
 
@@ -1876,7 +6136,7 @@
 
 #### STANDARD\_BLACK\_ON\_WHITE\_24.targetModels
 
-> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+> `readonly` **targetModels**: readonly \[`"d1-24"`\]
 
 #### STANDARD\_BLACK\_ON\_WHITE\_24.text
 
@@ -1898,9 +6158,17 @@
 
 > `readonly` **background**: `"white"` = `"white"`
 
+#### STANDARD\_BLACK\_ON\_WHITE\_6.bytesPerLine
+
+> `readonly` **bytesPerLine**: `4` = `4`
+
 #### STANDARD\_BLACK\_ON\_WHITE\_6.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_6.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_6.id
 
@@ -1912,15 +6180,35 @@
 
 #### STANDARD\_BLACK\_ON\_WHITE\_6.name
 
-> `readonly` **name**: `"6mm Black on White"` = `"6mm Black on White"`
+> `readonly` **name**: `"6mm Black on White (D1)"` = `"6mm Black on White (D1)"`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_6.printableDots
+
+> `readonly` **printableDots**: `32` = `32`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_6.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_6.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_6.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_6.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_6.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_6.skus
 
 > `readonly` **skus**: readonly \[`"43613"`, `"S0720780"`\]
-
-#### STANDARD\_BLACK\_ON\_WHITE\_6.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_6.tapeWidthMm
 
@@ -1950,9 +6238,17 @@
 
 > `readonly` **background**: `"white"` = `"white"`
 
+#### STANDARD\_BLACK\_ON\_WHITE\_9.bytesPerLine
+
+> `readonly` **bytesPerLine**: `6` = `6`
+
 #### STANDARD\_BLACK\_ON\_WHITE\_9.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_9.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_9.id
 
@@ -1964,15 +6260,35 @@
 
 #### STANDARD\_BLACK\_ON\_WHITE\_9.name
 
-> `readonly` **name**: `"9mm Black on White"` = `"9mm Black on White"`
+> `readonly` **name**: `"9mm Black on White (D1)"` = `"9mm Black on White (D1)"`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_9.printableDots
+
+> `readonly` **printableDots**: `48` = `48`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_9.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_9.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_9.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_9.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_WHITE\_9.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_9.skus
 
 > `readonly` **skus**: readonly \[`"41913"`\]
-
-#### STANDARD\_BLACK\_ON\_WHITE\_9.tapeColour
-
-> `readonly` **tapeColour**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_WHITE\_9.tapeWidthMm
 
@@ -2002,9 +6318,17 @@
 
 > `readonly` **background**: `"yellow"` = `"yellow"`
 
+#### STANDARD\_BLACK\_ON\_YELLOW\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### STANDARD\_BLACK\_ON\_YELLOW\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_YELLOW\_12.id
 
@@ -2016,15 +6340,35 @@
 
 #### STANDARD\_BLACK\_ON\_YELLOW\_12.name
 
-> `readonly` **name**: `"12mm Black on Yellow"` = `"12mm Black on Yellow"`
+> `readonly` **name**: `"12mm Black on Yellow (D1)"` = `"12mm Black on Yellow (D1)"`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_YELLOW\_12.skus
 
 > `readonly` **skus**: readonly \[`"45018"`\]
-
-#### STANDARD\_BLACK\_ON\_YELLOW\_12.tapeColour
-
-> `readonly` **tapeColour**: `4` = `4`
 
 #### STANDARD\_BLACK\_ON\_YELLOW\_12.tapeWidthMm
 
@@ -2054,9 +6398,17 @@
 
 > `readonly` **background**: `"yellow"` = `"yellow"`
 
+#### STANDARD\_BLACK\_ON\_YELLOW\_24.bytesPerLine
+
+> `readonly` **bytesPerLine**: `16` = `16`
+
 #### STANDARD\_BLACK\_ON\_YELLOW\_24.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_24.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLACK\_ON\_YELLOW\_24.id
 
@@ -2068,15 +6420,35 @@
 
 #### STANDARD\_BLACK\_ON\_YELLOW\_24.name
 
-> `readonly` **name**: `"24mm Black on Yellow"` = `"24mm Black on Yellow"`
+> `readonly` **name**: `"24mm Black on Yellow (D1)"` = `"24mm Black on Yellow (D1)"`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_24.printableDots
+
+> `readonly` **printableDots**: `128` = `128`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_24.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_24.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_24.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_24.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLACK\_ON\_YELLOW\_24.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLACK\_ON\_YELLOW\_24.skus
 
 > `readonly` **skus**: readonly \[`"53718"`, `"S0720980"`\]
-
-#### STANDARD\_BLACK\_ON\_YELLOW\_24.tapeColour
-
-> `readonly` **tapeColour**: `4` = `4`
 
 #### STANDARD\_BLACK\_ON\_YELLOW\_24.tapeWidthMm
 
@@ -2084,7 +6456,7 @@
 
 #### STANDARD\_BLACK\_ON\_YELLOW\_24.targetModels
 
-> `readonly` **targetModels**: readonly \[`"d1-wide"`\]
+> `readonly` **targetModels**: readonly \[`"d1-24"`\]
 
 #### STANDARD\_BLACK\_ON\_YELLOW\_24.text
 
@@ -2106,9 +6478,17 @@
 
 > `readonly` **background**: `"white"` = `"white"`
 
+#### STANDARD\_BLUE\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### STANDARD\_BLUE\_ON\_WHITE\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_BLUE\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_BLUE\_ON\_WHITE\_12.id
 
@@ -2120,15 +6500,35 @@
 
 #### STANDARD\_BLUE\_ON\_WHITE\_12.name
 
-> `readonly` **name**: `"12mm Blue on White"` = `"12mm Blue on White"`
+> `readonly` **name**: `"12mm Blue on White (D1)"` = `"12mm Blue on White (D1)"`
+
+#### STANDARD\_BLUE\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### STANDARD\_BLUE\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_BLUE\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_BLUE\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_BLUE\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_BLUE\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_BLUE\_ON\_WHITE\_12.skus
 
 > `readonly` **skus**: readonly \[`"45014"`\]
-
-#### STANDARD\_BLUE\_ON\_WHITE\_12.tapeColour
-
-> `readonly` **tapeColour**: `11` = `11`
 
 #### STANDARD\_BLUE\_ON\_WHITE\_12.tapeWidthMm
 
@@ -2158,9 +6558,17 @@
 
 > `readonly` **background**: `"white"` = `"white"`
 
+#### STANDARD\_RED\_ON\_WHITE\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### STANDARD\_RED\_ON\_WHITE\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_RED\_ON\_WHITE\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_RED\_ON\_WHITE\_12.id
 
@@ -2172,15 +6580,35 @@
 
 #### STANDARD\_RED\_ON\_WHITE\_12.name
 
-> `readonly` **name**: `"12mm Red on White"` = `"12mm Red on White"`
+> `readonly` **name**: `"12mm Red on White (D1)"` = `"12mm Red on White (D1)"`
+
+#### STANDARD\_RED\_ON\_WHITE\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### STANDARD\_RED\_ON\_WHITE\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_RED\_ON\_WHITE\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_RED\_ON\_WHITE\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_RED\_ON\_WHITE\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_RED\_ON\_WHITE\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_RED\_ON\_WHITE\_12.skus
 
 > `readonly` **skus**: readonly \[`"45015"`, `"S0720550"`\]
-
-#### STANDARD\_RED\_ON\_WHITE\_12.tapeColour
-
-> `readonly` **tapeColour**: `12` = `12`
 
 #### STANDARD\_RED\_ON\_WHITE\_12.tapeWidthMm
 
@@ -2210,9 +6638,17 @@
 
 > `readonly` **background**: `"black"` = `"black"`
 
+#### STANDARD\_WHITE\_ON\_BLACK\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### STANDARD\_WHITE\_ON\_BLACK\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_WHITE\_ON\_BLACK\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_WHITE\_ON\_BLACK\_12.id
 
@@ -2224,15 +6660,35 @@
 
 #### STANDARD\_WHITE\_ON\_BLACK\_12.name
 
-> `readonly` **name**: `"12mm White on Black"` = `"12mm White on Black"`
+> `readonly` **name**: `"12mm White on Black (D1)"` = `"12mm White on Black (D1)"`
+
+#### STANDARD\_WHITE\_ON\_BLACK\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### STANDARD\_WHITE\_ON\_BLACK\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_WHITE\_ON\_BLACK\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_WHITE\_ON\_BLACK\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_WHITE\_ON\_BLACK\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_WHITE\_ON\_BLACK\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_WHITE\_ON\_BLACK\_12.skus
 
 > `readonly` **skus**: readonly \[`"45021"`, `"S0720610"`\]
-
-#### STANDARD\_WHITE\_ON\_BLACK\_12.tapeColour
-
-> `readonly` **tapeColour**: `10` = `10`
 
 #### STANDARD\_WHITE\_ON\_BLACK\_12.tapeWidthMm
 
@@ -2262,9 +6718,17 @@
 
 > `readonly` **background**: `"clear"` = `"clear"`
 
+#### STANDARD\_WHITE\_ON\_CLEAR\_12.bytesPerLine
+
+> `readonly` **bytesPerLine**: `8` = `8`
+
 #### STANDARD\_WHITE\_ON\_CLEAR\_12.category
 
 > `readonly` **category**: `"cartridge"` = `"cartridge"`
+
+#### STANDARD\_WHITE\_ON\_CLEAR\_12.defaultOrientation
+
+> `readonly` **defaultOrientation**: `"horizontal"` = `"horizontal"`
 
 #### STANDARD\_WHITE\_ON\_CLEAR\_12.id
 
@@ -2276,15 +6740,35 @@
 
 #### STANDARD\_WHITE\_ON\_CLEAR\_12.name
 
-> `readonly` **name**: `"12mm White on Clear"` = `"12mm White on Clear"`
+> `readonly` **name**: `"12mm White on Clear (D1)"` = `"12mm White on Clear (D1)"`
+
+#### STANDARD\_WHITE\_ON\_CLEAR\_12.printableDots
+
+> `readonly` **printableDots**: `64` = `64`
+
+#### STANDARD\_WHITE\_ON\_CLEAR\_12.printMargins
+
+> `readonly` **printMargins**: `object`
+
+#### STANDARD\_WHITE\_ON\_CLEAR\_12.printMargins.bottomMm
+
+> `readonly` **bottomMm**: `0` = `0`
+
+#### STANDARD\_WHITE\_ON\_CLEAR\_12.printMargins.leftMm
+
+> `readonly` **leftMm**: `3` = `3`
+
+#### STANDARD\_WHITE\_ON\_CLEAR\_12.printMargins.rightMm
+
+> `readonly` **rightMm**: `3` = `3`
+
+#### STANDARD\_WHITE\_ON\_CLEAR\_12.printMargins.topMm
+
+> `readonly` **topMm**: `0` = `0`
 
 #### STANDARD\_WHITE\_ON\_CLEAR\_12.skus
 
 > `readonly` **skus**: readonly \[`"45020"`, `"S0720600"`\]
-
-#### STANDARD\_WHITE\_ON\_CLEAR\_12.tapeColour
-
-> `readonly` **tapeColour**: `9` = `9`
 
 #### STANDARD\_WHITE\_ON\_CLEAR\_12.tapeWidthMm
 

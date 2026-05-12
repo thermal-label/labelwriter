@@ -3,7 +3,7 @@
   name: 'LabelWriter Duo - 96',
   family: 'labelwriter',
   // Composite USB device: two interfaces — one for the label head
-  // (lw-450 protocol) and one for the D1 tape head (d1-tape protocol).
+  // (lw-raster protocol) and one for the D1 tape head (d1-tape protocol).
   // Tape engine becomes drivable when a `d1-tape` protocol module is
   // registered with the runtime resolver; until then the resolver
   // returns the device with `engines.tape.drivable: false`.
@@ -13,7 +13,7 @@
   engines: [
     {
       role: 'label',
-      protocol: 'lw-450',
+      protocol: 'lw-raster',
       dpi: 300,
       headDots: 672,
       mediaCompatibility: ['lw'],

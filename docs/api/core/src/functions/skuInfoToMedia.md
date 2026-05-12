@@ -40,7 +40,7 @@ material / counter / NFC fields can read the full `SkuInfo`.
 
 ### type
 
-> **type**: `"die-cut"` \| `"continuous"`
+> **type**: `"continuous"` \| `"die-cut"`
 
 ### widthMm
 

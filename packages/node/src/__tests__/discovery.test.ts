@@ -141,14 +141,14 @@ describe('LabelWriterDiscovery', () => {
 
       it('routes 550 Turbo TCP to the 550 protocol path (would have been 450 pre-fix)', async () => {
         // Regression guard for the silent-misidentification bug:
-        // pre-fix, opening any host picked LW_WIRELESS (lw-450) and
-        // dispatched the 450 encoder, corrupting 550 jobs on the wire.
+        // pre-fix, opening any host picked LW_WIRELESS (lw-raster) and
+        // dispatched the classic encoder, corrupting 550 jobs on the wire.
         tcpConnect.mockResolvedValue(fakeTransport());
         const printer = await discovery.openPrinter({
           host: '192.168.1.100',
           deviceKey: 'LW_550_TURBO',
         });
-        expect(printer.device.engines[0]?.protocol).toBe('lw-550');
+        expect(printer.device.engines[0]?.protocol).toBe('lw5-raster');
       });
     });
 

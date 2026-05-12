@@ -12,3 +12,6 @@ docs/.vitepress/cache/
 packages/*/src/*.generated.ts
 packages/*/data/devices.json
 packages/*/data/media.json
+
+# Vendor reference PDFs — drafting input only, not ours to redistribute
+*.pdf

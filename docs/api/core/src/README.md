@@ -6,16 +6,33 @@
 
 # core/src
 
+## Classes
+
+- [MediaNotSpecifiedError](classes/MediaNotSpecifiedError.md)
+- [UnsupportedOperationError](classes/UnsupportedOperationError.md)
+
 ## Interfaces
 
-- [DuoTapePrintOptions](interfaces/DuoTapePrintOptions.md)
+- [DeviceEntry](interfaces/DeviceEntry.md)
+- [DeviceRegistry](interfaces/DeviceRegistry.md)
+- [~~DeviceSupport~~](interfaces/DeviceSupport.md)
 - [EngineVersion](interfaces/EngineVersion.md)
 - [LabelWriterEngineCapabilities](interfaces/LabelWriterEngineCapabilities.md)
 - [LabelWriterEngineHandle](interfaces/LabelWriterEngineHandle.md)
 - [LabelWriterMedia](interfaces/LabelWriterMedia.md)
 - [LabelWriterPrintOptions](interfaces/LabelWriterPrintOptions.md)
 - [LabelWriterTapeMedia](interfaces/LabelWriterTapeMedia.md)
+- [MediaDescriptor](interfaces/MediaDescriptor.md)
+- [PreviewOptions](interfaces/PreviewOptions.md)
+- [PreviewPlane](interfaces/PreviewPlane.md)
+- [PreviewResult](interfaces/PreviewResult.md)
+- [PrintEngine](interfaces/PrintEngine.md)
+- [PrinterAdapter](interfaces/PrinterAdapter.md)
+- [PrinterError](interfaces/PrinterError.md)
+- [PrinterStatus](interfaces/PrinterStatus.md)
+- [PrintOptions](interfaces/PrintOptions.md)
 - [SkuInfo](interfaces/SkuInfo.md)
+- [Transport](interfaces/Transport.md)
 
 ## Type Aliases
 
@@ -25,13 +42,15 @@
 - [DuoTapeWidth](type-aliases/DuoTapeWidth.md)
 - [LabelWriterAnyMedia](type-aliases/LabelWriterAnyMedia.md)
 - [LabelWriterDevice](type-aliases/LabelWriterDevice.md)
+- [RotateDirection](type-aliases/RotateDirection.md)
+- [TransportType](type-aliases/TransportType.md)
 
 ## Variables
 
+- [D1\_STATUS\_REQUEST](variables/D1_STATUS_REQUEST.md)
 - [D1\_TAPE\_COLOR\_HEX](variables/D1_TAPE_COLOR_HEX.md)
 - [DEFAULT\_MEDIA](variables/DEFAULT_MEDIA.md)
 - [DEVICES](variables/DEVICES.md)
-- [DUO\_TAPE\_STATUS\_BYTE\_COUNT](variables/DUO_TAPE_STATUS_BYTE_COUNT.md)
 - [ENGINE\_VERSION\_BYTE\_COUNT](variables/ENGINE_VERSION_BYTE_COUNT.md)
 - [MEDIA](variables/MEDIA.md)
 - [PRINT\_STATUS\_LOCK\_NOT\_GRANTED](variables/PRINT_STATUS_LOCK_NOT_GRANTED.md)
@@ -64,12 +83,6 @@
 - [build550ShortFormFeed](functions/build550ShortFormFeed.md)
 - [build550StatusRequest](functions/build550StatusRequest.md)
 - [buildDensity](functions/buildDensity.md)
-- [buildDuoBytesPerLine](functions/buildDuoBytesPerLine.md)
-- [buildDuoCutTape](functions/buildDuoCutTape.md)
-- [buildDuoRasterRow](functions/buildDuoRasterRow.md)
-- [buildDuoReset](functions/buildDuoReset.md)
-- [buildDuoSetTapeType](functions/buildDuoSetTapeType.md)
-- [buildDuoStatusRequest](functions/buildDuoStatusRequest.md)
 - [buildErrorRecovery](functions/buildErrorRecovery.md)
 - [buildFormFeed](functions/buildFormFeed.md)
 - [buildJobHeader](functions/buildJobHeader.md)
@@ -84,7 +97,6 @@
 - [createPreviewOffline](functions/createPreviewOffline.md)
 - [density550Percent](functions/density550Percent.md)
 - [encode550Label](functions/encode550Label.md)
-- [encodeDuoTapeLabel](functions/encodeDuoTapeLabel.md)
 - [encodeLabel](functions/encodeLabel.md)
 - [findDevice](functions/findDevice.md)
 - [findMediaByDimensions](functions/findMediaByDimensions.md)
@@ -92,11 +104,11 @@
 - [findTapeMediaByWidthAll](functions/findTapeMediaByWidthAll.md)
 - [isDuoTapeEngine](functions/isDuoTapeEngine.md)
 - [isEngineDrivable](functions/isEngineDrivable.md)
-- [parseDuoTapeStatus](functions/parseDuoTapeStatus.md)
+- [parseD1Status](functions/parseD1Status.md)
 - [parseEngineVersion](functions/parseEngineVersion.md)
 - [parseSkuInfo](functions/parseSkuInfo.md)
 - [parseStatus](functions/parseStatus.md)
+- [pickRotation](functions/pickRotation.md)
 - [skuInfoToMedia](functions/skuInfoToMedia.md)
 - [statusByteCount](functions/statusByteCount.md)
-- [tapeColourFor](functions/tapeColourFor.md)
 - [withDetectedMedia](functions/withDetectedMedia.md)
