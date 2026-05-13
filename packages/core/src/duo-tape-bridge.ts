@@ -73,13 +73,55 @@ function isModuleNotFound(err: unknown): boolean {
   if (!(err instanceof Error)) return false;
   const code = (err as { code?: unknown }).code;
   if (code === 'ERR_MODULE_NOT_FOUND' || code === 'MODULE_NOT_FOUND') return true;
-  const msg = err.message;
-  return (
-    msg.includes('Cannot find module') ||
-    msg.includes('Failed to fetch dynamically imported module') ||
-    msg.includes("Cannot find package '@thermal-label/d1-core'") ||
-    msg.includes('Failed to resolve module specifier')
-  );
+  if (recursiveCodeMatches(err)) return true;
+  return recursiveMessageMatches(err);
+}
+
+/**
+ * Walk an Error chain (`err`, `err.cause`, `err.cause.cause`, …) and
+ * return true if any link's `.code` looks like a missing-module marker.
+ *
+ * Vitest's `vi.doMock` factory wraps a thrown error in a generic
+ * `[vitest] There was an error when mocking…` error and preserves the
+ * original on `.cause`. The cause carries the real `ERR_MODULE_NOT_FOUND`
+ * code (or the underlying loader's `MODULE_NOT_FOUND`).
+ */
+function recursiveCodeMatches(err: unknown): boolean {
+  let current: unknown = err;
+  while (current instanceof Error) {
+    const code = (current as { code?: unknown }).code;
+    if (code === 'ERR_MODULE_NOT_FOUND' || code === 'MODULE_NOT_FOUND') return true;
+    current = (current as { cause?: unknown }).cause;
+  }
+  return false;
+}
+
+/**
+ * Walk an Error chain and return true if any link's message looks like
+ * a missing-module marker. Covers Node, Vite/Rollup, vitest-mock, and
+ * the dymo-specific package path.
+ */
+function recursiveMessageMatches(err: unknown): boolean {
+  let current: unknown = err;
+  while (current instanceof Error) {
+    const msg = current.message;
+    if (
+      msg.includes('Cannot find module') ||
+      msg.includes('Failed to fetch dynamically imported module') ||
+      msg.includes("Cannot find package '@thermal-label/d1-core'") ||
+      msg.includes('Failed to resolve module specifier') ||
+      // vitest's vi.doMock factory wraps the original error and emits
+      // this prefix when a factory throws or returns an invalid module
+      // shape. Treating it as a missing-module signal lets the in-test
+      // optional-peer simulation behave consistently across vitest's
+      // wrap shapes.
+      msg.startsWith('[vitest] There was an error when mocking')
+    ) {
+      return true;
+    }
+    current = (current as { cause?: unknown }).cause;
+  }
+  return false;
 }
 
 /**
