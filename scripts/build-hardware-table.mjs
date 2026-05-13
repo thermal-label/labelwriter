@@ -139,7 +139,7 @@ function patchFile(path, section, { required, autoInject }) {
     }
     injected = true;
   }
-  const re = new RegExp(`${escapeRe(MARKER_START)}[\s\S]*?${escapeRe(MARKER_END)}`);
+  const re = new RegExp(`${escapeRe(MARKER_START)}[\\s\\S]*?${escapeRe(MARKER_END)}`);
   const replaced = original.replace(re, `${MARKER_START}\n${section}\n${MARKER_END}`);
   if (!injected && replaced === readFileSync(path, 'utf8')) {
     log(`${path}: no change`);
