@@ -41,6 +41,19 @@ describe('WebLabelWriterPrinter', () => {
     expect(printer.device).toEqual(DEVICES.LW_450);
   });
 
+  it('onStatus subscribes via the contracts polling shim (plan 11)', async () => {
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
+    const printer = await fromUSBDevice(device);
+    let received = 0;
+    const unsub = printer.onStatus(() => {
+      received += 1;
+    });
+    await new Promise<void>(r => setTimeout(r, 30));
+    unsub();
+    await printer.close();
+    expect(received).toBeGreaterThanOrEqual(1);
+  });
+
   it('print() writes encoded bytes to WebUSB with explicit media', async () => {
     const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);

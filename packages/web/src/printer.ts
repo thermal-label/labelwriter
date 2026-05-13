@@ -38,7 +38,11 @@ import {
   type SkuInfo,
   type Transport,
 } from '@thermal-label/labelwriter-core';
-import { MediaNotSpecifiedError, UnsupportedOperationError } from '@thermal-label/contracts';
+import {
+  MediaNotSpecifiedError,
+  UnsupportedOperationError,
+  pollingOnStatus,
+} from '@thermal-label/contracts';
 import { WebUsbTransport } from '@thermal-label/transport/web';
 
 const D1_STATUS_BYTE_COUNT = 1;
@@ -322,6 +326,23 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
       this.lastStatus = status;
     }
     return this.lastStatus;
+  }
+
+  /**
+   * Subscribe to status updates. LabelWriter firmware (across the
+   * 3xx/4xx/5xx and Duo families) doesn't push unsolicited status
+   * frames; this is a polling shim built on `pollingOnStatus` from
+   * contracts, which calls `getStatus()` on first subscribe and then
+   * every 4 s.
+   *
+   * Per plan 11 §`onStatus` parity — every driver-web printer
+   * implements `onStatus` so the harness shell can collapse its
+   * push-vs-pull branch in `createStatusPolling.ts` into a single
+   * subscription path. On the LW Duo each engine instance gets its
+   * own poll loop (the harness creates one subscription per role).
+   */
+  onStatus(cb: (status: PrinterStatus) => void): () => void {
+    return pollingOnStatus(this, cb);
   }
 
   async close(): Promise<void> {
