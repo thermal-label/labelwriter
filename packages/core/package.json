@@ -12,7 +12,7 @@
   "type": "module",
   "author": "Mannes Brak",
   "license": "MIT",
-  "homepage": "https://thermal-label.github.io/labelwriter/",
+  "homepage": "https://thermal-label.github.io/labelwriter/core",
   "repository": {
     "type": "git",
     "url": "https://github.com/thermal-label/labelwriter.git",
