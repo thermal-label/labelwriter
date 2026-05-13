@@ -423,18 +423,17 @@ export const DEFAULT_FILTERS: USBDeviceFilter[] = buildLabelWriterFilters();
  *
  * Requires a user gesture. Returns the **primary** engine adapter — for
  * single-engine devices that's the only adapter; for the Duo it's the
- * label engine (the `lw-*` one). To get every engine adapter on a
- * multi-interface device, call `requestPrinters()` instead.
+ * label engine (the `lw-*` one).
  *
- * Pre-refactor this returned a single instance that routed every print
- * through one transport — fine for single-interface devices, but the
- * Duo's tape engine emitted D1 bytes onto the label endpoint. The
- * per-engine refactor narrows this entry to "primary engine only" and
- * promotes `requestPrinters()` for full multi-engine coverage.
+ * @deprecated Use `requestPrinters({ transport: 'usb' })` from
+ *   `./request-printers.ts` — the generic factory returns the full
+ *   per-engine `PrinterAdapterMap`. Removed once consumers migrate
+ *   (plan 11).
  */
 export async function requestPrinter(options: RequestOptions = {}): Promise<WebLabelWriterPrinter> {
   const filters = options.filters ?? DEFAULT_FILTERS;
   const usbDevice = await navigator.usb.requestDevice({ filters });
+  // eslint-disable-next-line @typescript-eslint/no-deprecated -- legacy alias chain
   return fromUSBDevice(usbDevice);
 }
 
@@ -460,11 +459,18 @@ export async function requestPrinter(options: RequestOptions = {}): Promise<WebL
  * "rails not walls": the operator can still drive whichever engines
  * did open.
  */
-export async function requestPrinters(
+/**
+ * @deprecated Use the generic `requestPrinters({ transport: 'usb' })`
+ *   from `./request-printers.ts`; the legacy USB-only `requestPrinters`
+ *   is preserved as `requestPrintersUsbLegacy` for back-compat. Removed
+ *   once consumers migrate (plan 11).
+ */
+export async function requestPrintersUsbLegacy(
   options: RequestOptions = {},
 ): Promise<Record<string, WebLabelWriterPrinter>> {
   const filters = options.filters ?? DEFAULT_FILTERS;
   const usbDevice = await navigator.usb.requestDevice({ filters });
+  // eslint-disable-next-line @typescript-eslint/no-deprecated -- legacy alias chain
   return fromUSBDeviceAll(usbDevice);
 }
 
@@ -475,8 +481,12 @@ export async function requestPrinters(
  * the first drivable engine if none speak `lw-*`.
  *
  * @throws when the VID/PID is not in the LabelWriter registry.
+ *
+ * @deprecated Use `requestPrinters({ transport: 'usb' })` from
+ *   `./request-printers.ts`. Removed once consumers migrate (plan 11).
  */
 export async function fromUSBDevice(usbDevice: USBDevice): Promise<WebLabelWriterPrinter> {
+  // eslint-disable-next-line @typescript-eslint/no-deprecated -- legacy alias chain
   const all = await fromUSBDeviceAll(usbDevice);
   // Prefer the lw-* primary so existing single-printer callers (tests,
   // ad-hoc consumers) keep getting a label-class adapter on the Duo.
@@ -511,6 +521,9 @@ export async function fromUSBDevice(usbDevice: USBDevice): Promise<WebLabelWrite
  * harnesses that already hold a `USBDevice` (e.g. picked-up via
  * `navigator.usb.getDevices()` on a returning visit) can skip the
  * picker.
+ *
+ * @deprecated Use `requestPrinters({ transport: 'usb' })` from
+ *   `./request-printers.ts`. Removed once consumers migrate (plan 11).
  */
 export async function fromUSBDeviceAll(
   usbDevice: USBDevice,
