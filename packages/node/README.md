@@ -88,6 +88,11 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 - [Documentation](https://thermal-label.github.io/labelwriter/)
 - [GitHub](https://github.com/thermal-label/labelwriter)
 
+## Supported hardware
+
+<!-- HARDWARE_TABLE:START -->
+<!-- HARDWARE_TABLE:END -->
+
 ## License
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../LICENSE)

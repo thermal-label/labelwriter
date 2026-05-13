@@ -55,6 +55,11 @@ Wraps an already-obtained `USBDevice` in a `WebLabelWriterPrinter`.
 | `isConnected()`                   | Check USB connection state                       |
 | `disconnect()`                    | Close USB connection                             |
 
+## Supported hardware
+
+<!-- HARDWARE_TABLE:START -->
+<!-- HARDWARE_TABLE:END -->
+
 ## License
 
 MIT © Mannes Brak
