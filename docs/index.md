@@ -10,8 +10,8 @@ hero:
       text: Get started
       link: /getting-started
     - theme: brand
-      text: Try it now →
-      link: /demo
+      text: Hardware harness →
+      link: https://thermal-label.github.io/harness/labelwriter/
     - theme: alt
       text: GitHub
       link: https://github.com/thermal-label/labelwriter

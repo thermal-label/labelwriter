@@ -93,9 +93,12 @@ preview.planes[0].displayColor; // '#000000' — single-colour driver
 For offline previews, import `createPreviewOffline` from
 `@thermal-label/labelwriter-core`.
 
-## Live demo
+## Hardware harness
 
-Try it in your browser: [Demo](/demo/labelwriter)
+Try it in your browser:
+[LabelWriter harness](https://thermal-label.github.io/harness/labelwriter/) —
+pair over WebUSB, run a diagnostic print, and file a verification
+report against the device registry.
 
 ## NFC label lock
 
