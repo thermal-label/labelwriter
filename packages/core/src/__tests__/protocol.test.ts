@@ -13,6 +13,7 @@ import {
   buildDensity,
   buildMode,
   buildSelectRoll,
+  encodeDuoTapeLabel,
   encodeLabel,
 } from '../protocol.js';
 import { DEVICES } from '../devices.js';
@@ -335,9 +336,13 @@ describe('encodeLabel', () => {
     );
   });
 
-  it("dispatches the Duo's tape engine (d1-tape) through d1-core's buildPrinterStream", () => {
+  it("dispatches the Duo's tape engine (d1-tape) through d1-core's buildPrinterStream", async () => {
     const bm = makeBitmap(128, 10);
-    const bytes = encodeLabel(DEVICES.LW_450_DUO, bm, { engine: 'tape' });
+    // d1-core is an OPTIONAL peer; the tape path lives on the async
+    // `encodeDuoTapeLabel` entry. `encodeLabel` itself throws
+    // UnsupportedOperationError on d1-tape engines to push callers to
+    // the async helper.
+    const bytes = await encodeDuoTapeLabel(DEVICES.LW_450_DUO, bm, { engine: 'tape' });
     // d1-core wire shape begins with `ESC C n` (tape-type selector),
     // not the lw-raster `ESC @` reset.
     expect(bytes[0]).toBe(0x1b);
@@ -345,6 +350,13 @@ describe('encodeLabel', () => {
     // Final byte is `ESC A` (status query) — d1-core terminator.
     expect(bytes.at(-2)).toBe(0x1b);
     expect(bytes.at(-1)).toBe(0x41);
+  });
+
+  it('encodeLabel on a d1-tape engine throws UnsupportedOperationError pointing to encodeDuoTapeLabel', () => {
+    const bm = makeBitmap(128, 10);
+    expect(() => encodeLabel(DEVICES.LW_450_DUO, bm, { engine: 'tape' })).toThrow(
+      /encodeDuoTapeLabel/,
+    );
   });
 
   // Per LW SE450 Tech Ref p.9: ESC G (short form feed) and ESC q (roll

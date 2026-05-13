@@ -489,8 +489,10 @@ describe('LabelWriterPrinter', () => {
 
     it('Duo tape engine.getStatus reads 1 byte via d1-core parseStatus', async () => {
       const { transport: labelT } = makeTransport();
-      // D1 status is a single byte; 0x00 = ready + tape inserted + no flags.
-      const { transport: tapeT } = makeTransport(new Uint8Array([0x00]));
+      // D1 status is a single byte; bit 6 = cassette inserted. 0x40
+      // = loaded + ready + no flags. Matches d1-core's bench-confirmed
+      // bit layout (`packages/d1-core/src/status.ts`).
+      const { transport: tapeT } = makeTransport(new Uint8Array([0x40]));
       const printer = new LabelWriterPrinter(DEVICES.LW_450_DUO, labelT, 'usb', {
         engineTransports: { tape: tapeT },
       });

@@ -11,12 +11,13 @@ import {
   buildErrorRecovery,
   buildStatusRequest,
   createPreviewOffline,
-  D1_STATUS_REQUEST,
+  duoTapeStatusRequest,
+  encodeDuoTapeLabel,
   encodeLabel,
   findDevice,
   isDuoTapeEngine,
   isEngineDrivable,
-  parseD1Status,
+  parseDuoTapeStatus,
   parseSkuInfo,
   parseStatus,
   pickRotation,
@@ -197,7 +198,11 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // Force `engine` to this instance's role so the encoder dispatches
     // on the right protocol (lw-raster / lw5-raster / d1-tape).
     const encodeOptions: LabelWriterPrintOptions = { ...options, engine: this.engine.role };
-    const bytes = encodeLabel(this.device, bitmap, encodeOptions, resolvedMedia);
+    // Duo tape engine: dispatch through the async encoder that
+    // lazy-loads d1-core. Raster engines stay on the sync path.
+    const bytes = isDuoTapeEngine(this.engine)
+      ? await encodeDuoTapeLabel(this.device, bitmap, encodeOptions, resolvedMedia)
+      : encodeLabel(this.device, bitmap, encodeOptions, resolvedMedia);
     await this.transport.write(bytes);
   }
 
@@ -285,12 +290,16 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
    */
   async getStatus(): Promise<PrinterStatus> {
     if (isDuoTapeEngine(this.engine)) {
-      await this.transport.write(D1_STATUS_REQUEST);
+      // Lazy-load d1-core: only consumers actually driving the Duo
+      // tape engine pull it into their bundle. Throws
+      // DuoTapeUnavailableError when the optional peer is missing.
+      const request = await duoTapeStatusRequest();
+      await this.transport.write(request);
       const bytes = await this.transport.read(
         Math.max(D1_STATUS_BYTE_COUNT, STATUS_READ_MIN_LENGTH),
         STATUS_READ_TIMEOUT_MS,
       );
-      const status = parseD1Status(bytes);
+      const status = await parseDuoTapeStatus(bytes);
       this.lastStatus = status;
       return status;
     }

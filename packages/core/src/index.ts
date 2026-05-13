@@ -53,19 +53,24 @@ export {
   buildJobHeader,
   buildErrorRecovery,
   buildRasterRow,
+  encodeDuoTapeLabel,
   encodeLabel,
   ROLL_BYTE_AUTO,
 } from './protocol.js';
 export { STATUS_REQUEST, buildStatusRequest, parseStatus, statusByteCount } from './status.js';
-// D1 status helpers re-exported under aliased names so `labelwriter-web`
-// (and node) can drive the Duo's tape engine without taking a direct dep
-// on `@thermal-label/d1-core`. labelwriter-core owns the protocol surface
-// for every engine declared by labelwriter devices, including the Duo's
-// `d1-tape` side.
+// Duo tape-side helpers are reached through the lazy bridge — see
+// `duo-tape-bridge.ts`. `@thermal-label/d1-core` is an OPTIONAL peer
+// dependency of this package; consumers that only drive the LW raster
+// engines don't need it installed. The Duo tape code path imports
+// d1-core dynamically through `loadD1Core()` and throws
+// `DuoTapeUnavailableError` when it's missing.
 export {
-  STATUS_REQUEST as D1_STATUS_REQUEST,
-  parseStatus as parseD1Status,
-} from '@thermal-label/d1-core';
+  DuoTapeUnavailableError,
+  buildDuoTapeStream,
+  duoTapeStatusRequest,
+  loadD1Core,
+  parseDuoTapeStatus,
+} from './duo-tape-bridge.js';
 export {
   build550JobHeader,
   build550Mode,

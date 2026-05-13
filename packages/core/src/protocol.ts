@@ -1,9 +1,9 @@
 import { createBitmap, padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
 import type { DeviceEntry, MediaDescriptor, PrintEngine } from '@thermal-label/contracts';
 import { UnsupportedOperationError, getPrintableArea } from '@thermal-label/contracts';
-import { buildPrinterStream } from '@thermal-label/d1-core';
 import type { LabelWriterPrintOptions, LabelWriterTapeMedia, Density } from './types.js';
 import { encode550Label } from './protocol-550.js';
+import { buildDuoTapeStream } from './duo-tape-bridge.js';
 
 /**
  * LW 450-family framing bytes that recur across builders. Per-command
@@ -314,6 +314,44 @@ function assertEncoderSupports(engine: PrintEngine, deviceKey: string): void {
   }
 }
 
+/**
+ * Async tape-side encoder for the LabelWriter Duo (`d1-tape` protocol).
+ *
+ * Lazy-loads `@thermal-label/d1-core`'s `buildPrinterStream` through
+ * the duo-tape bridge — d1-core is an OPTIONAL peer of labelwriter-core,
+ * so this throws `DuoTapeUnavailableError` if the consumer hasn't
+ * installed it. Consumers driving only the LW/LW5 raster engines
+ * never reach this path and don't pay the dep cost.
+ *
+ * Validates that `media.type === 'tape'` when media is supplied, then
+ * forwards to d1-core with `options.copies` and the media's
+ * pre-computed `tapeColour` (ESC C selector).
+ */
+export async function encodeDuoTapeLabel(
+  device: DeviceEntry,
+  bitmap: LabelBitmap,
+  options: LabelWriterPrintOptions = {},
+  media?: MediaDescriptor,
+): Promise<Uint8Array> {
+  const { engine } = resolveEngine(device, options.engine);
+  if (engine.protocol !== 'd1-tape') {
+    throw new UnsupportedOperationError(
+      `encodeDuoTapeLabel on ${device.key} engine "${engine.role}"`,
+      `engine protocol is "${engine.protocol}", not "d1-tape". Use encodeLabel for raster engines.`,
+    );
+  }
+  if (media && (media as { type?: string }).type !== 'tape') {
+    throw new Error(
+      `Tape engine requires media of type "tape" (got "${String((media as { type?: string }).type)}").`,
+    );
+  }
+  const tapeMedia = media as LabelWriterTapeMedia | undefined;
+  const d1Options: { copies?: number; tapeType?: number } = {};
+  if (options.copies !== undefined) d1Options.copies = options.copies;
+  if (tapeMedia?.tapeColour !== undefined) d1Options.tapeType = tapeMedia.tapeColour;
+  return buildDuoTapeStream(bitmap, engine, d1Options, tapeMedia);
+}
+
 export function encodeLabel(
   device: DeviceEntry,
   bitmap: LabelBitmap,
@@ -332,21 +370,18 @@ export function encodeLabel(
     return encode550Label(device, bitmap, options, media);
   }
 
-  // D1 tape (Duo's tape side) — same encoder the labelmanager driver
-  // uses. Tape media's pre-computed `tapeColour` (ESC C selector) maps
-  // to d1-core's `options.tapeType`; if absent, d1-core derives from
-  // the media's `text` / `background` colours.
+  // D1 tape (Duo's tape side) is encoded through `@thermal-label/d1-core`,
+  // which is an OPTIONAL peer dependency of labelwriter-core. The sync
+  // `encodeLabel` entry can't dynamic-import d1-core, so it directs
+  // callers to the async `encodeDuoTapeLabel` instead. The node + web
+  // printers detect the tape engine up-front and call the async path
+  // directly — this guard only fires if a consumer bypasses the
+  // adapter and asks the sync encoder to handle a `d1-tape` engine.
   if (engine.protocol === 'd1-tape') {
-    if (media && (media as { type?: string }).type !== 'tape') {
-      throw new Error(
-        `Tape engine requires media of type "tape" (got "${String((media as { type?: string }).type)}").`,
-      );
-    }
-    const tapeMedia = media as LabelWriterTapeMedia | undefined;
-    const d1Options: Parameters<typeof buildPrinterStream>[2] = {};
-    if (options.copies !== undefined) d1Options.copies = options.copies;
-    if (tapeMedia?.tapeColour !== undefined) d1Options.tapeType = tapeMedia.tapeColour;
-    return buildPrinterStream(bitmap, engine, d1Options, tapeMedia);
+    throw new UnsupportedOperationError(
+      `encodeLabel on ${device.key} engine "${engine.role}"`,
+      'Duo tape engines use an async dispatch — call encodeDuoTapeLabel(device, bitmap, options, media) instead.',
+    );
   }
 
   const headDots = engine.headDots;

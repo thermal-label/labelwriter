@@ -12,11 +12,12 @@ import {
   buildErrorRecovery,
   buildStatusRequest,
   createPreviewOffline,
-  D1_STATUS_REQUEST,
+  duoTapeStatusRequest,
+  encodeDuoTapeLabel,
   encodeLabel,
   isDuoTapeEngine,
   isEngineDrivable,
-  parseD1Status,
+  parseDuoTapeStatus,
   parseEngineVersion,
   parseSkuInfo,
   parseStatus,
@@ -166,7 +167,11 @@ export class LabelWriterPrinter implements PrinterAdapter {
     }
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
-    const bytes = encodeLabel(this.device, bitmap, options, resolvedMedia);
+    // Duo tape engine: dispatch through the async encoder that
+    // lazy-loads d1-core. Raster engines stay on the sync path.
+    const bytes = isDuoTapeEngine(engine)
+      ? await encodeDuoTapeLabel(this.device, bitmap, options, resolvedMedia)
+      : encodeLabel(this.device, bitmap, options, resolvedMedia);
     await transport.write(bytes);
   }
 
@@ -382,9 +387,13 @@ function buildEngineHandles(
       },
       async getStatus(): Promise<PrinterStatus> {
         if (isDuoTapeEngine(engine)) {
-          await transport.write(D1_STATUS_REQUEST);
+          // Lazy-load d1-core: only consumers actually driving the Duo
+          // tape engine pay the dep cost. Throws DuoTapeUnavailableError
+          // if d1-core isn't installed — caught by class downstream.
+          const request = await duoTapeStatusRequest();
+          await transport.write(request);
           const bytes = await transport.read(1);
-          return parseD1Status(bytes);
+          return parseDuoTapeStatus(bytes);
         }
         await transport.write(buildStatusRequest(device));
         const bytes = await transport.read(statusByteCount(device));
