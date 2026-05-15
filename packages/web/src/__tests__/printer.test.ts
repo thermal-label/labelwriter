@@ -195,10 +195,8 @@ describe('WebLabelWriterPrinter', () => {
     sku[23] = 0x01;
     sku[40] = 89;
     sku[42] = 28;
-    const buf = new Uint8Array(status.length + sku.length);
-    buf.set(status, 0);
-    buf.set(sku, status.length);
-    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, buf);
+    // Two scripted replies: the ESC A status read, then the ESC U SKU read.
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, [status, sku]);
     const printer = await fromUSBDevice(device);
     const before = device.__transfers.length;
     await printer.print(solidRgba(672, 4));
@@ -214,10 +212,7 @@ describe('WebLabelWriterPrinter', () => {
     status[10] = 8;
     status[30] = 1;
     const sku = new Uint8Array(63); // bad magic → undefined
-    const buf = new Uint8Array(status.length + sku.length);
-    buf.set(status, 0);
-    buf.set(sku, status.length);
-    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, buf);
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, [status, sku]);
     const printer = await fromUSBDevice(device);
     await expect(printer.print(solidRgba(672, 4))).rejects.toBeInstanceOf(MediaNotSpecifiedError);
   });
@@ -263,10 +258,8 @@ describe('WebLabelWriterPrinter', () => {
     const status = new Uint8Array(32);
     status[10] = 8;
     status[30] = 1;
-    const buf = new Uint8Array(sku.length + status.length);
-    buf.set(sku, 0);
-    buf.set(status, sku.length);
-    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, buf);
+    // Two scripted replies: the ESC U SKU read, then the ESC A status read.
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, [sku, status]);
     const printer = await fromUSBDevice(device);
     await printer.getMedia();
     const after = await printer.getStatus();

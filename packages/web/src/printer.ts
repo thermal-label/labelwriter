@@ -48,27 +48,12 @@ import { WebUsbTransport } from '@thermal-label/transport/web';
 const D1_STATUS_BYTE_COUNT = 1;
 
 /**
- * Minimum bytes to request from the bulk-IN endpoint on a status read.
- *
- * Chromium's WebUSB hangs `transferIn(ep, n)` when `n` is below the
- * endpoint's `wMaxPacketSize`; the transfer waits for an aligned packet
- * that never arrives because the device sent a short packet. The LW Duo's
- * IF 0 has 16-byte bulk packets and surfaced the bug — bare `read(1)`
- * never returned. Reading ≥ one packet lets the short-packet terminator
- * complete the transfer normally.
- *
- * 16 covers the smallest packet size we've observed on this driver
- * family. The status parsers only look at the leading byte (450) or the
- * leading 32 bytes (550), so overreading is harmless.
- */
-const STATUS_READ_MIN_LENGTH = 16;
-
-/**
- * Read deadline for `getStatus()` transport reads. Matches the harness's
- * pre-v2 `STATUS_POLL_TIMEOUT_MS` so observable timing on healthy
- * devices is unchanged; the deadline only fires when the device fails
- * to respond at all (e.g. the LW Duo's label engine on a stale claim,
- * which is `unverified` in the registry).
+ * Read deadline for the driver's pre-print and status transport reads
+ * (`getStatus()`, `acquire550Lock()`, `getMedia()`). Matches the
+ * harness's pre-v2 `STATUS_POLL_TIMEOUT_MS` so observable timing on
+ * healthy devices is unchanged; the deadline only fires when the device
+ * fails to respond at all (e.g. the LW Duo's label engine on a stale
+ * claim, which is `unverified` in the registry).
  *
  * Without this, `transport.read()` would hang forever on a
  * non-responsive device, and the harness's poll loop guards
@@ -212,7 +197,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
 
   private async acquire550Lock(): Promise<void> {
     await this.transport.write(build550StatusRequest(1));
-    const bytes = await this.transport.read(STATUS_BYTE_COUNT_550);
+    const bytes = await this.transport.read(STATUS_BYTE_COUNT_550, STATUS_READ_TIMEOUT_MS);
     const status = parseStatus(this.device, bytes);
     if (bytes[0] === PRINT_STATUS_LOCK_NOT_GRANTED) {
       throw new Error(
@@ -246,7 +231,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
       );
     }
     await this.transport.write(build550GetSku());
-    const bytes = await this.transport.read(SKU_INFO_BYTE_COUNT);
+    const bytes = await this.transport.read(SKU_INFO_BYTE_COUNT, STATUS_READ_TIMEOUT_MS);
     if (bytes.length < SKU_INFO_BYTE_COUNT) return undefined;
     try {
       const sku = parseSkuInfo(bytes);
@@ -299,24 +284,18 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
       // DuoTapeUnavailableError when the optional peer is missing.
       const request = await duoTapeStatusRequest();
       await this.transport.write(request);
-      const bytes = await this.transport.read(
-        Math.max(D1_STATUS_BYTE_COUNT, STATUS_READ_MIN_LENGTH),
-        STATUS_READ_TIMEOUT_MS,
-      );
+      const bytes = await this.transport.read(D1_STATUS_BYTE_COUNT, STATUS_READ_TIMEOUT_MS);
       const status = await parseDuoTapeStatus(bytes);
       this.lastStatus = status;
       return status;
     }
     await this.transport.write(buildStatusRequest(this.device));
-    // Read at least one full bulk-IN packet. Chromium's WebUSB hangs
-    // `transferIn(ep, n)` when `n < wMaxPacketSize` — observed on the
-    // LW Duo's IF 0 (16-byte packets): read(1) waited indefinitely.
-    // parseStatus450 only inspects byte 0 and parseStatus550 reads 32,
-    // so reading 16+ bytes is safe on every lw-* device.
-    const bytes = await this.transport.read(
-      Math.max(statusByteCount(this.device), STATUS_READ_MIN_LENGTH),
-      STATUS_READ_TIMEOUT_MS,
-    );
+    // The Chromium bulk-IN sub-packet stall is handled in
+    // `WebUsbTransport.read()`, which rounds the transfer up to the
+    // endpoint's `wMaxPacketSize`; the driver just asks for the bytes it
+    // needs. The timeout converts a non-responsive device into a thrown
+    // failure the poll loop can absorb.
+    const bytes = await this.transport.read(statusByteCount(this.device), STATUS_READ_TIMEOUT_MS);
     // eslint-disable-next-line no-console
     console.debug(`[lw-web] getStatus read role=${this.engine.role} len=${bytes.length}`);
     const status = parseStatus(this.device, bytes);

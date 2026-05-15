@@ -2,21 +2,33 @@ import { vi } from 'vitest';
 
 export interface MockUSBDevice extends USBDevice {
   __transfers: { endpointNumber: number; data: Uint8Array }[];
-  __statusBytes: Uint8Array;
 }
 
+/**
+ * Build a mock `USBDevice` for the WebUSB transport tests.
+ *
+ * @param responses - Bulk-IN reply message(s). A real request/response
+ *   bulk endpoint terminates each transfer with a short packet at the
+ *   message boundary, so one `transferIn` returns exactly one message
+ *   regardless of how many bytes the host requested — an over-aligned
+ *   read never bleeds into the next reply. Pass an array to script a
+ *   sequence of distinct replies; the last entry is sticky (repeated for
+ *   any further reads, like a device answering every status poll). A
+ *   bare `Uint8Array` is a single sticky reply.
+ */
 export function createMockUSBDevice(
   vendorId = 0x0922,
   productId = 0x0020,
-  statusBytes: Uint8Array = new Uint8Array([0x00]),
+  responses: Uint8Array | Uint8Array[] = new Uint8Array([0x00]),
 ): MockUSBDevice {
   const transfers: { endpointNumber: number; data: Uint8Array }[] = [];
   let opened = false;
-  let readOffset = 0;
+  const replies = Array.isArray(responses) ? [...responses] : [responses];
+  let replyIndex = 0;
 
   const endpoints = [
     { endpointNumber: 1, direction: 'out' },
-    { endpointNumber: 2, direction: 'in' },
+    { endpointNumber: 2, direction: 'in', packetSize: 64 },
   ] as unknown as USBEndpoint[];
 
   const configuration: USBConfiguration = {
@@ -64,17 +76,20 @@ export function createMockUSBDevice(
       return Promise.resolve({ bytesWritten: array.byteLength, status: 'ok' as const });
     }),
     transferIn: vi.fn((_endpointNumber: number, length: number) => {
-      const out = new Uint8Array(length);
-      const slice = device.__statusBytes.subarray(readOffset, readOffset + length);
-      out.set(slice);
-      readOffset += slice.length;
+      // One transfer == one message. A real bulk-IN request/response
+      // device ends the transfer with a short packet at the message
+      // boundary, so an over-aligned request (the transport rounds up to
+      // `wMaxPacketSize`) never merges two replies. The last scripted
+      // reply is sticky so repeated polls keep getting an answer.
+      const message = replies[Math.min(replyIndex, replies.length - 1)] ?? new Uint8Array(0);
+      replyIndex += 1;
+      const out = message.subarray(0, Math.min(length, message.length));
       return Promise.resolve({
-        data: new DataView(out.buffer),
+        data: new DataView(out.buffer, out.byteOffset, out.byteLength),
         status: 'ok' as const,
       });
     }),
     __transfers: transfers,
-    __statusBytes: statusBytes,
   } as unknown as MockUSBDevice;
 
   return device;
