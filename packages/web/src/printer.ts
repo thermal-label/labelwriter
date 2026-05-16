@@ -1,9 +1,11 @@
 import {
   DEFAULT_MEDIA,
   DEVICES,
+  ENGINE_VERSION_BYTE_COUNT,
   ROTATE_DIRECTION,
   SKU_INFO_BYTE_COUNT,
   build550GetSku,
+  build550GetVersion,
   build550Recovery,
   build550StatusRequest,
   PRINT_STATUS_LOCK_NOT_GRANTED,
@@ -18,13 +20,16 @@ import {
   isDuoTapeEngine,
   isEngineDrivable,
   parseDuoTapeStatus,
+  parseEngineVersion,
   parseSkuInfo,
   parseStatus,
   pickRotation,
   renderImage,
+  skuInfoDetails,
   skuInfoToMedia,
   statusByteCount,
   type DeviceEntry,
+  type EngineVersion,
   type LabelWriterEngineHandle,
   type LabelWriterMedia,
   type LabelWriterPrintOptions,
@@ -34,6 +39,7 @@ import {
   type PrintEngine,
   type PrinterAdapter,
   type PrinterStatus,
+  type StatusDetail,
   type RawImageData,
   type SkuInfo,
   type Transport,
@@ -110,6 +116,14 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
 
   private readonly transport: Transport;
   private lastStatus: PrinterStatus | undefined;
+  /**
+   * Roll-instance `details[]` rows from the last `ESC U` SKU dump.
+   * Replayed onto every subsequent `getStatus()` so the harness
+   * diagnostics panel keeps showing the loaded roll's forensics even
+   * though the 32-byte `ESC A` frame doesn't carry them. Cleared only
+   * by a fresh `getMedia()`.
+   */
+  private rollDetails: readonly StatusDetail[] = [];
 
   constructor(
     device: DeviceEntry,
@@ -198,7 +212,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
   private async acquire550Lock(): Promise<void> {
     await this.transport.write(build550StatusRequest(1));
     const bytes = await this.transport.read(STATUS_BYTE_COUNT_550, STATUS_READ_TIMEOUT_MS);
-    const status = parseStatus(this.device, bytes);
+    const status = withRollDetails(parseStatus(this.device, bytes), this.rollDetails);
     if (bytes[0] === PRINT_STATUS_LOCK_NOT_GRANTED) {
       throw new Error(
         `Print lock on ${this.device.key} is held by another host. ` +
@@ -237,16 +251,51 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
       const sku = parseSkuInfo(bytes);
       if (sku.magic !== 0xcab6) return undefined;
       const detected = skuInfoToMedia(sku);
+      const base = this.lastStatus ?? {
+        ready: true,
+        mediaLoaded: true,
+        errors: [],
+        rawBytes: new Uint8Array(0),
+      };
+      // Merge the roll-instance ESC U detail rows ahead of the cached
+      // ESC A status rows, dropping any stale roll rows from a prior
+      // fetch so a re-`getMedia()` doesn't double them up. Subsequent
+      // `getStatus()` polls overwrite `details` from the fresh ESC A
+      // frame; `getStatus()` re-merges these via `rollDetails`.
+      const rollDetails = skuInfoDetails(sku);
+      this.rollDetails = rollDetails;
       this.lastStatus = {
-        ...(this.lastStatus ?? {
-          ready: true,
-          mediaLoaded: true,
-          errors: [],
-          rawBytes: new Uint8Array(0),
-        }),
+        ...base,
         detectedMedia: detected,
+        details: [...rollDetails, ...stripRollDetails(base.details)],
       };
       return sku;
+    } catch {
+      return undefined;
+    }
+  }
+
+  /**
+   * Fetch the print engine's HW/FW/PID identity block (`ESC V`,
+   * 550 only). Mirror of the node driver's `getEngineVersion()`.
+   *
+   * Named `getEngineVersion` for parity with the node driver
+   * (`@thermal-label/labelwriter-node`); the harness adapter reads it
+   * under that name. 550-only — throws `UnsupportedOperationError` on
+   * every other engine, same shape as `getMedia()`.
+   */
+  async getEngineVersion(): Promise<EngineVersion | undefined> {
+    if (this.engine.protocol !== 'lw5-raster') {
+      throw new UnsupportedOperationError(
+        `getEngineVersion on ${this.device.key}`,
+        `ESC V (Get Print Engine Version) is only supported on lw5-raster devices.`,
+      );
+    }
+    await this.transport.write(build550GetVersion());
+    const bytes = await this.transport.read(ENGINE_VERSION_BYTE_COUNT, STATUS_READ_TIMEOUT_MS);
+    if (bytes.length < ENGINE_VERSION_BYTE_COUNT) return undefined;
+    try {
+      return parseEngineVersion(bytes);
     } catch {
       return undefined;
     }
@@ -298,7 +347,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     const bytes = await this.transport.read(statusByteCount(this.device), STATUS_READ_TIMEOUT_MS);
     // eslint-disable-next-line no-console
     console.debug(`[lw-web] getStatus read role=${this.engine.role} len=${bytes.length}`);
-    const status = parseStatus(this.device, bytes);
+    const status = withRollDetails(parseStatus(this.device, bytes), this.rollDetails);
     if (this.lastStatus?.detectedMedia && !status.detectedMedia) {
       this.lastStatus = { ...status, detectedMedia: this.lastStatus.detectedMedia };
     } else {
@@ -351,6 +400,36 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     }
     await this.transport.read(statusByteCount(this.device));
   }
+}
+
+/**
+ * Drop any roll-instance `details[]` rows (those emitted by
+ * `skuInfoDetails` — labelled `"Roll …"`) from a status detail list.
+ * Used to avoid doubling roll rows when re-merging an `ESC U` dump
+ * onto a status that may already carry stale ones.
+ */
+function stripRollDetails(
+  details: readonly StatusDetail[] | undefined,
+): readonly StatusDetail[] {
+  if (!details) return [];
+  return details.filter(d => !d.label.startsWith('Roll '));
+}
+
+/**
+ * Merge the cached roll-instance `details[]` (from the last `ESC U`)
+ * ahead of a freshly-parsed `ESC A` status's own `details[]`. The
+ * 32-byte status frame never carries roll forensics; this replays them
+ * so each poll keeps showing the loaded roll.
+ */
+function withRollDetails(
+  status: PrinterStatus,
+  rollDetails: readonly StatusDetail[],
+): PrinterStatus {
+  if (rollDetails.length === 0) return status;
+  return {
+    ...status,
+    details: [...rollDetails, ...stripRollDetails(status.details)],
+  };
 }
 
 interface LabelWriterPrintParent {

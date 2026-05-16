@@ -25,6 +25,7 @@ import {
   parseEngineVersion,
   parseSkuInfo,
   skuInfoToMedia,
+  skuInfoDetails,
   ENGINE_VERSION_BYTE_COUNT,
   SKU_INFO_BYTE_COUNT,
   STATUS_BYTE_COUNT_550,
@@ -503,6 +504,51 @@ describe('skuInfoToMedia', () => {
     expect(m.type).toBe('continuous');
     expect(m.widthMm).toBe(56);
     expect(m.heightMm).toBeUndefined();
+  });
+});
+
+describe('skuInfoDetails', () => {
+  function fullSku(): Uint8Array {
+    const buf = new Uint8Array(63);
+    buf[0] = 0xb6;
+    buf[1] = 0xca;
+    new TextEncoder().encodeInto('30252       ', buf.subarray(8, 20));
+    buf[22] = 0x03; // material: paper
+    buf[23] = 0x01; // labelType: die
+    buf[40] = 89; // labelLengthMm
+    buf[42] = 28; // labelWidthMm
+    buf[50] = 0x20; // totalLabelCount = 0x0120 = 288
+    buf[51] = 0x01;
+    buf[56] = 0x01; // counterStrategy: count-down
+    new TextEncoder().encodeInto('21', buf.subarray(60, 62)); // productionDate
+    return buf;
+  }
+
+  function row(rows: ReturnType<typeof skuInfoDetails>, label: string): string | undefined {
+    return rows.find(r => r.label === label)?.value;
+  }
+
+  it('surfaces SKU code, material, label type, total label count, counter, prod date', () => {
+    const rows = skuInfoDetails(parseSkuInfo(fullSku()));
+    expect(row(rows, 'Roll SKU')).toBe('30252');
+    expect(row(rows, 'Roll material')).toBe('paper');
+    expect(row(rows, 'Roll label type')).toBe('die');
+    expect(row(rows, 'Roll total labels')).toBe('288');
+    expect(row(rows, 'Roll counter')).toBe('count-down');
+    expect(row(rows, 'Roll production date')).toBe('21');
+  });
+
+  it('every roll detail row is labelled with the "Roll " prefix', () => {
+    const rows = skuInfoDetails(parseSkuInfo(fullSku()));
+    expect(rows.every(r => r.label.startsWith('Roll '))).toBe(true);
+  });
+
+  it('omits the total-label-count row when the SKU reports zero', () => {
+    const buf = fullSku();
+    buf[50] = 0;
+    buf[51] = 0;
+    const rows = skuInfoDetails(parseSkuInfo(buf));
+    expect(rows.find(r => r.label === 'Roll total labels')).toBeUndefined();
   });
 });
 

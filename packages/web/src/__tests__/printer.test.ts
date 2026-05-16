@@ -266,6 +266,68 @@ describe('WebLabelWriterPrinter', () => {
     expect(after.detectedMedia).toBeDefined();
   });
 
+  it('getStatus() on the 550 carries decoded details[] rows', async () => {
+    const bytes = new Uint8Array(32);
+    bytes[10] = 8; // bay OK
+    bytes[30] = 1; // voltage OK
+    bytes[9] = 100; // density
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, bytes);
+    const printer = await fromUSBDevice(device);
+    const status = await printer.getStatus();
+    expect(status.details).toBeDefined();
+    expect(status.details?.find(d => d.label === 'Print status')).toBeDefined();
+  });
+
+  it('getMedia() merges roll-instance detail rows that getStatus() replays', async () => {
+    const sku = new Uint8Array(63);
+    sku[0] = 0xb6;
+    sku[1] = 0xca;
+    new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
+    sku[22] = 0x03; // material: paper
+    sku[23] = 0x01; // labelType: die
+    sku[40] = 89;
+    sku[42] = 28;
+    const status = new Uint8Array(32);
+    status[10] = 8;
+    status[30] = 1;
+    // ESC U SKU read first, then a follow-up ESC A status read.
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, [sku, status]);
+    const printer = await fromUSBDevice(device);
+    await printer.getMedia();
+    const after = await printer.getStatus();
+    // Roll rows survive the subsequent ESC A poll (not in the 32-byte frame).
+    const rollRows = after.details?.filter(d => d.label.startsWith('Roll ')) ?? [];
+    expect(rollRows.find(d => d.label === 'Roll SKU')?.value).toBe('30252');
+    // ...and they sit ahead of the ESC A status rows.
+    expect(after.details?.[0]?.label.startsWith('Roll ')).toBe(true);
+    expect(after.details?.find(d => d.label === 'Print status')).toBeDefined();
+  });
+
+  it('getEngineVersion() throws UnsupportedOperationError on non-550 devices', async () => {
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
+    const printer = await fromUSBDevice(device);
+    await expect(printer.getEngineVersion()).rejects.toBeInstanceOf(UnsupportedOperationError);
+  });
+
+  it('getEngineVersion() writes ESC V, reads 34 bytes, and returns the parsed block on 550', async () => {
+    const version = new Uint8Array(34);
+    new TextEncoder().encodeInto('HW1.0', version.subarray(0, 16));
+    new TextEncoder().encodeInto('FWAP', version.subarray(16, 20));
+    new TextEncoder().encodeInto('0102', version.subarray(20, 24));
+    new TextEncoder().encodeInto('0003', version.subarray(24, 28));
+    new TextEncoder().encodeInto('0521', version.subarray(28, 32));
+    version[32] = 0x02; // pid LE
+    version[33] = 0x10;
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, version);
+    const printer = await fromUSBDevice(device);
+    const before = device.__transfers.length;
+    const result = await printer.getEngineVersion();
+    expect(Array.from(device.__transfers[before]!.data)).toEqual([0x1b, 0x56]);
+    expect(result?.hwVersion).toBe('HW1.0');
+    expect(result?.fwKind).toBe('application');
+    expect(result?.pid).toBe(0x1002);
+  });
+
   it('exposes a primary engine handle whose print() routes back through the adapter', async () => {
     const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);

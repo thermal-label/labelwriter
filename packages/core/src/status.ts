@@ -1,4 +1,9 @@
-import type { DeviceEntry, PrinterError, PrinterStatus } from '@thermal-label/contracts';
+import type {
+  DeviceEntry,
+  PrinterError,
+  PrinterStatus,
+  StatusDetail,
+} from '@thermal-label/contracts';
 
 function deviceProtocol(device: DeviceEntry): string {
   const engine = device.engines[0];
@@ -142,6 +147,116 @@ function parseStatus450(bytes: Uint8Array): PrinterStatus {
  * presence/jam/counterfeit and returns the SKU string in `rawBytes`
  * for the caller to look up.
  */
+/** Human label for the byte-0 print-status sub-state enum. */
+const PRINT_STATUS_LABELS: Readonly<Record<number, string>> = {
+  0: 'idle',
+  1: 'printing',
+  2: 'error',
+  3: 'cancel',
+  4: 'busy',
+  5: 'lock not granted',
+};
+
+/** Human label for the byte-10 main-bay status enum. */
+const BAY_STATUS_LABELS: Readonly<Record<number, string>> = {
+  0: 'unknown',
+  1: 'bay open',
+  2: 'no media',
+  3: 'media not seated',
+  4: 'media present (unknown)',
+  5: 'media empty',
+  6: 'media critically low',
+  7: 'media low',
+  8: 'media OK',
+  9: 'media jammed',
+  10: 'counterfeit media',
+};
+
+/** Human label for the byte-8 print-head status enum. */
+const HEAD_STATUS_LABELS: Readonly<Record<number, string>> = {
+  0: 'OK',
+  1: 'overheated',
+  2: 'unknown',
+};
+
+/** Human label for the byte-30 print-head voltage enum. */
+const HEAD_VOLTAGE_LABELS: Readonly<Record<number, string>> = {
+  0: 'unknown',
+  1: 'OK',
+  2: 'low',
+  3: 'critical',
+  4: 'too low to print',
+};
+
+/**
+ * Build the driver-formatted `details[]` rows for a 550 status frame.
+ *
+ * Every decoded field the 32-byte `ESC A` reply carries is surfaced as
+ * a `{label, value}` pair so the harness can render the device's full
+ * state verbatim. For a "nothing happens" report, the print-status
+ * sub-state + job ID echo + bay status are the decisive rows.
+ */
+function build550Details(bytes: Uint8Array): StatusDetail[] {
+  const printStatus = bytes[0] ?? 0;
+  const jobId =
+    ((bytes[1] ?? 0) |
+      ((bytes[2] ?? 0) << 8) |
+      ((bytes[3] ?? 0) << 16) |
+      ((bytes[4] ?? 0) << 24)) >>>
+    0;
+  const labelIndex = (bytes[5] ?? 0) | ((bytes[6] ?? 0) << 8);
+  const headStatus = bytes[8] ?? 0;
+  const density = bytes[9] ?? 0;
+  const bayStatus = bytes[10] ?? 0;
+  const errorId =
+    ((bytes[23] ?? 0) |
+      ((bytes[24] ?? 0) << 8) |
+      ((bytes[25] ?? 0) << 16) |
+      ((bytes[26] ?? 0) << 24)) >>>
+    0;
+  const labelsRemaining = (bytes[27] ?? 0) | ((bytes[28] ?? 0) << 8);
+  const externalPower = ((bytes[29] ?? 0) & 0x01) !== 0;
+  const headVoltage = (bytes[30] ?? 0) & 0x0f;
+
+  const details: StatusDetail[] = [];
+
+  details.push({
+    label: 'Print status',
+    value: `${PRINT_STATUS_LABELS[printStatus] ?? 'unknown'} (${String(printStatus)})`,
+    severity: printStatus === 2 ? 'error' : 'info',
+  });
+  details.push({ label: 'Job ID', value: `0x${jobId.toString(16).padStart(8, '0')}` });
+  details.push({ label: 'Label index', value: String(labelIndex) });
+  details.push({
+    label: 'Bay status',
+    value: `${BAY_STATUS_LABELS[bayStatus] ?? 'unknown'} (${String(bayStatus)})`,
+    severity: bayStatus === 9 || bayStatus === 10 ? 'error' : bayStatus >= 6 && bayStatus <= 7 ? 'warn' : 'info',
+  });
+  details.push({
+    label: 'Print head',
+    value: `${HEAD_STATUS_LABELS[headStatus] ?? 'unknown'} (${String(headStatus)})`,
+    severity: headStatus === 1 ? 'error' : 'info',
+  });
+  details.push({
+    label: 'Head voltage',
+    value: `${HEAD_VOLTAGE_LABELS[headVoltage] ?? 'unknown'} (${String(headVoltage)})`,
+    severity: headVoltage === 3 || headVoltage === 4 ? 'error' : headVoltage === 2 ? 'warn' : 'info',
+  });
+  details.push({ label: 'Print density', value: `${String(density)}%` });
+  details.push({
+    label: 'Error ID',
+    value: `0x${errorId.toString(16).padStart(8, '0')}`,
+    severity: errorId !== 0 ? 'error' : 'info',
+  });
+  details.push({ label: 'Labels remaining', value: String(labelsRemaining) });
+  details.push({
+    label: 'External power',
+    value: externalPower ? 'present' : 'absent',
+  });
+
+  return details;
+}
+
 function parseStatus550(bytes: Uint8Array): PrinterStatus {
   const printStatus = bytes[0] ?? 0;
   const headStatus = bytes[8] ?? 0;
@@ -233,6 +348,7 @@ function parseStatus550(bytes: Uint8Array): PrinterStatus {
     mediaLoaded,
     errors,
     rawBytes: bytes,
+    details: build550Details(bytes),
   };
 }
 

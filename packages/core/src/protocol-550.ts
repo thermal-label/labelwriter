@@ -5,6 +5,7 @@ import type {
   PrintEngine,
   PrinterError,
   PrinterStatus,
+  StatusDetail,
 } from '@thermal-label/contracts';
 import { getPrintableArea } from '@thermal-label/contracts';
 import type { LabelWriterPrintOptions, Density } from './types.js';
@@ -609,6 +610,31 @@ export function skuInfoToMedia(sku: SkuInfo): {
     widthMm: labelWidthMm,
     ...(isContinuous ? {} : { heightMm: labelLengthMm }),
   };
+}
+
+/**
+ * Build driver-formatted `details[]` rows describing the *specific
+ * loaded roll instance* from an `ESC U` SKU dump.
+ *
+ * These are roll-instance forensics — SKU code, material, total label
+ * count, production date, counter strategy — beyond what
+ * `detectedMedia` carries (which stays the catalogue-ish dimensions +
+ * SKU id). The driver attaches them to the cached status so subsequent
+ * `getStatus()` polls replay them in the harness diagnostics panel.
+ */
+export function skuInfoDetails(sku: SkuInfo): StatusDetail[] {
+  const details: StatusDetail[] = [];
+  const skuCode = sku.sku.trim();
+  if (skuCode) details.push({ label: 'Roll SKU', value: skuCode });
+  details.push({ label: 'Roll material', value: sku.material });
+  details.push({ label: 'Roll label type', value: sku.labelType });
+  if (sku.totalLabelCount > 0) {
+    details.push({ label: 'Roll total labels', value: String(sku.totalLabelCount) });
+  }
+  details.push({ label: 'Roll counter', value: sku.counterStrategy });
+  const prodDate = sku.productionDate.trim();
+  if (prodDate) details.push({ label: 'Roll production date', value: prodDate });
+  return details;
 }
 
 // ─────────────────────────────────────────────────────────────────
