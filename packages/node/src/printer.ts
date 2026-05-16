@@ -41,7 +41,11 @@ import {
   type Transport,
   type TransportType,
 } from '@thermal-label/labelwriter-core';
-import { MediaNotSpecifiedError, UnsupportedOperationError } from '@thermal-label/contracts';
+import {
+  MediaNotSpecifiedError,
+  UnsupportedOperationError,
+  WriteSerializer,
+} from '@thermal-label/contracts';
 
 export interface LabelWriterPrinterOptions {
   /**
@@ -84,6 +88,21 @@ export class LabelWriterPrinter implements PrinterAdapter {
   private readonly primaryTransport: Transport;
   private readonly transports: Record<string, Transport>;
   private lastStatus: PrinterStatus | undefined;
+  /**
+   * Serialises every transport-touching method (`print`, `getStatus`,
+   * `getMedia`, `getEngineVersion`, `acquire550Lock`, `recover`, and
+   * the per-engine handle's `getStatus`) so concurrent callers can't
+   * interleave a status `write()` into an in-flight raster stream.
+   * Node ships no `onStatus` poll today, but any consumer calling
+   * `getStatus()` during `print()` hits the same hazard — wrapped for
+   * uniformity with the web driver. `print()` calls the unwrapped
+   * `do*` internals so the nested lock/SKU fetches don't re-enter the
+   * lock and deadlock. On the Duo this one serializer conservatively
+   * orders across both engine transports — a safe superset of the
+   * per-transport guarantee. See `WriteSerializer` in
+   * `@thermal-label/contracts`.
+   */
+  private readonly serializer = new WriteSerializer();
 
   constructor(
     device: DeviceEntry,
@@ -122,7 +141,29 @@ export class LabelWriterPrinter implements PrinterAdapter {
     return this.primaryTransport.connected;
   }
 
-  async print(
+  print(
+    image: RawImageData,
+    media?: MediaDescriptor,
+    options?: LabelWriterPrintOptions,
+  ): Promise<void> {
+    // Whole-method wrap (plan 15 A3). `doPrint` calls the unwrapped
+    // `acquire550Lock` / `tryFetchSkuMedia` internals so the nested
+    // transport operations don't re-acquire the serializer and
+    // self-deadlock.
+    return this.serializer.run(() => this.doPrint(image, media, options));
+  }
+
+  /**
+   * Run `fn` under this printer's write serializer. Package-internal —
+   * the per-engine handles in `buildEngineHandles` route their own
+   * transport-touching `getStatus()` through here so they share the
+   * same serialization guarantee as the class methods.
+   */
+  runSerialized<T>(fn: () => Promise<T>): Promise<T> {
+    return this.serializer.run(fn);
+  }
+
+  private async doPrint(
     image: RawImageData,
     media?: MediaDescriptor,
     options?: LabelWriterPrintOptions,
@@ -217,7 +258,14 @@ export class LabelWriterPrinter implements PrinterAdapter {
    * if the response is shorter than expected or the magic-number check
    * fails (no media present, counterfeit, or comm failure).
    */
-  async getMedia(): Promise<SkuInfo | undefined> {
+  getMedia(): Promise<SkuInfo | undefined> {
+    // Serialised — `getMedia()` writes ESC U and reads. `doPrint()`
+    // reaches the SKU fetch via `tryFetchSkuMedia` → `doGetMedia`,
+    // the unwrapped internal, so it doesn't re-enter the lock.
+    return this.serializer.run(() => this.doGetMedia());
+  }
+
+  private async doGetMedia(): Promise<SkuInfo | undefined> {
     if (this.device.engines[0]?.protocol !== 'lw5-raster') {
       throw new UnsupportedOperationError(
         `getMedia on ${this.device.key}`,
@@ -256,7 +304,12 @@ export class LabelWriterPrinter implements PrinterAdapter {
    * check after USB enumeration ("did we open the right device?") or
    * for surfacing FW version in diagnostics.
    */
-  async getEngineVersion(): Promise<EngineVersion | undefined> {
+  getEngineVersion(): Promise<EngineVersion | undefined> {
+    // Serialised — `getEngineVersion()` writes ESC V and reads.
+    return this.serializer.run(() => this.doGetEngineVersion());
+  }
+
+  private async doGetEngineVersion(): Promise<EngineVersion | undefined> {
     if (this.device.engines[0]?.protocol !== 'lw5-raster') {
       throw new UnsupportedOperationError(
         `getEngineVersion on ${this.device.key}`,
@@ -275,7 +328,10 @@ export class LabelWriterPrinter implements PrinterAdapter {
 
   private async tryFetchSkuMedia(): Promise<LabelWriterMedia | undefined> {
     try {
-      const sku = await this.getMedia();
+      // Unwrapped internal — this runs inside `doPrint()`, which
+      // already holds the serializer; calling the wrapped `getMedia()`
+      // here would self-deadlock on the lock.
+      const sku = await this.doGetMedia();
       if (!sku) return undefined;
       return skuInfoToMedia(sku);
     } catch {
@@ -294,7 +350,12 @@ export class LabelWriterPrinter implements PrinterAdapter {
     });
   }
 
-  async getStatus(): Promise<PrinterStatus> {
+  getStatus(): Promise<PrinterStatus> {
+    // Serialised against `print()` — see the `serializer` field doc.
+    return this.serializer.run(() => this.doGetStatus());
+  }
+
+  private async doGetStatus(): Promise<PrinterStatus> {
     // 450 family: ESC A (2 bytes). 550 family: ESC A <lock=0> (3 bytes
     // request, 32-byte response). `buildStatusRequest` picks the right
     // shape from `device.engines[0].protocol`.
@@ -339,7 +400,12 @@ export class LabelWriterPrinter implements PrinterAdapter {
    * The 550 path is the soft recovery; for a destructive reboot
    * use `build550Restart()` directly with `transport.write()`.
    */
-  async recover(): Promise<void> {
+  recover(): Promise<void> {
+    // Serialised — `recover()` writes a recovery sequence and reads.
+    return this.serializer.run(() => this.doRecover());
+  }
+
+  private async doRecover(): Promise<void> {
     if (this.device.engines[0]?.protocol === 'lw5-raster') {
       await this.primaryTransport.write(build550Recovery());
     } else {
@@ -385,19 +451,25 @@ function buildEngineHandles(
       ): Promise<void> {
         return parent.print(image, media, { ...options, engine: role });
       },
-      async getStatus(): Promise<PrinterStatus> {
-        if (isDuoTapeEngine(engine)) {
-          // Lazy-load d1-core: only consumers actually driving the Duo
-          // tape engine pay the dep cost. Throws DuoTapeUnavailableError
-          // if d1-core isn't installed — caught by class downstream.
-          const request = await duoTapeStatusRequest();
-          await transport.write(request);
-          const bytes = await transport.read(1);
-          return parseDuoTapeStatus(bytes);
-        }
-        await transport.write(buildStatusRequest(device));
-        const bytes = await transport.read(statusByteCount(device));
-        return parseStatus(device, bytes);
+      getStatus(): Promise<PrinterStatus> {
+        // Route through the parent's serializer so the per-engine
+        // handle's transport I/O is ordered against `print()` and the
+        // class-level `getStatus()` — same guarantee, shared lock.
+        return parent.runSerialized(async () => {
+          if (isDuoTapeEngine(engine)) {
+            // Lazy-load d1-core: only consumers actually driving the
+            // Duo tape engine pay the dep cost. Throws
+            // DuoTapeUnavailableError if d1-core isn't installed —
+            // caught by class downstream.
+            const request = await duoTapeStatusRequest();
+            await transport.write(request);
+            const bytes = await transport.read(1);
+            return parseDuoTapeStatus(bytes);
+          }
+          await transport.write(buildStatusRequest(device));
+          const bytes = await transport.read(statusByteCount(device));
+          return parseStatus(device, bytes);
+        });
       },
     };
   }

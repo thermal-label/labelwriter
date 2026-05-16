@@ -47,6 +47,7 @@ import {
 import {
   MediaNotSpecifiedError,
   UnsupportedOperationError,
+  WriteSerializer,
   pollingOnStatus,
 } from '@thermal-label/contracts';
 import { WebUsbTransport } from '@thermal-label/transport/web';
@@ -117,6 +118,16 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
   private readonly transport: Transport;
   private lastStatus: PrinterStatus | undefined;
   /**
+   * Serialises every transport-touching method (`print`, `getStatus`,
+   * `getMedia`, `getEngineVersion`, `acquire550Lock`, `recover`) so a
+   * 4 s status poll can't interleave its `write()` into an in-flight
+   * `print()`'s raster stream and corrupt the job. `print()` calls the
+   * unwrapped `do*` internals so the nested `acquire550Lock` /
+   * `getMedia` don't re-enter the lock and deadlock. See
+   * `WriteSerializer` in `@thermal-label/contracts`.
+   */
+  private readonly serializer = new WriteSerializer();
+  /**
    * Roll-instance `details[]` rows from the last `ESC U` SKU dump.
    * Replayed onto every subsequent `getStatus()` so the harness
    * diagnostics panel keeps showing the loaded roll's forensics even
@@ -148,7 +159,18 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     return this.transport.connected;
   }
 
-  async print(
+  print(
+    image: RawImageData,
+    media?: MediaDescriptor,
+    options?: LabelWriterPrintOptions,
+  ): Promise<void> {
+    // Whole-method wrap (plan 15 A3). `doPrint` calls the unwrapped
+    // `do550Lock` / `doGetMedia` internals so the nested transport
+    // operations don't re-acquire this same serializer and deadlock.
+    return this.serializer.run(() => this.doPrint(image, media, options));
+  }
+
+  private async doPrint(
     image: RawImageData,
     media?: MediaDescriptor,
     options?: LabelWriterPrintOptions,
@@ -176,7 +198,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // before sending the job. See the node driver for the full
     // contract. Released by `ESC Q` in the job trailer.
     if (this.engine.protocol === 'lw5-raster') {
-      await this.acquire550Lock();
+      await this.doAcquire550Lock();
     }
 
     let resolvedMedia = (media ?? this.lastStatus?.detectedMedia) as LabelWriterMedia | undefined;
@@ -186,7 +208,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // was passed and no prior `getMedia()` populated the cache.
     if (!resolvedMedia && this.engine.protocol === 'lw5-raster') {
       try {
-        const sku = await this.getMedia();
+        const sku = await this.doGetMedia();
         if (sku) resolvedMedia = skuInfoToMedia(sku);
       } catch {
         // Best-effort — fall through to MediaNotSpecifiedError below.
@@ -209,7 +231,12 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     await this.transport.write(bytes);
   }
 
-  private async acquire550Lock(): Promise<void> {
+  /**
+   * Acquire the 550 print lock + health check. Private — only called
+   * from within `doPrint()`, which already holds the serializer, so
+   * this stays unwrapped to avoid a self-deadlock on the lock.
+   */
+  private async doAcquire550Lock(): Promise<void> {
     await this.transport.write(build550StatusRequest(1));
     const bytes = await this.transport.read(STATUS_BYTE_COUNT_550, STATUS_READ_TIMEOUT_MS);
     const status = withRollDetails(parseStatus(this.device, bytes), this.rollDetails);
@@ -237,7 +264,13 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
    * Mirror of the node driver's `getMedia()` — see that JSDoc for the
    * full contract.
    */
-  async getMedia(): Promise<SkuInfo | undefined> {
+  getMedia(): Promise<SkuInfo | undefined> {
+    // Serialised — `getMedia()` writes ESC U and reads. `doPrint()`
+    // calls the unwrapped `doGetMedia` so it doesn't re-enter the lock.
+    return this.serializer.run(() => this.doGetMedia());
+  }
+
+  private async doGetMedia(): Promise<SkuInfo | undefined> {
     if (this.engine.protocol !== 'lw5-raster') {
       throw new UnsupportedOperationError(
         `getMedia on ${this.device.key}`,
@@ -284,7 +317,12 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
    * under that name. 550-only — throws `UnsupportedOperationError` on
    * every other engine, same shape as `getMedia()`.
    */
-  async getEngineVersion(): Promise<EngineVersion | undefined> {
+  getEngineVersion(): Promise<EngineVersion | undefined> {
+    // Serialised — `getEngineVersion()` writes ESC V and reads.
+    return this.serializer.run(() => this.doGetEngineVersion());
+  }
+
+  private async doGetEngineVersion(): Promise<EngineVersion | undefined> {
     if (this.engine.protocol !== 'lw5-raster') {
       throw new UnsupportedOperationError(
         `getEngineVersion on ${this.device.key}`,
@@ -326,7 +364,13 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
    * tape engine's status byte stream. The per-engine instance now
    * routes by its own engine.
    */
-  async getStatus(): Promise<PrinterStatus> {
+  getStatus(): Promise<PrinterStatus> {
+    // Serialised against `print()` — `getStatus()` writes a status
+    // request and reads, and must not land mid-raster-stream.
+    return this.serializer.run(() => this.doGetStatus());
+  }
+
+  private async doGetStatus(): Promise<PrinterStatus> {
     if (isDuoTapeEngine(this.engine)) {
       // Lazy-load d1-core: only consumers actually driving the Duo
       // tape engine pull it into their bundle. Throws
@@ -387,7 +431,12 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
    * D1 tape engines have no protocol-level recovery sequence — calling
    * recover on a tape-scoped instance is a no-op.
    */
-  async recover(): Promise<void> {
+  recover(): Promise<void> {
+    // Serialised — `recover()` writes a recovery sequence and reads.
+    return this.serializer.run(() => this.doRecover());
+  }
+
+  private async doRecover(): Promise<void> {
     if (isDuoTapeEngine(this.engine)) {
       // No documented recovery sequence for d1-tape; the Duo's tape
       // side resets via mechanical cassette removal/reinsert.

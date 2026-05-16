@@ -1,9 +1,37 @@
 /* eslint-disable @typescript-eslint/no-deprecated -- intentionally exercises the deprecated per-transport factories during plan-10 transition */
 import { describe, expect, it, vi } from 'vitest';
 import { MediaNotSpecifiedError, UnsupportedOperationError } from '@thermal-label/contracts';
-import { DEVICES, MEDIA } from '@thermal-label/labelwriter-core';
-import { fromUSBDevice, requestPrinter } from '../printer.js';
+import type { Transport } from '@thermal-label/contracts';
+import { DEVICES, MEDIA, findDevice } from '@thermal-label/labelwriter-core';
+import { fromUSBDevice, requestPrinter, WebLabelWriterPrinter } from '../printer.js';
 import { createMockUSBDevice } from './webusb-mock.js';
+
+/**
+ * Fake `Transport` recording write/read order, with an async hop on
+ * each write so an unserialised concurrent caller could interleave.
+ */
+class RecordingTransport implements Transport {
+  readonly calls: { kind: 'write' | 'read' }[] = [];
+  connected = true;
+
+  async write(): Promise<void> {
+    this.calls.push({ kind: 'write' });
+    await Promise.resolve();
+    await Promise.resolve();
+  }
+
+  async read(): Promise<Uint8Array> {
+    this.calls.push({ kind: 'read' });
+    await Promise.resolve();
+    // 450 idle status byte: 0x03 = Ready + Top of form.
+    return new Uint8Array([0x03]);
+  }
+
+  close(): Promise<void> {
+    this.connected = false;
+    return Promise.resolve();
+  }
+}
 
 function usb(key: keyof typeof DEVICES): { vid: number; pid: number } {
   const entry = DEVICES[key];
@@ -68,6 +96,29 @@ describe('WebLabelWriterPrinter', () => {
     const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
     const printer = await fromUSBDevice(device);
     await expect(printer.print(solidRgba(672, 10))).rejects.toBeInstanceOf(MediaNotSpecifiedError);
+  });
+
+  it('serialises getStatus() behind an in-flight print() (plan 15 A3)', async () => {
+    const transport = new RecordingTransport();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- LW 450 is in the registry
+    const device = findDevice(LW_450.vid, LW_450.pid)!;
+    const printer = new WebLabelWriterPrinter(device, transport);
+
+    // Kick a print and fire a status poll before it resolves — the
+    // exact collision the 4 s onStatus loop creates against a long job.
+    const printDone = printer.print(solidRgba(672, 64), MEDIA.ADDRESS_STANDARD);
+    const statusDone = printer.getStatus();
+    await Promise.all([printDone, statusDone]);
+
+    // getStatus() is the only caller issuing a `read()`. With the
+    // serializer in place its write+read round-trip lands entirely
+    // after every print write: the single read is the last call and
+    // every preceding call is a print write — no status write spliced
+    // into the raster stream.
+    const firstReadIdx = transport.calls.findIndex(c => c.kind === 'read');
+    expect(firstReadIdx).toBeGreaterThan(0);
+    expect(firstReadIdx).toBe(transport.calls.length - 1);
+    expect(transport.calls.slice(0, firstReadIdx).every(c => c.kind === 'write')).toBe(true);
   });
 
   it('getStatus returns the contracts shape on the 450', async () => {
