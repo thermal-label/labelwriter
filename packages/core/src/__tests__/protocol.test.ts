@@ -15,8 +15,11 @@ import {
   buildSelectRoll,
   encodeDuoTapeLabel,
   encodeLabel,
+  isDuoTapeEngine,
+  isEngineDrivable,
 } from '../protocol.js';
 import { DEVICES } from '../devices.js';
+import { MEDIA } from '../media.js';
 
 describe('buildReset', () => {
   it('produces [0x1B, 0x40]', () => {
@@ -594,5 +597,152 @@ describe('encodeLabel', () => {
         expect(bitAt(c)).toBe(0);
       }
     });
+
+    /**
+     * Synthesize a single-engine LW device with a populated
+     * `printableArea` — same shape as `deviceWithPrintableArea` above
+     * but in this block's scope.
+     */
+    function withArea(printableArea: PrintableArea): DeviceEntry {
+      const base = DEVICES.LW_330_TURBO;
+      const baseEngine = base.engines[0]!;
+      return { ...base, engines: [{ ...baseEngine, printableArea }] };
+    }
+
+    it('leading/trailing-only dead-zone with a head-width label: slice needs no cross-feed pad', () => {
+      // `left` and `right` are zero and the authored bitmap is exactly
+      // headDots wide, so `leftPad` and `rightPad` are both 0 — the
+      // encoder returns the cropped slice directly without padBitmap.
+      const dpi = 300;
+      const leadingMm = (10 * 25.4) / dpi; // exactly 10 dots
+      const trailingMm = (4 * 25.4) / dpi; // exactly 4 dots
+      const dev = withArea({ leading: leadingMm, trailing: trailingMm, left: 0, right: 0 });
+      const headDots = dev.engines[0]!.headDots;
+      const bytesPerRow = headDots / 8;
+      const heightPx = 60;
+      const bm = createBitmap(headDots, heightPx);
+      const out = encodeLabel(dev, bm);
+      let rowCount = 0;
+      let i = 0;
+      while (i < out.length) {
+        if (out[i] === 0x16) {
+          rowCount++;
+          i += 1 + bytesPerRow;
+        } else {
+          i++;
+        }
+      }
+      // Wire rows = heightPx - leadingDots - trailingDots = 60 - 10 - 4.
+      expect(rowCount).toBe(heightPx - 10 - 4);
+    });
+  });
+});
+
+describe('isEngineDrivable', () => {
+  it('is true for the encoder-supported protocols (lw-raster / lw5-raster / d1-tape)', () => {
+    expect(isEngineDrivable(DEVICES.LW_450.engines[0]!)).toBe(true);
+    expect(isEngineDrivable(DEVICES.LW_550.engines[0]!)).toBe(true);
+    const tape = DEVICES.LW_450_DUO.engines.find(e => e.protocol === 'd1-tape');
+    expect(tape).toBeDefined();
+    expect(isEngineDrivable(tape!)).toBe(true);
+  });
+
+  it('is false for a protocol the encoder does not handle', () => {
+    const bogus = { ...DEVICES.LW_450.engines[0]!, protocol: 'unknown-proto' };
+    expect(isEngineDrivable(bogus)).toBe(false);
+  });
+});
+
+describe('isDuoTapeEngine', () => {
+  it('is true only for d1-tape engines', () => {
+    const tape = DEVICES.LW_450_DUO.engines.find(e => e.protocol === 'd1-tape');
+    expect(isDuoTapeEngine(tape!)).toBe(true);
+  });
+
+  it('is false for raster engines', () => {
+    expect(isDuoTapeEngine(DEVICES.LW_450.engines[0]!)).toBe(false);
+    expect(isDuoTapeEngine(DEVICES.LW_550.engines[0]!)).toBe(false);
+  });
+});
+
+describe('encodeLabel — error paths', () => {
+  it('throws when the device declares no engines', () => {
+    const noEngines = { ...DEVICES.LW_450, key: 'BROKEN', engines: [] } as unknown as DeviceEntry;
+    expect(() => encodeLabel(noEngines, createBitmap(672, 4))).toThrow(/BROKEN has no engines/);
+  });
+
+  it('throws UnsupportedOperationError on an engine with an unhandled protocol', () => {
+    // Engine whose protocol is not in SUPPORTED_PROTOCOLS — `encodeLabel`
+    // dispatches past the lw5-raster / d1-tape guards and hits
+    // `assertEncoderSupports`, which throws.
+    const bogus = {
+      ...DEVICES.LW_450,
+      key: 'BOGUS',
+      engines: [{ ...DEVICES.LW_450.engines[0]!, protocol: 'mystery-raster' }],
+    } as unknown as DeviceEntry;
+    expect(() => encodeLabel(bogus, createBitmap(672, 4))).toThrow(/mystery-raster/);
+  });
+});
+
+describe('encodeDuoTapeLabel — guards and options', () => {
+  it('throws UnsupportedOperationError when the resolved engine is not d1-tape', async () => {
+    // The Duo label engine is lw-raster, not d1-tape — encodeDuoTapeLabel
+    // refuses it and points the caller at encodeLabel.
+    await expect(
+      encodeDuoTapeLabel(DEVICES.LW_450_DUO, createBitmap(128, 8), { engine: 'label' }),
+    ).rejects.toThrow(/not "d1-tape"/);
+  });
+
+  it('throws when supplied media is not of type "tape"', async () => {
+    await expect(
+      encodeDuoTapeLabel(
+        DEVICES.LW_450_DUO,
+        createBitmap(128, 8),
+        { engine: 'tape' },
+        MEDIA.ADDRESS_STANDARD,
+      ),
+    ).rejects.toThrow(/requires media of type "tape"/);
+  });
+
+  it('forwards copies and the media tapeColour selector to d1-core', async () => {
+    // `copies` and a media-baked `tapeColour` both flow into the d1-core
+    // options object — exercises the two optional-field branches.
+    const tapeMedia = { ...MEDIA.STANDARD_BLACK_ON_WHITE_12, tapeColour: 0x07 };
+    const bytes = await encodeDuoTapeLabel(
+      DEVICES.LW_450_DUO,
+      createBitmap(128, 8),
+      { engine: 'tape', copies: 3 },
+      tapeMedia,
+    );
+    // d1-core emits ESC C <tapeType> at the head of the stream.
+    expect(bytes[0]).toBe(0x1b);
+    expect(bytes[1]).toBe(0x43);
+    expect(bytes[2]).toBe(0x07);
+  });
+});
+
+describe('buildRasterRow — compressed RLE', () => {
+  it('emits alternating runs for a row with adjacent differing bits', () => {
+    // 0b10101010 — every bit differs from its neighbour, so the
+    // run-length walk breaks on each bit (`nextBit !== bit`), producing
+    // eight single-bit runs.
+    const row = new Uint8Array([0b10101010]);
+    const out = buildRasterRow(row, true);
+    expect(out[0]).toBe(0x17); // ETB compressed-row marker
+    // 8 RLE bytes follow the marker — one per single-bit run.
+    expect(out.length).toBe(9);
+    for (let i = 1; i < out.length; i++) {
+      // run length encoded as (run - 1); single-bit runs → low 7 bits 0.
+      expect(out[i]! & 0x7f).toBe(0);
+    }
+  });
+
+  it('coalesces a uniform row into a single long run', () => {
+    // All-zero 8-byte row = 64 identical bits → one run of 64.
+    const row = new Uint8Array(8);
+    const out = buildRasterRow(row, true);
+    expect(out[0]).toBe(0x17);
+    expect(out.length).toBe(2);
+    expect(out[1]! & 0x7f).toBe(63); // run-1 for 64 bits
   });
 });

@@ -13,7 +13,7 @@ vi.mock('@thermal-label/transport/node', () => ({
   SerialTransport: { open: serialOpen },
 }));
 
-import { __setDevices, makeDevice } from './__mocks__/usb.js';
+import { __setDevices, makeDevice, makeDeviceWithSerialReadError } from './__mocks__/usb.js';
 import { discovery } from '../discovery.js';
 
 function fakeTransport(): {
@@ -65,6 +65,18 @@ describe('LabelWriterDiscovery', () => {
       __setDevices([makeDevice(0x0922, 0x0020), makeDevice(0x0922, 0x0028)]);
       expect(await discovery.listPrinters()).toHaveLength(2);
     });
+
+    it('omits serialNumber when the descriptor read fails', async () => {
+      // The device advertises a serial-number descriptor index, but the
+      // `getStringDescriptor` read errors out. `readSerialNumber`
+      // resolves undefined and the printer entry simply has no
+      // `serialNumber` field — discovery must not reject.
+      __setDevices([makeDeviceWithSerialReadError(0x0922, 0x0020, 4, 7)]);
+      const printers = await discovery.listPrinters();
+      expect(printers).toHaveLength(1);
+      expect(printers[0]!.serialNumber).toBeUndefined();
+      expect(printers[0]!.connectionId).toBe('4:7');
+    });
   });
 
   describe('openPrinter', () => {
@@ -88,6 +100,25 @@ describe('LabelWriterDiscovery', () => {
       const printer = await discovery.openPrinter({ pid: 0x002a });
       expect(printer.device.transports.usb?.pid).toBe('0x002a');
       expect(usbOpen).toHaveBeenCalledWith(0x0922, 0x002a);
+    });
+
+    it('filters by vid', async () => {
+      // All LabelWriters share VID 0x0922 — filtering by it keeps the
+      // first match and exercises the `options.vid` branch of the
+      // device matcher.
+      __setDevices([makeDevice(0x0922, 0x0020)]);
+      usbOpen.mockResolvedValue(fakeTransport());
+
+      const printer = await discovery.openPrinter({ vid: 0x0922 });
+      expect(printer.device.transports.usb?.vid).toBe('0x0922');
+      expect(usbOpen).toHaveBeenCalledWith(0x0922, 0x0020);
+    });
+
+    it('throws when the vid filter matches no attached device', async () => {
+      __setDevices([makeDevice(0x0922, 0x0020)]);
+      await expect(discovery.openPrinter({ vid: 0x1234 })).rejects.toThrow(
+        /No compatible Dymo LabelWriter/,
+      );
     });
 
     it('matches by serial number', async () => {

@@ -161,3 +161,61 @@ describe('duo-tape-bridge with d1-core missing', () => {
     expect(bytes.length).toBeGreaterThan(0);
   });
 });
+
+describe('loadD1Core — missing-module detection shapes', () => {
+  // The bridge's `isModuleNotFound()` recognises a missing optional peer
+  // across several error shapes. Each `vi.doMock` factory below throws a
+  // distinct shape; the bridge must map every missing-module shape to
+  // `DuoTapeUnavailableError` and re-throw anything else unchanged.
+
+  it("matches MODULE_NOT_FOUND code carried only on the error's .cause chain", async () => {
+    // Node's loader / vitest's mock wrapper sometimes nests the real
+    // ERR_MODULE_NOT_FOUND on `.cause` while the top-level error carries
+    // no `.code`. `recursiveCodeMatches` walks the cause chain.
+    vi.doMock('@thermal-label/d1-core', () => {
+      const root = new Error('underlying loader failure');
+      (root as { code?: string }).code = 'MODULE_NOT_FOUND';
+      const wrapper = new Error('wrapped import failure', { cause: root });
+      throw wrapper;
+    });
+    vi.resetModules();
+    const bridge = await import('../duo-tape-bridge.js');
+    await expect(bridge.duoTapeStatusRequest()).rejects.toBeInstanceOf(
+      bridge.DuoTapeUnavailableError,
+    );
+  });
+
+  it("matches a Vite/Rollup-style 'Failed to fetch dynamically imported module' message", async () => {
+    // Vite/Rollup surface a message-only failure with no recognisable
+    // `.code` — `recursiveMessageMatches` is the fallback path.
+    vi.doMock('@thermal-label/d1-core', () => {
+      throw new Error('Failed to fetch dynamically imported module: /@thermal-label/d1-core');
+    });
+    vi.resetModules();
+    const bridge = await import('../duo-tape-bridge.js');
+    await expect(bridge.parseDuoTapeStatus(new Uint8Array([0x00]))).rejects.toBeInstanceOf(
+      bridge.DuoTapeUnavailableError,
+    );
+  });
+
+  it("matches a 'Cannot find package' message nested on the .cause chain", async () => {
+    vi.doMock('@thermal-label/d1-core', () => {
+      const root = new Error("Cannot find package '@thermal-label/d1-core' imported from app");
+      const wrapper = new Error('module init failed', { cause: root });
+      throw wrapper;
+    });
+    vi.resetModules();
+    const bridge = await import('../duo-tape-bridge.js');
+    await expect(bridge.duoTapeStatusRequest()).rejects.toBeInstanceOf(
+      bridge.DuoTapeUnavailableError,
+    );
+  });
+
+  // Note: the non-module re-throw path (`loadD1Core` re-throwing a
+  // genuine d1-core fault unchanged) and `recursiveMessageMatches`
+  // returning false cannot be exercised through `vi.doMock` — vitest
+  // wraps every factory throw in a `[vitest] There was an error when
+  // mocking…`-prefixed error, which the bridge deliberately treats as a
+  // missing-module signal (see the block comment above). Those arms are
+  // marked `/* v8 ignore */` in `duo-tape-bridge.ts` with that reason.
+});

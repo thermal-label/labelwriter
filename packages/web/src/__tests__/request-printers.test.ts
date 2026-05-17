@@ -66,6 +66,83 @@ describe('requestPrinters(opts) — labelwriter generic factory', () => {
       }
     });
   });
+
+  describe('transport: usb — explicit deviceKey', () => {
+    it('trusts an explicit deviceKey and returns the adapter map', async () => {
+      // With `deviceKey` supplied the factory skips auto-identify and
+      // trusts the caller's pick — VID/PID still has to match the
+      // registry entry `fromUSBDeviceAll` re-checks.
+      const device = createMockUSBDevice();
+      const usbStub = { requestDevice: vi.fn().mockResolvedValue(device) };
+      vi.stubGlobal('navigator', { usb: usbStub });
+
+      const printers = await requestPrinters({ transport: 'usb', deviceKey: 'LW_450' });
+      expect(Object.keys(printers).length).toBeGreaterThanOrEqual(1);
+      for (const role of Object.keys(printers)) {
+        expect(printers[role]!.family).toBe('labelwriter');
+        await printers[role]!.close();
+      }
+    });
+
+    it('throws on an unknown deviceKey', async () => {
+      const device = createMockUSBDevice();
+      const usbStub = { requestDevice: vi.fn().mockResolvedValue(device) };
+      vi.stubGlobal('navigator', { usb: usbStub });
+
+      await expect(
+        requestPrinters({ transport: 'usb', deviceKey: 'LW_BOGUS_999' }),
+      ).rejects.toThrow(/unknown deviceKey "LW_BOGUS_999"/);
+    });
+  });
+
+  describe('DeviceIdentificationRequiredError.continueWith', () => {
+    it('continueWith(deviceKey) opens the originally-picked USBDevice', async () => {
+      // The picked device has an unknown VID/PID, so auto-identify
+      // fails — but the picked USBDevice is actually a real LW_450.
+      // The operator resolves the ambiguity by calling `continueWith`
+      // with the chosen key; the closure reuses the same USBDevice.
+      const device = createMockUSBDevice(0x0922, 0x0020); // real LW_450 ids
+      const usbStub = { requestDevice: vi.fn().mockResolvedValue(device) };
+      vi.stubGlobal('navigator', { usb: usbStub });
+
+      let err: unknown;
+      try {
+        // Force the unknown-VID branch by spying the registry lookup is
+        // overkill — instead pick a device whose ids are unknown.
+        const unknown = createMockUSBDevice(0xdead, 0xbeef);
+        usbStub.requestDevice.mockResolvedValueOnce(unknown);
+        await requestPrinters({ transport: 'usb' });
+      } catch (e) {
+        err = e;
+      }
+      if (!(err instanceof DeviceIdentificationRequiredError)) {
+        throw new Error('expected DeviceIdentificationRequiredError');
+      }
+      // continueWith reuses the already-picked USBDevice (the unknown
+      // one) — `fromUSBDeviceAll` re-checks its VID/PID and throws the
+      // unsupported-device error because 0xdead:0xbeef is not registered.
+      await expect(err.continueWith('LW_450')).rejects.toThrow(/Unsupported USB device/);
+    });
+
+    it('continueWith rejects an unknown deviceKey', async () => {
+      const unknown = createMockUSBDevice(0xdead, 0xbeef);
+      const usbStub = { requestDevice: vi.fn().mockResolvedValue(unknown) };
+      vi.stubGlobal('navigator', { usb: usbStub });
+
+      let err: unknown;
+      try {
+        await requestPrinters({ transport: 'usb' });
+      } catch (e) {
+        err = e;
+      }
+      if (!(err instanceof DeviceIdentificationRequiredError)) {
+        throw new Error('expected DeviceIdentificationRequiredError');
+      }
+      await expect(err.continueWith('LW_BOGUS_999')).rejects.toThrow(
+        /continueWith: unknown deviceKey "LW_BOGUS_999"/,
+      );
+    });
+  });
 });
 
 describe('devicesForTransport — labelwriter', () => {

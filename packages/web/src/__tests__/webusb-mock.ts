@@ -20,35 +20,41 @@ export function createMockUSBDevice(
   vendorId = 0x0922,
   productId = 0x0020,
   responses: Uint8Array | Uint8Array[] = new Uint8Array([0x00]),
+  interfaceNumbers: readonly number[] = [0],
 ): MockUSBDevice {
   const transfers: { endpointNumber: number; data: Uint8Array }[] = [];
   let opened = false;
   const replies = Array.isArray(responses) ? [...responses] : [responses];
   let replyIndex = 0;
 
-  const endpoints = [
-    { endpointNumber: 1, direction: 'out' },
-    { endpointNumber: 2, direction: 'in', packetSize: 64 },
-  ] as unknown as USBEndpoint[];
+  // Each declared interface gets a distinct bulk OUT/IN endpoint pair so
+  // a composite device (LW Duo: IF 0 label, IF 1 tape) can claim each
+  // interface independently. `WebUsbTransport.fromDevice` looks the
+  // interface up by `interfaceNumber` and reads its endpoints.
+  const interfaces = interfaceNumbers.map((interfaceNumber, idx) => {
+    const endpoints = [
+      { endpointNumber: idx * 2 + 1, direction: 'out' },
+      { endpointNumber: idx * 2 + 2, direction: 'in', packetSize: 64 },
+    ] as unknown as USBEndpoint[];
+    return {
+      interfaceNumber,
+      alternate: {
+        alternateSetting: 0,
+        interfaceClass: 7,
+        interfaceSubclass: 1,
+        interfaceProtocol: 2,
+        interfaceName: null,
+        endpoints,
+      },
+      alternates: [],
+      claimed: false,
+    };
+  });
 
   const configuration: USBConfiguration = {
     configurationValue: 1,
     configurationName: null,
-    interfaces: [
-      {
-        interfaceNumber: 0,
-        alternate: {
-          alternateSetting: 0,
-          interfaceClass: 7,
-          interfaceSubclass: 1,
-          interfaceProtocol: 2,
-          interfaceName: null,
-          endpoints,
-        },
-        alternates: [],
-        claimed: false,
-      },
-    ],
+    interfaces,
   };
 
   const device = {

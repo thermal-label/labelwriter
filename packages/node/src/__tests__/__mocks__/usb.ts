@@ -49,3 +49,27 @@ export function makeDevice(
     }),
   };
 }
+
+/**
+ * Build a mock device that declares a serial-number descriptor index
+ * but fails the `getStringDescriptor` read — the callback fires with an
+ * error. `readSerialNumber` must resolve to `undefined` in that case
+ * rather than rejecting.
+ */
+export function makeDeviceWithSerialReadError(
+  idVendor: number,
+  idProduct: number,
+  busNumber = 1,
+  deviceAddress = 2,
+): MockDevice {
+  return {
+    deviceDescriptor: { idVendor, idProduct, iSerialNumber: 3 },
+    busNumber,
+    deviceAddress,
+    open: vi.fn(),
+    close: vi.fn(),
+    getStringDescriptor: vi.fn((_idx: number, cb: (err: Error | null, val?: string) => void) => {
+      cb(new Error('descriptor read failed'));
+    }),
+  };
+}

@@ -10,6 +10,7 @@ function parseHex(s: string): number {
 
 async function readSerialNumber(device: usb.Device): Promise<string | undefined> {
   const idx = device.deviceDescriptor.iSerialNumber;
+  /* v8 ignore next -- unreachable: enumerateUsbDevices only calls readSerialNumber when iSerialNumber is truthy, so idx is never 0 here */
   if (!idx) return undefined;
   return new Promise(resolve => {
     device.getStringDescriptor(idx, (err, value) => {
@@ -80,6 +81,7 @@ export class LabelWriterDiscovery implements PrinterDiscovery {
     const found = await enumerateUsbDevices();
     const match = found.find(entry => {
       const usbT = entry.descriptor.transports.usb;
+      /* v8 ignore next -- unreachable: enumerateUsbDevices matches entries by USB VID/PID, so every `found` descriptor already carries transports.usb */
       if (!usbT) return false;
       if (options.vid !== undefined && parseHex(usbT.vid) !== options.vid) return false;
       if (options.pid !== undefined && parseHex(usbT.pid) !== options.pid) return false;
@@ -91,6 +93,7 @@ export class LabelWriterDiscovery implements PrinterDiscovery {
     if (!match) throw new Error('No compatible Dymo LabelWriter printer found.');
 
     const matchUsb = match.descriptor.transports.usb;
+    /* v8 ignore next -- unreachable: `match` was filtered on `transports.usb` being present, so matchUsb is always defined */
     if (!matchUsb) throw new Error(`Device ${match.descriptor.key} has no USB transport.`);
     const vid = parseHex(matchUsb.vid);
     const pid = parseHex(matchUsb.pid);
@@ -136,6 +139,7 @@ export class LabelWriterDiscovery implements PrinterDiscovery {
  * is correct.
  */
 async function openTcp(opts: OpenOptions): Promise<LabelWriterPrinter> {
+  /* v8 ignore next 3 -- unreachable: openPrinter only dispatches to openTcp when opts.host !== undefined; the guard is defensive */
   if (opts.host === undefined) {
     throw new Error('openTcp requires `host`.');
   }
@@ -180,6 +184,7 @@ async function openTcp(opts: OpenOptions): Promise<LabelWriterPrinter> {
  * 9 600 for SE450). Pass `baudRate` to override.
  */
 async function openSerial(opts: OpenOptions): Promise<LabelWriterPrinter> {
+  /* v8 ignore next 3 -- unreachable: openPrinter only dispatches to openSerial when opts.serialPath !== undefined; the guard is defensive */
   if (opts.serialPath === undefined) {
     throw new Error('openSerial requires `serialPath`.');
   }

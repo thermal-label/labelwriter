@@ -318,6 +318,7 @@ function composeWireBitmap550(
   }
 
   const slice =
+    /* v8 ignore next 2 -- sourceColCount > 0 whenever any printable content survives; the createBitmap(0,…) arm is an unreachable degenerate-input guard (createBitmap rejects width 0 anyway) */
     sourceColCount > 0
       ? cropBitmap(bitmap, sourceColStart, leadingDots, sourceColCount, wireRows)
       : createBitmap(0, wireRows);

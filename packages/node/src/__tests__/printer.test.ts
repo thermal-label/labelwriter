@@ -537,5 +537,132 @@ describe('LabelWriterPrinter', () => {
       }
       expect(found).toBe(0x32);
     });
+
+    it('Twin Turbo engine handle getStatus() reads via the shared transport', async () => {
+      // The per-engine handle's `getStatus()` routes a status request +
+      // read through the parent serializer. The Twin Turbo's `left`
+      // engine is lw-raster (not d1-tape), so it takes the raster path:
+      // ESC A request, 1-byte 450-style reply.
+      const { transport } = makeTransport(new Uint8Array([0x03]));
+      const printer = new LabelWriterPrinter(DEVICES.LW_450_TWIN_TURBO, transport, 'usb');
+      const status = await printer.engines.left!.getStatus!();
+      expect(vi.mocked(transport.write)).toHaveBeenCalled();
+      expect(vi.mocked(transport.read)).toHaveBeenCalledWith(1);
+      expect(status.ready).toBe(true);
+    });
+  });
+
+  describe('getEngineVersion (550 ESC V)', () => {
+    function makeVersion(): Uint8Array {
+      const buf = new Uint8Array(34);
+      const enc = new TextEncoder();
+      buf.set(enc.encode('HW-2.0          '), 0);
+      buf.set(enc.encode('FWAP'), 16);
+      buf.set(enc.encode('3   '), 20);
+      buf.set(enc.encode('12  '), 24);
+      buf.set(enc.encode('0426'), 28);
+      buf[32] = 0x40;
+      buf[33] = 0x00;
+      return buf;
+    }
+
+    it('throws UnsupportedOperationError on non-550 devices', async () => {
+      const { transport } = makeTransport();
+      const printer = new LabelWriterPrinter(device450, transport, 'usb');
+      await expect(printer.getEngineVersion()).rejects.toThrow(/lw5-raster/);
+    });
+
+    it('550: writes ESC V, reads 34 bytes, returns the parsed identity block', async () => {
+      const { transport } = makeTransport(makeVersion());
+      const printer = new LabelWriterPrinter(device550, transport, 'usb');
+      const version = await printer.getEngineVersion();
+      const firstWrite = vi.mocked(transport.write).mock.calls[0]![0];
+      expect(Array.from(firstWrite)).toEqual([0x1b, 0x56]);
+      expect(vi.mocked(transport.read)).toHaveBeenCalledWith(34);
+      expect(version?.hwVersion).toBe('HW-2.0');
+      expect(version?.fwKind).toBe('application');
+      expect(version?.pid).toBe(0x0040);
+    });
+
+    it('550: returns undefined when the ESC V read is shorter than 34 bytes', async () => {
+      // A transport that hands back fewer bytes than asked for — a
+      // clipped read — must make doGetEngineVersion bail to undefined.
+      const transport: Transport = {
+        get connected() {
+          return true;
+        },
+        write: vi.fn(() => Promise.resolve()),
+        read: vi.fn(() => Promise.resolve(new Uint8Array(4))), // 4 < 34
+        close: vi.fn(() => Promise.resolve()),
+      };
+      const printer = new LabelWriterPrinter(device550, transport, 'usb');
+      expect(await printer.getEngineVersion()).toBeUndefined();
+    });
+  });
+
+  describe('getStatus media cache + engine resolution', () => {
+    it('getStatus() preserves a cached detectedMedia when the ESC A frame omits it', async () => {
+      // getMedia() caches detectedMedia; a follow-up getStatus() parses
+      // a media-less 550 frame but must keep the cached media.
+      const sku = new Uint8Array(63);
+      sku[0] = 0xb6;
+      sku[1] = 0xca;
+      new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
+      sku[23] = 0x01;
+      sku[40] = 89;
+      sku[42] = 28;
+      const status = new Uint8Array(32);
+      status[10] = 8;
+      status[30] = 1;
+      const buf = new Uint8Array(sku.length + status.length);
+      buf.set(sku, 0);
+      buf.set(status, sku.length);
+      const { transport } = makeTransport(buf);
+      const printer = new LabelWriterPrinter(device550, transport, 'usb');
+      await printer.getMedia();
+      const after = await printer.getStatus();
+      expect(after.detectedMedia).toBeDefined();
+      expect(after.detectedMedia?.widthMm).toBe(28);
+    });
+
+    it('print() rejects an unknown engine role with the available-roles hint', async () => {
+      const { transport } = makeTransport();
+      const printer = new LabelWriterPrinter(DEVICES.LW_450_TWIN_TURBO, transport, 'usb');
+      await expect(
+        printer.print(solidRgba(672, 10), MEDIA.ADDRESS_STANDARD, { engine: 'middle' }),
+      ).rejects.toThrow(/no engine with role "middle"/);
+    });
+
+    it('print() best-effort SKU fetch swallows a transport fault and surfaces MediaNotSpecifiedError', async () => {
+      // 550 print with no media: the lock acquire succeeds, the SKU
+      // auto-fetch read faults; tryFetchSkuMedia swallows it and print()
+      // falls through to MediaNotSpecifiedError.
+      const written: Uint8Array[] = [];
+      let reads = 0;
+      const transport: Transport = {
+        get connected() {
+          return true;
+        },
+        write: vi.fn((data: Uint8Array) => {
+          written.push(new Uint8Array(data));
+          return Promise.resolve();
+        }),
+        read: vi.fn(() => {
+          reads += 1;
+          if (reads === 1) {
+            // ESC A lock acquire — healthy 32-byte frame.
+            const ok = new Uint8Array(32);
+            ok[10] = 8;
+            ok[30] = 1;
+            return Promise.resolve(ok);
+          }
+          // ESC U SKU fetch — fault.
+          return Promise.reject(new Error('USB read stalled'));
+        }),
+        close: vi.fn(() => Promise.resolve()),
+      };
+      const printer = new LabelWriterPrinter(device550, transport, 'usb');
+      await expect(printer.print(solidRgba(672, 4))).rejects.toBeInstanceOf(MediaNotSpecifiedError);
+    });
   });
 });

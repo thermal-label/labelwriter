@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import type { DeviceEntry } from '@thermal-label/contracts';
 import { DEVICES } from '../devices.js';
-import { STATUS_REQUEST, parseStatus, statusByteCount } from '../status.js';
+import { STATUS_REQUEST, buildStatusRequest, parseStatus, statusByteCount } from '../status.js';
 
 describe('STATUS_REQUEST', () => {
   it('is ESC A', () => {
@@ -15,6 +16,28 @@ describe('statusByteCount', () => {
 
   it('returns 32 for 550-series devices', () => {
     expect(statusByteCount(DEVICES.LW_550)).toBe(32);
+  });
+});
+
+describe('buildStatusRequest', () => {
+  it('450-protocol device: emits the two-byte ESC A form, ignoring the lock arg', () => {
+    expect(Array.from(buildStatusRequest(DEVICES.LW_450))).toEqual([0x1b, 0x41]);
+    // The 450 firmware reads exactly two bytes — the lock argument is dropped.
+    expect(Array.from(buildStatusRequest(DEVICES.LW_450, 2))).toEqual([0x1b, 0x41]);
+  });
+
+  it('550-protocol device: emits the three-byte ESC A <lock> form', () => {
+    expect(Array.from(buildStatusRequest(DEVICES.LW_550))).toEqual([0x1b, 0x41, 0]);
+    expect(Array.from(buildStatusRequest(DEVICES.LW_550, 1))).toEqual([0x1b, 0x41, 1]);
+    expect(Array.from(buildStatusRequest(DEVICES.LW_550, 2))).toEqual([0x1b, 0x41, 2]);
+  });
+
+  it('throws when the device declares no engines', () => {
+    // `deviceProtocol` reads `engines[0]` — a device with an empty
+    // engine list is a malformed registry entry and must fail loudly
+    // rather than silently picking the 450 path.
+    const noEngines = { key: 'BROKEN', engines: [] } as unknown as DeviceEntry;
+    expect(() => buildStatusRequest(noEngines)).toThrow(/BROKEN has no engines/);
   });
 });
 
@@ -94,6 +117,16 @@ describe('parseStatus — 450 series', () => {
     const bytes = new Uint8Array([0x03]);
     const status = parseStatus(DEVICES.LW_450, bytes);
     expect(status.rawBytes).toBe(bytes);
+  });
+
+  it('treats an empty (zero-byte) response as not-ready without throwing', () => {
+    // A clipped USB read or non-responsive device hands back zero bytes.
+    // `bytes[0] ?? 0` must default the status byte to 0 so the parser
+    // still returns a well-formed not_ready PrinterStatus.
+    const status = parseStatus(DEVICES.LW_450, new Uint8Array(0));
+    expect(status.ready).toBe(false);
+    expect(status.mediaLoaded).toBe(true);
+    expect(status.errors.map(e => e.code)).toContain('not_ready');
   });
 
   it('treats the LW 400 canonical 0x03 response as ready (regression: was misread as paper-out + busy)', () => {
@@ -366,6 +399,45 @@ describe('parseStatus — 550 series', () => {
     it('450 branch leaves details undefined', () => {
       const status = parseStatus(DEVICES.LW_450, new Uint8Array([0x03]));
       expect(status.details).toBeUndefined();
+    });
+
+    it('labels out-of-range enum bytes as "unknown" across every decoded row', () => {
+      // Unknown print-status / bay-status / head-status / head-voltage
+      // values (firmware drift, corrupt frame) must surface as a labelled
+      // "unknown (<n>)" row rather than `undefined (<n>)`.
+      const status = parseStatus(
+        DEVICES.LW_550,
+        make550({ printStatus: 99, bayStatus: 99, headStatus: 99, headVoltage: 15 }),
+      );
+      expect(detail(status, 'Print status')).toBe('unknown (99)');
+      expect(detail(status, 'Bay status')).toBe('unknown (99)');
+      expect(detail(status, 'Print head')).toBe('unknown (99)');
+      // headVoltage is masked to its low nibble — 15 is past the table.
+      expect(detail(status, 'Head voltage')).toBe('unknown (15)');
+    });
+
+    it('decodes a truncated 550 frame without throwing (every byte field defaults to 0)', () => {
+      // A short read — non-responsive device or a clipped USB transfer —
+      // hands the parser fewer than 32 bytes. Every `bytes[n] ?? 0`
+      // accessor must fall back to 0 rather than producing NaN/undefined
+      // rows. parseStatus550 + build550Details must still return a
+      // well-formed PrinterStatus.
+      const status = parseStatus(DEVICES.LW_550, new Uint8Array(0));
+      expect(status.details).toBeDefined();
+      expect(detail(status, 'Print status')).toBe('idle (0)');
+      expect(detail(status, 'Job ID')).toBe('0x00000000');
+      expect(detail(status, 'Label index')).toBe('0');
+      expect(detail(status, 'Bay status')).toBe('unknown (0)');
+      expect(detail(status, 'Print head')).toBe('OK (0)');
+      expect(detail(status, 'Head voltage')).toBe('unknown (0)');
+      expect(detail(status, 'Print density')).toBe('0%');
+      expect(detail(status, 'Error ID')).toBe('0x00000000');
+      expect(detail(status, 'Labels remaining')).toBe('0');
+      expect(detail(status, 'External power')).toBe('absent');
+      // bayStatus 0 = "unknown" → not media-present, printStatus 0 = idle
+      // with no errors → ready stays true even on the degenerate frame.
+      expect(status.mediaLoaded).toBe(false);
+      expect(status.errors).toEqual([]);
     });
   });
 });

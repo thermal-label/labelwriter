@@ -26,6 +26,7 @@ import {
   parseSkuInfo,
   skuInfoToMedia,
   skuInfoDetails,
+  withDetectedMedia,
   ENGINE_VERSION_BYTE_COUNT,
   SKU_INFO_BYTE_COUNT,
   STATUS_BYTE_COUNT_550,
@@ -417,6 +418,14 @@ describe('parseEngineVersion', () => {
     expect(parseEngineVersion(buf).fwKind).toBe('bootloader');
   });
 
+  it('falls back to "unknown" fwKind for an unrecognised firmware tag', () => {
+    // Neither 'FWAP' nor 'FWBL' — a future or corrupt firmware tag must
+    // not be silently coerced; it surfaces as 'unknown'.
+    const buf = new Uint8Array(34);
+    new TextEncoder().encodeInto('ZZZZ', buf.subarray(16, 20));
+    expect(parseEngineVersion(buf).fwKind).toBe('unknown');
+  });
+
   it('throws on short input', () => {
     expect(() => parseEngineVersion(new Uint8Array(10))).toThrow(/34 bytes/);
   });
@@ -471,9 +480,23 @@ describe('parseSkuInfo', () => {
     const buf = makeSku();
     buf[20] = 0xff; // brand
     buf[22] = 0xff; // material
+    buf[23] = 0xff; // labelType  — past LABEL_TYPE_TABLE
+    buf[24] = 0xff; // labelColor — past LABEL_COLOR_TABLE
+    buf[25] = 0xff; // contentColor — past CONTENT_COLOR_TABLE
+    buf[56] = 0xff; // counterStrategy — neither count-up nor count-down
     const sku = parseSkuInfo(buf);
     expect(sku.brand).toBe('unknown');
     expect(sku.material).toBe('unknown');
+    expect(sku.labelType).toBe('unknown');
+    expect(sku.labelColor).toBe('unknown');
+    expect(sku.contentColor).toBe('unknown');
+    expect(sku.counterStrategy).toBe('unknown');
+  });
+
+  it('decodes the count-up counter strategy (byte 56 = 0x00)', () => {
+    const buf = makeSku();
+    buf[56] = 0x00;
+    expect(parseSkuInfo(buf).counterStrategy).toBe('count-up');
   });
 
   it('throws on short input', () => {
@@ -549,6 +572,114 @@ describe('skuInfoDetails', () => {
     buf[51] = 0;
     const rows = skuInfoDetails(parseSkuInfo(buf));
     expect(rows.find(r => r.label === 'Roll total labels')).toBeUndefined();
+  });
+});
+
+describe('withDetectedMedia', () => {
+  function dieCutSku(): ReturnType<typeof parseSkuInfo> {
+    const buf = new Uint8Array(63);
+    buf[0] = 0xb6;
+    buf[1] = 0xca;
+    new TextEncoder().encodeInto('30252       ', buf.subarray(8, 20));
+    buf[23] = 0x01; // labelType: die
+    buf[40] = 89; // labelLengthMm
+    buf[42] = 28; // labelWidthMm
+    return parseSkuInfo(buf);
+  }
+
+  it('decorates a parsed status with detectedMedia derived from the SKU dump', () => {
+    const base = {
+      ready: true,
+      mediaLoaded: true,
+      errors: [],
+      rawBytes: new Uint8Array(32),
+    };
+    const decorated = withDetectedMedia(base, dieCutSku());
+    expect(decorated.detectedMedia).toBeDefined();
+    expect(decorated.detectedMedia?.widthMm).toBe(28);
+    expect(decorated.detectedMedia?.heightMm).toBe(89);
+    // The other status fields pass through unchanged.
+    expect(decorated.ready).toBe(true);
+    expect(decorated.mediaLoaded).toBe(true);
+    expect(decorated.rawBytes).toBe(base.rawBytes);
+  });
+
+  it('does not mutate the input status object', () => {
+    const base = {
+      ready: false,
+      mediaLoaded: false,
+      errors: [],
+      rawBytes: new Uint8Array(0),
+    };
+    withDetectedMedia(base, dieCutSku());
+    expect('detectedMedia' in base).toBe(false);
+  });
+});
+
+describe('encode550Label — printable-area edge cases', () => {
+  function withArea(printableArea: PrintableArea): DeviceEntry {
+    const baseEngine = DEVICES.LW_550.engines[0]!;
+    return { ...DEVICES.LW_550, engines: [{ ...baseEngine, printableArea }] };
+  }
+
+  it('bitmap shorter than the leading dead-zone collapses to a zero-row wire bitmap', () => {
+    // leadingDots exceeds the bitmap height → wireRows clamps to 0 and
+    // the encoder emits no raster rows (just the job framing).
+    const dpi = 300;
+    const leadingMm = (100 * 25.4) / dpi; // 100 dots leading
+    const dev = withArea({ leading: leadingMm, trailing: 0, left: 0, right: 0 });
+    const out = encode550Label(dev, createBitmap(672, 20)); // 20-row bitmap
+    // No SYN/raster lines — ESC D widthLines is 0.
+    const escD = findEscByte(out, 0x44);
+    expect(escD).toBeDefined();
+    const width =
+      (out[escD! + 4]! |
+        (out[escD! + 5]! << 8) |
+        (out[escD! + 6]! << 16) |
+        (out[escD! + 7]! << 24)) >>>
+      0;
+    expect(width).toBe(0);
+  });
+
+  it('zero printable-area with a head-width bitmap passes the bitmap straight through', () => {
+    // Zero dead-zone on every edge + an authored bitmap exactly headDots
+    // wide → the encoder's fast path returns the input bitmap unchanged
+    // (no crop, no pad).
+    const dev = withArea({ leading: 0, trailing: 0, left: 0, right: 0 });
+    const headDots = dev.engines[0]!.headDots;
+    const heightPx = 40;
+    const out = encode550Label(dev, createBitmap(headDots, heightPx));
+    const escD = findEscByte(out, 0x44);
+    expect(escD).toBeDefined();
+    const widthLines =
+      (out[escD! + 4]! |
+        (out[escD! + 5]! << 8) |
+        (out[escD! + 6]! << 16) |
+        (out[escD! + 7]! << 24)) >>>
+      0;
+    expect(widthLines).toBe(heightPx);
+  });
+
+  it('left-only dead-zone with a head-width label crops then pads the wire bitmap', () => {
+    // `left` is non-zero so the encoder leaves the zero-area fast path
+    // and runs the crop + pad pipeline. Authoring a head-width bitmap
+    // keeps the surviving slice non-empty so `sourceColCount > 0`.
+    const dpi = 300;
+    const leftMm = (24 * 25.4) / dpi; // exactly 24 dots
+    const dev = withArea({ leading: 0, trailing: 0, left: leftMm, right: 0 });
+    const headDots = dev.engines[0]!.headDots;
+    const heightPx = 12;
+    const out = encode550Label(dev, createBitmap(headDots, heightPx));
+    const escD = findEscByte(out, 0x44);
+    expect(escD).toBeDefined();
+    const widthLines =
+      (out[escD! + 4]! |
+        (out[escD! + 5]! << 8) |
+        (out[escD! + 6]! << 16) |
+        (out[escD! + 7]! << 24)) >>>
+      0;
+    // No leading/trailing skip — widthLines equals the bitmap height.
+    expect(widthLines).toBe(heightPx);
   });
 });
 

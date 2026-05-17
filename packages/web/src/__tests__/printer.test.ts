@@ -3,7 +3,13 @@ import { describe, expect, it, vi } from 'vitest';
 import { MediaNotSpecifiedError, UnsupportedOperationError } from '@thermal-label/contracts';
 import type { Transport } from '@thermal-label/contracts';
 import { DEVICES, MEDIA, findDevice } from '@thermal-label/labelwriter-core';
-import { fromUSBDevice, requestPrinter, WebLabelWriterPrinter } from '../printer.js';
+import {
+  fromUSBDevice,
+  fromUSBDeviceAll,
+  requestPrinter,
+  requestPrintersUsbLegacy,
+  WebLabelWriterPrinter,
+} from '../printer.js';
 import { createMockUSBDevice } from './webusb-mock.js';
 
 /**
@@ -44,6 +50,7 @@ function usb(key: keyof typeof DEVICES): { vid: number; pid: number } {
 
 const LW_450 = usb('LW_450');
 const LW_550 = usb('LW_550');
+const LW_450_DUO = usb('LW_450_DUO');
 
 function solidRgba(
   width: number,
@@ -387,6 +394,258 @@ describe('WebLabelWriterPrinter', () => {
     expect(device.__transfers.length).toBeGreaterThan(before);
     expect(device.__transfers[before]!.data[0]).toBe(0x1b);
     expect(device.__transfers[before]!.data[1]).toBe(0x40);
+  });
+});
+
+describe('fromUSBDeviceAll — multi-interface composite (LW 450 Duo)', () => {
+  it('opens one transport per engine and returns a per-role adapter map', async () => {
+    // The Duo declares `label` on IF 0 and `tape` on IF 1 — distinct
+    // `bInterfaceNumber`s. fromUSBDeviceAll claims both and returns one
+    // WebLabelWriterPrinter per engine, each scoped to its own engine.
+    const device = createMockUSBDevice(
+      LW_450_DUO.vid,
+      LW_450_DUO.pid,
+      new Uint8Array([0x00]),
+      [0, 1],
+    );
+    const printers = await fromUSBDeviceAll(device);
+    expect(Object.keys(printers).sort()).toEqual(['label', 'tape']);
+    expect(printers.label!.engine.role).toBe('label');
+    expect(printers.tape!.engine.role).toBe('tape');
+    // Each adapter is scoped to its own engine protocol.
+    expect(printers.label!.engine.protocol).toBe('lw-raster');
+    expect(printers.tape!.engine.protocol).toBe('d1-tape');
+    for (const role of Object.keys(printers)) await printers[role]!.close();
+  });
+
+  it('fromUSBDevice picks the lw-* primary (label) engine on the Duo', async () => {
+    // The back-compat single-adapter entry prefers the label-class
+    // engine over the tape engine and closes the unselected transport.
+    const device = createMockUSBDevice(
+      LW_450_DUO.vid,
+      LW_450_DUO.pid,
+      new Uint8Array([0x00]),
+      [0, 1],
+    );
+    const primary = await fromUSBDevice(device);
+    expect(primary.engine.protocol).toBe('lw-raster');
+    await primary.close();
+  });
+
+  it('throws a partial-claim failure when no interface can be opened', async () => {
+    // A Duo whose configuration declares neither IF — every per-engine
+    // claim fails and fromUSBDeviceAll reports the aggregate failure.
+    const device = createMockUSBDevice(LW_450_DUO.vid, LW_450_DUO.pid, new Uint8Array([0x00]), []);
+    await expect(fromUSBDeviceAll(device)).rejects.toThrow(/could not open any USB interfaces/);
+  });
+
+  it('surfaces a partial-claim warning when one Duo interface opens and another fails', async () => {
+    // IF 0 (label) is declared, IF 1 (tape) is not — the label engine
+    // opens, the tape engine claim fails. fromUSBDeviceAll keeps the
+    // working engine and logs a partial-claim warning ("rails not walls").
+    const warn = vi.spyOn(console, 'warn').mockImplementation(vi.fn());
+    const device = createMockUSBDevice(LW_450_DUO.vid, LW_450_DUO.pid, new Uint8Array([0x00]), [0]);
+    const printers = await fromUSBDeviceAll(device);
+    expect(Object.keys(printers)).toEqual(['label']);
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('partial-claim'));
+    warn.mockRestore();
+    await printers.label!.close();
+  });
+});
+
+describe('WebLabelWriterPrinter — Duo tape engine adapter', () => {
+  async function duoTape(): Promise<WebLabelWriterPrinter> {
+    const device = createMockUSBDevice(
+      LW_450_DUO.vid,
+      LW_450_DUO.pid,
+      new Uint8Array([0x40]),
+      [0, 1],
+    );
+    const printers = await fromUSBDeviceAll(device);
+    return printers.tape!;
+  }
+
+  it('getStatus() on the tape engine routes through d1-core (SYN request, 1-byte reply)', async () => {
+    // The tape-scoped adapter dispatches by `engine.protocol === 'd1-tape'`
+    // — it lazy-loads d1-core, writes the SYN frame and parses the
+    // 1-byte reply. 0x40 = cassette inserted, ready.
+    const tape = await duoTape();
+    const status = await tape.getStatus();
+    expect(status.ready).toBe(true);
+    expect(status.mediaLoaded).toBe(true);
+    await tape.close();
+  });
+
+  it('recover() on the tape engine is a no-op (d1-tape has no recovery sequence)', async () => {
+    const tape = await duoTape();
+    // Should resolve without throwing — the tape side resets mechanically.
+    await expect(tape.recover()).resolves.toBeUndefined();
+    await tape.close();
+  });
+
+  it('print() on the tape engine dispatches through the async d1-core encoder', async () => {
+    const tape = await duoTape();
+    await tape.print(solidRgba(128, 8), MEDIA.STANDARD_BLACK_ON_WHITE_12);
+    await tape.close();
+  });
+});
+
+describe('WebLabelWriterPrinter — engine-scoping and error paths', () => {
+  it('constructor throws when the device declares no engines', () => {
+    const transport = new RecordingTransport();
+    const noEngines = { ...DEVICES.LW_450, key: 'BROKEN', engines: [] };
+    expect(
+      () => new WebLabelWriterPrinter(noEngines as unknown as typeof DEVICES.LW_450, transport),
+    ).toThrow(/BROKEN has no engines/);
+  });
+
+  it('print() rejects a cross-engine request with an unknown role', async () => {
+    // A single-engine LW_450 adapter asked to print on a non-existent
+    // engine role — `resolveRequestedEngine` throws before any I/O.
+    const transport = new RecordingTransport();
+    const device = findDevice(LW_450.vid, LW_450.pid)!;
+    const printer = new WebLabelWriterPrinter(device, transport);
+    await expect(
+      printer.print(solidRgba(672, 10), MEDIA.ADDRESS_STANDARD, { engine: 'nonexistent' }),
+    ).rejects.toThrow(/no engine with role "nonexistent"/);
+  });
+
+  it('print() rejects a cross-engine request that resolves to a different real engine', async () => {
+    // The label-scoped Duo adapter asked to print on the `tape` engine
+    // — that's a real engine, but a different one, so the adapter
+    // refuses and tells the caller to use the tape adapter instead.
+    const device = createMockUSBDevice(
+      LW_450_DUO.vid,
+      LW_450_DUO.pid,
+      new Uint8Array([0x00]),
+      [0, 1],
+    );
+    const printers = await fromUSBDeviceAll(device);
+    await expect(
+      printers.label!.print(solidRgba(672, 10), MEDIA.ADDRESS_STANDARD, { engine: 'tape' }),
+    ).rejects.toThrow(/cannot print on engine "tape"/);
+    for (const role of Object.keys(printers)) await printers[role]!.close();
+  });
+});
+
+describe('WebLabelWriterPrinter — 550 lock health', () => {
+  it('print() refuses when the 550 lock acquire reports a bay error', async () => {
+    // bay status 2 = no media → acquire550Lock surfaces the error and
+    // print() throws before encoding the bitmap.
+    const status = new Uint8Array(32);
+    status[10] = 2; // no media present
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, status);
+    const printer = await fromUSBDevice(device);
+    await expect(printer.print(solidRgba(672, 4), MEDIA.ADDRESS_STANDARD)).rejects.toThrow(
+      /Cannot print/,
+    );
+  });
+
+  it('getStatus() after getMedia() keeps the cached detectedMedia through the lock acquire', async () => {
+    // getMedia() caches detectedMedia; the subsequent print()'s lock
+    // acquire parses a media-less ESC A frame but preserves the cache.
+    const sku = new Uint8Array(63);
+    sku[0] = 0xb6;
+    sku[1] = 0xca;
+    new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
+    sku[23] = 0x01;
+    sku[40] = 89;
+    sku[42] = 28;
+    const status = new Uint8Array(32);
+    status[10] = 8;
+    status[30] = 1;
+    // ESC U SKU read, then the ESC A lock-acquire status read.
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, [sku, status]);
+    const printer = await fromUSBDevice(device);
+    await printer.getMedia();
+    await printer.print(solidRgba(672, 4));
+    // The print succeeded off the cached SKU media — no throw.
+    expect(device.__transfers.length).toBeGreaterThan(0);
+  });
+});
+
+describe('WebLabelWriterPrinter — 550 SKU / version short reads and faults', () => {
+  it('getMedia() returns undefined when the ESC U read is shorter than 63 bytes', async () => {
+    // RecordingTransport answers every read with a single byte — far
+    // short of the 63-byte SKU dump, so doGetMedia bails to undefined.
+    const transport = new RecordingTransport();
+    const device = findDevice(LW_550.vid, LW_550.pid)!;
+    const printer = new WebLabelWriterPrinter(device, transport);
+    expect(await printer.getMedia()).toBeUndefined();
+  });
+
+  it('getEngineVersion() returns undefined when the ESC V read is shorter than 34 bytes', async () => {
+    const transport = new RecordingTransport();
+    const device = findDevice(LW_550.vid, LW_550.pid)!;
+    const printer = new WebLabelWriterPrinter(device, transport);
+    expect(await printer.getEngineVersion()).toBeUndefined();
+  });
+
+  it('print() falls through to MediaNotSpecifiedError when the SKU auto-fetch read faults', async () => {
+    // The 550 print path best-effort fetches the SKU when no media is
+    // given; a transport read fault inside that fetch is swallowed and
+    // print() surfaces MediaNotSpecifiedError instead of the raw fault.
+    class FaultyReadTransport implements Transport {
+      connected = true;
+      private reads = 0;
+      write(): Promise<void> {
+        return Promise.resolve();
+      }
+      read(): Promise<Uint8Array> {
+        this.reads += 1;
+        // First read = the ESC A lock acquire (32-byte healthy frame).
+        if (this.reads === 1) {
+          const ok = new Uint8Array(32);
+          ok[10] = 8; // bay OK
+          ok[30] = 1; // voltage OK
+          return Promise.resolve(ok);
+        }
+        // Second read = the ESC U SKU fetch — fault here.
+        return Promise.reject(new Error('USB read stalled'));
+      }
+      close(): Promise<void> {
+        this.connected = false;
+        return Promise.resolve();
+      }
+    }
+    const device = findDevice(LW_550.vid, LW_550.pid)!;
+    const printer = new WebLabelWriterPrinter(device, new FaultyReadTransport());
+    await expect(printer.print(solidRgba(672, 4))).rejects.toBeInstanceOf(MediaNotSpecifiedError);
+  });
+});
+
+describe('WebLabelWriterPrinter — createPreview with cached detected media', () => {
+  it('uses the SKU-derived detectedMedia cached by getMedia()', async () => {
+    const sku = new Uint8Array(63);
+    sku[0] = 0xb6;
+    sku[1] = 0xca;
+    new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
+    sku[23] = 0x01; // die-cut
+    sku[40] = 89;
+    sku[42] = 28;
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, sku);
+    const printer = await fromUSBDevice(device);
+    await printer.getMedia();
+    // No explicit media override — createPreview picks up the cached
+    // detectedMedia rather than falling back to DEFAULT_MEDIA.
+    const preview = await printer.createPreview(solidRgba(8, 8));
+    expect(preview.assumed).toBe(false);
+    expect(preview.media.widthMm).toBe(28);
+  });
+});
+
+describe('requestPrintersUsbLegacy', () => {
+  it('shows the picker and returns the full per-engine adapter map', async () => {
+    const device = createMockUSBDevice(LW_450.vid, LW_450.pid);
+    const requestDevice = vi.fn(() => Promise.resolve(device));
+    Object.defineProperty(globalThis, 'navigator', {
+      value: { usb: { requestDevice } },
+      configurable: true,
+    });
+    const printers = await requestPrintersUsbLegacy();
+    expect(requestDevice).toHaveBeenCalledOnce();
+    expect(Object.keys(printers).length).toBeGreaterThanOrEqual(1);
+    for (const role of Object.keys(printers)) await printers[role]!.close();
   });
 });
 

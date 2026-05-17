@@ -139,12 +139,14 @@ export function buildRasterRow(rowBytes: Uint8Array, compress = false): Uint8Arr
   while (i < totalBits) {
     const byteIdx = Math.floor(i / 8);
     const bitIdx = 7 - (i % 8);
+    /* v8 ignore next -- byteIdx < rowBytes.length always (loop bounded by totalBits = rowBytes.length * 8); the ?? 0 is an unreachable defensive guard under noUncheckedIndexedAccess */
     const bit = ((rowBytes[byteIdx] ?? 0) >> bitIdx) & 1;
     let run = 1;
     while (run < 128 && i + run < totalBits) {
       const ni = i + run;
       const nb = Math.floor(ni / 8);
       const nbit = 7 - (ni % 8);
+      /* v8 ignore next -- nb < rowBytes.length always (ni < totalBits = rowBytes.length * 8); the ?? 0 is an unreachable defensive guard under noUncheckedIndexedAccess */
       const nextBit = ((rowBytes[nb] ?? 0) >> nbit) & 1;
       if (nextBit !== bit) break;
       run++;
@@ -230,6 +232,7 @@ function composeWireBitmap(
 
   // Source slice: the authored content that survives the dead-zone.
   const slice =
+    /* v8 ignore next 2 -- sourceColCount > 0 whenever any printable content survives; the createBitmap(0,…) arm is an unreachable degenerate-input guard (createBitmap rejects width 0 anyway) */
     sourceColCount > 0
       ? cropBitmap(bitmap, sourceColStart, leadingDots, sourceColCount, wireRows)
       : createBitmap(0, wireRows);
