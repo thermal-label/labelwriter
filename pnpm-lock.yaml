@@ -50,13 +50,13 @@ importers:
       '@thermal-label/contracts':
         specifier: ^0.6.0
         version: 0.6.0
-      '@thermal-label/d1-core':
-        specifier: ^0.6.0
-        version: 0.6.0
     devDependencies:
       '@mbtech-nl/tsconfig':
         specifier: ^1.1.0
         version: 1.1.0
+      '@thermal-label/d1-core':
+        specifier: ^0.6.0
+        version: 0.6.0
       '@types/node':
         specifier: ^22.0.0
         version: 22.19.17

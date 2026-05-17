@@ -23,12 +23,12 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import JSON5 from 'json5';
 import { expandVerifications, mapLegacyStatus } from '@thermal-label/contracts';
+import { D1_MEDIA } from '@thermal-label/d1-core';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = resolve(SCRIPT_DIR, '..');
 const DEVICES_DIR = resolve(PACKAGE_ROOT, 'data/devices');
 const MEDIA_FILE = resolve(PACKAGE_ROOT, 'data/media.json5');
-const D1_MEDIA_JSON = resolve(PACKAGE_ROOT, '../../../d1-core/data/media.json');
 const DEVICES_JSON = resolve(PACKAGE_ROOT, 'data/devices.json');
 const MEDIA_JSON = resolve(PACKAGE_ROOT, 'data/media.json');
 const DEVICES_TS = resolve(PACKAGE_ROOT, 'src/devices.generated.ts');
@@ -265,27 +265,17 @@ mediaList.forEach((entry, i) => {
 
 // ─── merge d1-core tape catalogue ─────────────────────────────────────
 //
-// Read d1-core's compiled `data/media.json` and append every tape
-// entry to our local paper list. The compile-time merge gives the
-// generated MEDIA registry a literal-typed key union covering both
-// paper and tape; the alternative — runtime merge in `src/media.ts`
-// — would erase the literal types. d1-core's compile-data must run
-// first; the prebuild step on this package's `package.json` calls
-// it via the workspace override link.
-let d1Media = [];
-try {
-  const parsed = JSON.parse(readFileSync(D1_MEDIA_JSON, 'utf8'));
-  if (!Array.isArray(parsed?.media)) {
-    fail('d1-core media.json', 'expected `.media` to be an array');
-  } else {
-    d1Media = parsed.media;
-  }
-} catch (err) {
-  fail(
-    'd1-core media.json',
-    `read error: ${err.message} — run \`pnpm --dir ../../../d1-core run compile-data\` first`,
-  );
-}
+// Pull d1-core's D1 tape catalogue from the published
+// `@thermal-label/d1-core` package and append every tape entry to our
+// local paper list. The compile-time merge gives the generated MEDIA
+// registry a literal-typed key union covering both paper and tape; the
+// alternative — a runtime merge in `src/media.ts` — would erase the
+// literal types. `D1_MEDIA` is keyed by media key; restore the `key`
+// field onto each entry, the shape the merge below expects.
+const d1Media = Object.entries(D1_MEDIA).map(([key, descriptor]) => ({
+  key,
+  ...descriptor,
+}));
 
 for (const [i, entry] of d1Media.entries()) {
   if (entry?.key && seenMediaKeys.has(entry.key)) {
