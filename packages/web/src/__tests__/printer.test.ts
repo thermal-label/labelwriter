@@ -100,7 +100,6 @@ describe('WebLabelWriterPrinter', () => {
 
   it('serialises getStatus() behind an in-flight print() (plan 15 A3)', async () => {
     const transport = new RecordingTransport();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- LW 450 is in the registry
     const device = findDevice(LW_450.vid, LW_450.pid)!;
     const printer = new WebLabelWriterPrinter(device, transport);
 

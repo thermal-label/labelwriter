@@ -331,3 +331,30 @@ use `build550Restart()` directly with `transport.write()`.
 #### Returns
 
 `Promise`\<`void`\>
+
+***
+
+### runSerialized()
+
+> **runSerialized**\<`T`\>(`fn`): `Promise`\<`T`\>
+
+Run `fn` under this printer's write serializer. Package-internal —
+the per-engine handles in `buildEngineHandles` route their own
+transport-touching `getStatus()` through here so they share the
+same serialization guarantee as the class methods.
+
+#### Type Parameters
+
+##### T
+
+`T`
+
+#### Parameters
+
+##### fn
+
+() => `Promise`\<`T`\>
+
+#### Returns
+
+`Promise`\<`T`\>

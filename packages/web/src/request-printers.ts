@@ -27,9 +27,7 @@ import { DEFAULT_FILTERS, fromUSBDeviceAll } from './printer.js';
  */
 export async function requestPrinters(opts: ConnectOptions): Promise<PrinterAdapterMap> {
   if (opts.transport !== 'usb') {
-    throw new Error(
-      `labelwriter: transport "${opts.transport}" is not supported (USB only)`,
-    );
+    throw new Error(`labelwriter: transport "${opts.transport}" is not supported (USB only)`);
   }
   return requestPrintersUsb(opts);
 }

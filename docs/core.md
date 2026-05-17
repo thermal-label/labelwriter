@@ -30,24 +30,24 @@ pnpm add @thermal-label/labelwriter-core
 
 ## Core exports
 
-| Export                                                                   | Description                                                                   |
-| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| `DEVICES` / `findDevice`                                                 | Device registry (family, transports, engines)                                 |
-| `MEDIA` / `DEFAULT_MEDIA`                                                | Media registry and the 89×28 mm fallback for assumed previews                 |
-| `findMediaByDimensions(w, h)`                                            | Match a 550-status response to a registry entry                               |
-| `STATUS_REQUEST` / `buildStatusRequest(device, lock?)`                   | Static `ESC A` (450) or device-aware status request (550)                     |
-| `parseStatus(device, bytes)`                                             | Parse the status response into `PrinterStatus` (1 / 32 bytes)                 |
-| `statusByteCount(device)`                                                | 1 for `lw-raster`, 32 for `lw5-raster`. `d1-tape` status (also 1 byte) routes through d1-core. |
-| `createPreviewOffline(image, media)`                                     | Render `PreviewResult` without a live printer connection                      |
-| `encodeLabel(device, bitmap, opts, media)`                               | Full job byte stream for `lw-raster`, `lw5-raster`, and `d1-tape` (dispatched on `engine.protocol`) |
-| `isEngineDrivable(engine)` / `isDuoTapeEngine(engine)`                   | Routing helpers for adapters with multiple engines                            |
-| `buildReset`, `buildDensity`, `buildRasterRow`, `build550…`              | Per-command byte builders                                                     |
-| `parseSkuInfo(bytes)` / `parseEngineVersion(bytes)`                      | Parsers for `ESC U` / `ESC V` 550-family responses                            |
-| `LabelWriterDevice`                                                      | Device descriptor type (extends contracts `DeviceDescriptor`)                 |
-| `LabelWriterMedia`                                                       | Media descriptor type (extends contracts `MediaDescriptor`)                   |
-| `LabelWriterPrintOptions`                                                | Protocol options (`density`, `mode`, `compress`, `copies`, `engine`, `jobId`) |
-| `Density`                                                                | `'light' \| 'medium' \| 'normal' \| 'high'`                                   |
-| `PrinterAdapter`, `MediaDescriptor`, `PrinterStatus`, `Transport`, …     | Re-exported from `@thermal-label/contracts`                                   |
+| Export                                                               | Description                                                                                         |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `DEVICES` / `findDevice`                                             | Device registry (family, transports, engines)                                                       |
+| `MEDIA` / `DEFAULT_MEDIA`                                            | Media registry and the 89×28 mm fallback for assumed previews                                       |
+| `findMediaByDimensions(w, h)`                                        | Match a 550-status response to a registry entry                                                     |
+| `STATUS_REQUEST` / `buildStatusRequest(device, lock?)`               | Static `ESC A` (450) or device-aware status request (550)                                           |
+| `parseStatus(device, bytes)`                                         | Parse the status response into `PrinterStatus` (1 / 32 bytes)                                       |
+| `statusByteCount(device)`                                            | 1 for `lw-raster`, 32 for `lw5-raster`. `d1-tape` status (also 1 byte) routes through d1-core.      |
+| `createPreviewOffline(image, media)`                                 | Render `PreviewResult` without a live printer connection                                            |
+| `encodeLabel(device, bitmap, opts, media)`                           | Full job byte stream for `lw-raster`, `lw5-raster`, and `d1-tape` (dispatched on `engine.protocol`) |
+| `isEngineDrivable(engine)` / `isDuoTapeEngine(engine)`               | Routing helpers for adapters with multiple engines                                                  |
+| `buildReset`, `buildDensity`, `buildRasterRow`, `build550…`          | Per-command byte builders                                                                           |
+| `parseSkuInfo(bytes)` / `parseEngineVersion(bytes)`                  | Parsers for `ESC U` / `ESC V` 550-family responses                                                  |
+| `LabelWriterDevice`                                                  | Device descriptor type (extends contracts `DeviceDescriptor`)                                       |
+| `LabelWriterMedia`                                                   | Media descriptor type (extends contracts `MediaDescriptor`)                                         |
+| `LabelWriterPrintOptions`                                            | Protocol options (`density`, `mode`, `compress`, `copies`, `engine`, `jobId`)                       |
+| `Density`                                                            | `'light' \| 'medium' \| 'normal' \| 'high'`                                                         |
+| `PrinterAdapter`, `MediaDescriptor`, `PrinterStatus`, `Transport`, … | Re-exported from `@thermal-label/contracts`                                                         |
 
 ## Encoding a label
 
@@ -72,11 +72,11 @@ transport would point at the wrong endpoint).
 
 ## Per-protocol routing
 
-| Engine `protocol` | Encoder                                          | Status reply | Spec source                    |
-| ----------------- | ------------------------------------------------ | -----------: | ------------------------------ |
-| `lw-raster`       | `encodeLabel(device, …)`                         |       1 byte | LW 450 Series Tech Ref         |
-| `lw5-raster`      | `encodeLabel(device, …)` → `encode550Label`      |     32 bytes | LW 550 Tech Ref                |
-| `d1-tape`         | `encodeLabel(device, …)` → d1-core's `buildPrinterStream` | 1 byte | [d1-core protocol](https://thermal-label.github.io/d1-core/protocol) |
+| Engine `protocol` | Encoder                                                   | Status reply | Spec source                                                          |
+| ----------------- | --------------------------------------------------------- | -----------: | -------------------------------------------------------------------- |
+| `lw-raster`       | `encodeLabel(device, …)`                                  |       1 byte | LW 450 Series Tech Ref                                               |
+| `lw5-raster`      | `encodeLabel(device, …)` → `encode550Label`               |     32 bytes | LW 550 Tech Ref                                                      |
+| `d1-tape`         | `encodeLabel(device, …)` → d1-core's `buildPrinterStream` |       1 byte | [d1-core protocol](https://thermal-label.github.io/d1-core/protocol) |
 
 Adapters with multiple engines (the Duo) use `isDuoTapeEngine(engine)`
 to pick the right transport for status queries (the tape engine

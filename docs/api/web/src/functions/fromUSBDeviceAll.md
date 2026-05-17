@@ -4,7 +4,7 @@
 
 [labelwriter](../../../README.md) / [web/src](../README.md) / fromUSBDeviceAll
 
-# Function: fromUSBDeviceAll()
+# ~~Function: fromUSBDeviceAll()~~
 
 > **fromUSBDeviceAll**(`usbDevice`): `Promise`\<`Record`\<`string`, [`WebLabelWriterPrinter`](../classes/WebLabelWriterPrinter.md)\>\>
 
@@ -23,3 +23,8 @@ picker.
 ## Returns
 
 `Promise`\<`Record`\<`string`, [`WebLabelWriterPrinter`](../classes/WebLabelWriterPrinter.md)\>\>
+
+## Deprecated
+
+Use `requestPrinters({ transport: 'usb' })` from
+  `./request-printers.ts`. Removed once consumers migrate (plan 11).

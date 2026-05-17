@@ -189,6 +189,24 @@ For offline preview without a live connection, use the static
 
 ***
 
+### getEngineVersion()
+
+> **getEngineVersion**(): `Promise`\<`EngineVersion` \| `undefined`\>
+
+Fetch the print engine's HW/FW/PID identity block (`ESC V`,
+550 only). Mirror of the node driver's `getEngineVersion()`.
+
+Named `getEngineVersion` for parity with the node driver
+(`@thermal-label/labelwriter-node`); the harness adapter reads it
+under that name. 550-only — throws `UnsupportedOperationError` on
+every other engine, same shape as `getMedia()`.
+
+#### Returns
+
+`Promise`\<`EngineVersion` \| `undefined`\>
+
+***
+
 ### getMedia()
 
 > **getMedia**(): `Promise`\<`SkuInfo` \| `undefined`\>
@@ -227,6 +245,38 @@ routes by its own engine.
 #### Implementation of
 
 [`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`getStatus`](../../../core/src/interfaces/PrinterAdapter.md#getstatus)
+
+***
+
+### onStatus()
+
+> **onStatus**(`cb`): () => `void`
+
+Subscribe to status updates. LabelWriter firmware (across the
+3xx/4xx/5xx and Duo families) doesn't push unsolicited status
+frames; this is a polling shim built on `pollingOnStatus` from
+contracts, which calls `getStatus()` on first subscribe and then
+every 4 s.
+
+Per plan 11 §`onStatus` parity — every driver-web printer
+implements `onStatus` so the harness shell can collapse its
+push-vs-pull branch in `createStatusPolling.ts` into a single
+subscription path. On the LW Duo each engine instance gets its
+own poll loop (the harness creates one subscription per role).
+
+#### Parameters
+
+##### cb
+
+(`status`) => `void`
+
+#### Returns
+
+() => `void`
+
+#### Implementation of
+
+[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`onStatus`](../../../core/src/interfaces/PrinterAdapter.md#onstatus)
 
 ***
 

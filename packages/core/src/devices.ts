@@ -1,5 +1,10 @@
 import type { DeviceEntry, DeviceRegistry } from '@thermal-label/contracts';
-import { DEVICES, REGISTRY, type DeviceKey, type RegistryDeviceEntry } from './devices.generated.js';
+import {
+  DEVICES,
+  REGISTRY,
+  type DeviceKey,
+  type RegistryDeviceEntry,
+} from './devices.generated.js';
 
 /**
  * Aggregated LabelWriter device registry.

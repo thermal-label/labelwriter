@@ -281,7 +281,10 @@ try {
     d1Media = parsed.media;
   }
 } catch (err) {
-  fail('d1-core media.json', `read error: ${err.message} — run \`pnpm --dir ../../../d1-core run compile-data\` first`);
+  fail(
+    'd1-core media.json',
+    `read error: ${err.message} — run \`pnpm --dir ../../../d1-core run compile-data\` first`,
+  );
 }
 
 for (const [i, entry] of d1Media.entries()) {

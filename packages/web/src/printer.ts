@@ -390,7 +390,9 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // failure the poll loop can absorb.
     const bytes = await this.transport.read(statusByteCount(this.device), STATUS_READ_TIMEOUT_MS);
     // eslint-disable-next-line no-console
-    console.debug(`[lw-web] getStatus read role=${this.engine.role} len=${bytes.length}`);
+    console.debug(
+      `[lw-web] getStatus read role=${this.engine.role} len=${bytes.length.toString()}`,
+    );
     const status = withRollDetails(parseStatus(this.device, bytes), this.rollDetails);
     if (this.lastStatus?.detectedMedia && !status.detectedMedia) {
       this.lastStatus = { ...status, detectedMedia: this.lastStatus.detectedMedia };
@@ -457,9 +459,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
  * Used to avoid doubling roll rows when re-merging an `ESC U` dump
  * onto a status that may already carry stale ones.
  */
-function stripRollDetails(
-  details: readonly StatusDetail[] | undefined,
-): readonly StatusDetail[] {
+function stripRollDetails(details: readonly StatusDetail[] | undefined): readonly StatusDetail[] {
   if (!details) return [];
   return details.filter(d => !d.label.startsWith('Roll '));
 }
@@ -618,29 +618,27 @@ export async function fromUSBDevice(usbDevice: USBDevice): Promise<WebLabelWrite
   const all = await fromUSBDeviceAll(usbDevice);
   // Prefer the lw-* primary so existing single-printer callers (tests,
   // ad-hoc consumers) keep getting a label-class adapter on the Duo.
-  const roles = Object.keys(all);
-  const labelClass = roles.find(r => {
-    const printer = all[r]!;
-    return printer.engine.protocol !== 'd1-tape';
-  });
-  const pickedRole = labelClass ?? roles[0];
-  if (!pickedRole) {
+  const entries = Object.entries(all);
+  const labelClassEntry = entries.find(([, p]) => p.engine.protocol !== 'd1-tape');
+  const pickedEntry = labelClassEntry ?? entries[0];
+  if (!pickedEntry) {
     throw new Error(
       `Device ${usbDevice.vendorId.toString(16)}:${usbDevice.productId.toString(16)} ` +
         `had no drivable engines.`,
     );
   }
+  const [pickedRole, picked] = pickedEntry;
   // Close the unselected engines so we don't leak transports — the
   // back-compat caller asked for one adapter, not the whole record.
-  for (const role of roles) {
+  for (const [role, printer] of entries) {
     if (role === pickedRole) continue;
     try {
-      await all[role]!.close();
+      await printer.close();
     } catch {
       // Best-effort.
     }
   }
-  return all[pickedRole]!;
+  return picked;
 }
 
 /**

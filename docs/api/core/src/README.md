@@ -8,6 +8,7 @@
 
 ## Classes
 
+- [DuoTapeUnavailableError](classes/DuoTapeUnavailableError.md)
 - [MediaNotSpecifiedError](classes/MediaNotSpecifiedError.md)
 - [UnsupportedOperationError](classes/UnsupportedOperationError.md)
 
@@ -32,6 +33,7 @@
 - [PrinterStatus](interfaces/PrinterStatus.md)
 - [PrintOptions](interfaces/PrintOptions.md)
 - [SkuInfo](interfaces/SkuInfo.md)
+- [StatusDetail](interfaces/StatusDetail.md)
 - [Transport](interfaces/Transport.md)
 
 ## Type Aliases
@@ -47,7 +49,6 @@
 
 ## Variables
 
-- [D1\_STATUS\_REQUEST](variables/D1_STATUS_REQUEST.md)
 - [D1\_TAPE\_COLOR\_HEX](variables/D1_TAPE_COLOR_HEX.md)
 - [DEFAULT\_MEDIA](variables/DEFAULT_MEDIA.md)
 - [DEVICES](variables/DEVICES.md)
@@ -83,6 +84,7 @@
 - [build550ShortFormFeed](functions/build550ShortFormFeed.md)
 - [build550StatusRequest](functions/build550StatusRequest.md)
 - [buildDensity](functions/buildDensity.md)
+- [buildDuoTapeStream](functions/buildDuoTapeStream.md)
 - [buildErrorRecovery](functions/buildErrorRecovery.md)
 - [buildFormFeed](functions/buildFormFeed.md)
 - [buildJobHeader](functions/buildJobHeader.md)
@@ -96,7 +98,9 @@
 - [buildStatusRequest](functions/buildStatusRequest.md)
 - [createPreviewOffline](functions/createPreviewOffline.md)
 - [density550Percent](functions/density550Percent.md)
+- [duoTapeStatusRequest](functions/duoTapeStatusRequest.md)
 - [encode550Label](functions/encode550Label.md)
+- [encodeDuoTapeLabel](functions/encodeDuoTapeLabel.md)
 - [encodeLabel](functions/encodeLabel.md)
 - [findDevice](functions/findDevice.md)
 - [findMediaByDimensions](functions/findMediaByDimensions.md)
@@ -104,11 +108,13 @@
 - [findTapeMediaByWidthAll](functions/findTapeMediaByWidthAll.md)
 - [isDuoTapeEngine](functions/isDuoTapeEngine.md)
 - [isEngineDrivable](functions/isEngineDrivable.md)
-- [parseD1Status](functions/parseD1Status.md)
+- [loadD1Core](functions/loadD1Core.md)
+- [parseDuoTapeStatus](functions/parseDuoTapeStatus.md)
 - [parseEngineVersion](functions/parseEngineVersion.md)
 - [parseSkuInfo](functions/parseSkuInfo.md)
 - [parseStatus](functions/parseStatus.md)
 - [pickRotation](functions/pickRotation.md)
+- [skuInfoDetails](functions/skuInfoDetails.md)
 - [skuInfoToMedia](functions/skuInfoToMedia.md)
 - [statusByteCount](functions/statusByteCount.md)
 - [withDetectedMedia](functions/withDetectedMedia.md)

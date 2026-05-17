@@ -44,9 +44,9 @@ encodeLabel(device, bitmap, options, media);
 
 The encoder source:
 
-| File                 | Covers                                                 |
-| -------------------- | ------------------------------------------------------ |
-| `protocol.ts`        | `lw-raster` encoder + the unified dispatcher           |
-| `protocol-550.ts`    | `lw5-raster` encoder, SKU / engine-version parsers     |
-| `status.ts`          | 1-byte (450) / 32-byte (550) status parsers            |
+| File                     | Covers                                             |
+| ------------------------ | -------------------------------------------------- |
+| `protocol.ts`            | `lw-raster` encoder + the unified dispatcher       |
+| `protocol-550.ts`        | `lw5-raster` encoder, SKU / engine-version parsers |
+| `status.ts`              | 1-byte (450) / 32-byte (550) status parsers        |
 | `@thermal-label/d1-core` | `d1-tape` encoder + 1-byte status parser           |

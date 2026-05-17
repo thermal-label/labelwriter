@@ -43,6 +43,7 @@ describe('duo-tape-bridge with d1-core present', () => {
     const tapeEngine = DEVICES.LW_450_DUO.engines.find(e => e.protocol === 'd1-tape');
     if (!tapeEngine) throw new Error('LW_450_DUO missing tape engine');
     const bm = createBitmap(128, 10);
+    // eslint-disable-next-line unicorn/no-useless-undefined -- media is a required `T | undefined` parameter, not optional
     const bytes = await buildDuoTapeStream(bm, tapeEngine, {}, undefined);
     expect(bytes[0]).toBe(0x1b);
     expect(bytes[1]).toBe(0x43); // ESC C — tape-type selector

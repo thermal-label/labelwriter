@@ -4,6 +4,7 @@ export { renderText, renderImage, rotateBitmap, padBitmap, scaleBitmap } from '@
 export type {
   DeviceEntry,
   DeviceRegistry,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated -- retained for consumers during alias transition; remove with DeviceSupport cleanup PR
   DeviceSupport,
   MediaDescriptor,
   PreviewOptions,

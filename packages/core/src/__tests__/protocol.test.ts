@@ -548,13 +548,13 @@ describe('encodeLabel', () => {
       // Fill the whole buffer with 0xff, then mask the trailing bits
       // in each row's last byte (per LabelBitmap invariant: bits past
       // `widthPx` stay zero).
-      (bm.data as Uint8Array).fill(0xff);
+      bm.data.fill(0xff);
       const trailingBits = labelWidthDots % 8;
       if (trailingBits !== 0) {
         const mask = (0xff << (8 - trailingBits)) & 0xff;
         for (let y = 0; y < bm.heightPx; y++) {
           const last = y * stride + (stride - 1);
-          (bm.data as Uint8Array)[last] = (bm.data[last] ?? 0) & mask;
+          bm.data[last] = (bm.data[last] ?? 0) & mask;
         }
       }
 

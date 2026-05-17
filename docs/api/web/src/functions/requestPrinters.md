@@ -6,35 +6,30 @@
 
 # Function: requestPrinters()
 
-> **requestPrinters**(`options?`): `Promise`\<`Record`\<`string`, [`WebLabelWriterPrinter`](../classes/WebLabelWriterPrinter.md)\>\>
+> **requestPrinters**(`opts`): `Promise`\<`Readonly`\<`Record`\<`string`, [`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md)\>\>\>
 
-Show the browser's USB picker and return one `PrinterAdapter` per
-drivable engine on the selected device, keyed by engine role.
+Unified browser-picker factory for the labelwriter driver family.
 
-- Single-engine devices (3xx/4xx/5xx, Twin Turbo) → 1-key record.
-- Multi-interface composites (Duo family — `label` on IF 0, `tape`
-  on IF 1) → N-key record, one transport per engine, one adapter
-  per transport.
+LabelWriter devices are USB-only — the registry declares no other
+transports. Non-USB transports throw immediately.
 
-Each adapter is fully scoped to its engine: `print()` defaults
-`options.engine` to that role; `getStatus()` uses that engine's
-protocol; `close()` closes that engine's transport. The harness shell
-stores the whole record and rebinds the active adapter when the
-operator flips engine tabs.
+USB path: opens the picker, auto-identifies via VID/PID against the
+registry. Composite devices (LW 450 Duo) get one transport per
+engine (label on IF 0, tape on IF 1) so the returned
+`PrinterAdapterMap` has one entry per engine role. Single-engine
+devices return a 1-key map.
 
-Engines that fail to claim (browser refused the interface, IF
-already held by another driver) are omitted from the returned
-record. Callers should check `Object.keys(printers)` against the
-device's engine list to surface partial-claim warnings —
-"rails not walls": the operator can still drive whichever engines
-did open.
+Throws `DeviceIdentificationRequiredError` (with USB-capable
+candidates + a `continueWith` closure reusing the picked
+USBDevice) when the picked device's VID/PID is not in the
+labelwriter registry.
 
 ## Parameters
 
-### options?
+### opts
 
-[`RequestOptions`](../interfaces/RequestOptions.md) = `{}`
+[`ConnectOptions`](../type-aliases/ConnectOptions.md)
 
 ## Returns
 
-`Promise`\<`Record`\<`string`, [`WebLabelWriterPrinter`](../classes/WebLabelWriterPrinter.md)\>\>
+`Promise`\<`Readonly`\<`Record`\<`string`, [`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md)\>\>\>

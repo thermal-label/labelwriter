@@ -13,6 +13,32 @@ auto-detection in subsequent `print()` / `createPreview()` calls.
 
 ## Properties
 
+### battery?
+
+> `optional` **battery?**: `BatteryStatus`
+
+Battery state, when the device has a battery and reports it.
+
+Undefined for AC/USB-powered devices (LabelWriter, brother-ql,
+LabelManager) — only battery-bearing drivers that expose battery
+telemetry, such as the niimbot-class portable printers, populate
+it. See BatteryStatus.
+
+***
+
+### details?
+
+> `optional` **details?**: readonly [`StatusDetail`](StatusDetail.md)[]
+
+Driver-formatted diagnostic rows decoded from the protocol status.
+
+Optional and additive — drivers that decode nothing beyond
+`ready` / `mediaLoaded` / `errors` leave it undefined. Each row is
+a pre-formatted `{label, value}` pair the consumer renders
+verbatim; the driver owns all formatting (see [StatusDetail](StatusDetail.md)).
+
+***
+
 ### detectedMedia?
 
 > `optional` **detectedMedia?**: [`MediaDescriptor`](MediaDescriptor.md)

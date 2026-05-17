@@ -4,7 +4,7 @@
 
 [labelwriter](../../../README.md) / [web/src](../README.md) / fromUSBDevice
 
-# Function: fromUSBDevice()
+# ~~Function: fromUSBDevice()~~
 
 > **fromUSBDevice**(`usbDevice`): `Promise`\<[`WebLabelWriterPrinter`](../classes/WebLabelWriterPrinter.md)\>
 
@@ -26,3 +26,8 @@ the first drivable engine if none speak `lw-*`.
 ## Throws
 
 when the VID/PID is not in the LabelWriter registry.
+
+## Deprecated
+
+Use `requestPrinters({ transport: 'usb' })` from
+  `./request-printers.ts`. Removed once consumers migrate (plan 11).

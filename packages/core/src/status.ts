@@ -230,7 +230,12 @@ function build550Details(bytes: Uint8Array): StatusDetail[] {
   details.push({
     label: 'Bay status',
     value: `${BAY_STATUS_LABELS[bayStatus] ?? 'unknown'} (${String(bayStatus)})`,
-    severity: bayStatus === 9 || bayStatus === 10 ? 'error' : bayStatus >= 6 && bayStatus <= 7 ? 'warn' : 'info',
+    severity:
+      bayStatus === 9 || bayStatus === 10
+        ? 'error'
+        : bayStatus >= 6 && bayStatus <= 7
+          ? 'warn'
+          : 'info',
   });
   details.push({
     label: 'Print head',
@@ -240,7 +245,8 @@ function build550Details(bytes: Uint8Array): StatusDetail[] {
   details.push({
     label: 'Head voltage',
     value: `${HEAD_VOLTAGE_LABELS[headVoltage] ?? 'unknown'} (${String(headVoltage)})`,
-    severity: headVoltage === 3 || headVoltage === 4 ? 'error' : headVoltage === 2 ? 'warn' : 'info',
+    severity:
+      headVoltage === 3 || headVoltage === 4 ? 'error' : headVoltage === 2 ? 'warn' : 'info',
   });
   details.push({ label: 'Print density', value: `${String(density)}%` });
   details.push({

@@ -28,27 +28,27 @@ chassis.
 
 ## Opcode vocabulary
 
-| Opcode                                                           | Bytes           | Description                                                      |
-| ---------------------------------------------------------------- | --------------- | ---------------------------------------------------------------- |
-| [`ESC *`](#esc-—-restore-default-settings)                       | `1B 2A`         | Restore default settings.                                        |
-| [`ESC @`](#esc-—-reset-printer)                                  | `1B 40`         | Reset all parameters; set Top-of-Form true.                      |
-| [`ESC A`](#esc-a-—-get-printer-status)                           | `1B 41`         | Get printer status (1-byte reply).                               |
-| [`ESC B`](#esc-b-—-set-dot-tab)                                  | `1B 42 n`       | Set Dot Tab — skip `n` bytes from the left of each row.          |
-| [`ESC c`](#esc-c-—-set-print-density-light)                      | `1B 63`         | Set print density Light (75 % strobe duty).                      |
-| [`ESC d`](#esc-d-—-set-print-density-medium)                     | `1B 64`         | Set print density Medium (87.5 % strobe duty).                   |
-| [`ESC D`](#esc-d-—-set-bytes-per-line)                           | `1B 44 n`       | Set bytes-per-line for the rows that follow.                     |
-| [`ESC e`](#esc-e-—-set-print-density-normal)                     | `1B 65`         | Set print density Normal (100 % strobe duty).                    |
-| [`ESC E`](#esc-e-—-form-feed)                                    | `1B 45`         | Form feed — advance the printed label to the tear-off bar.       |
-| [`ESC f 1 n`](#esc-f-1-n-—-skip-n-lines)                         | `1B 66 01 n`    | Skip `n` lines (0..255).                                         |
-| [`ESC g`](#esc-g-—-set-print-density-dark)                       | `1B 67`         | Set print density Dark (112.5 % strobe duty).                    |
-| [`ESC G`](#esc-g-—-short-form-feed)                              | `1B 47`         | Short form feed — advance between labels in a multi-label job.   |
-| [`ESC h`](#esc-h-—-text-speed-mode)                              | `1B 68`         | Text Speed mode — 300 × 300 dpi (default).                       |
-| [`ESC i`](#esc-i-—-barcode-and-graphics-mode)                    | `1B 69`         | Barcode and Graphics mode — 300 × 600 dpi.                       |
-| [`ESC L`](#esc-l-—-set-label-length)                             | `1B 4C n1 n2`   | Set label length, big-endian dot count (`n1` = MSB, `n2` = LSB). |
-| [`ESC q`](#esc-q-—-select-roll-twin-turbo)                       | `1B 71 n`       | Select roll (Twin Turbo only): `'0'` auto, `'1'` left, `'2'` right. |
-| [`ESC V`](#esc-v-—-return-revision)                              | `1B 56`         | Return 10-byte ASCII model + firmware revision string.           |
-| [`ETB`](#etb-—-transfer-compressed-print-data)                   | `17` + N        | Transfer one raster line, run-length encoded.                    |
-| [`SYN`](#syn-—-transfer-print-data)                              | `16` + N        | Transfer one raster line, uncompressed.                          |
+| Opcode                                         | Bytes         | Description                                                         |
+| ---------------------------------------------- | ------------- | ------------------------------------------------------------------- |
+| [`ESC *`](#esc-—-restore-default-settings)     | `1B 2A`       | Restore default settings.                                           |
+| [`ESC @`](#esc-—-reset-printer)                | `1B 40`       | Reset all parameters; set Top-of-Form true.                         |
+| [`ESC A`](#esc-a-—-get-printer-status)         | `1B 41`       | Get printer status (1-byte reply).                                  |
+| [`ESC B`](#esc-b-—-set-dot-tab)                | `1B 42 n`     | Set Dot Tab — skip `n` bytes from the left of each row.             |
+| [`ESC c`](#esc-c-—-set-print-density-light)    | `1B 63`       | Set print density Light (75 % strobe duty).                         |
+| [`ESC d`](#esc-d-—-set-print-density-medium)   | `1B 64`       | Set print density Medium (87.5 % strobe duty).                      |
+| [`ESC D`](#esc-d-—-set-bytes-per-line)         | `1B 44 n`     | Set bytes-per-line for the rows that follow.                        |
+| [`ESC e`](#esc-e-—-set-print-density-normal)   | `1B 65`       | Set print density Normal (100 % strobe duty).                       |
+| [`ESC E`](#esc-e-—-form-feed)                  | `1B 45`       | Form feed — advance the printed label to the tear-off bar.          |
+| [`ESC f 1 n`](#esc-f-1-n-—-skip-n-lines)       | `1B 66 01 n`  | Skip `n` lines (0..255).                                            |
+| [`ESC g`](#esc-g-—-set-print-density-dark)     | `1B 67`       | Set print density Dark (112.5 % strobe duty).                       |
+| [`ESC G`](#esc-g-—-short-form-feed)            | `1B 47`       | Short form feed — advance between labels in a multi-label job.      |
+| [`ESC h`](#esc-h-—-text-speed-mode)            | `1B 68`       | Text Speed mode — 300 × 300 dpi (default).                          |
+| [`ESC i`](#esc-i-—-barcode-and-graphics-mode)  | `1B 69`       | Barcode and Graphics mode — 300 × 600 dpi.                          |
+| [`ESC L`](#esc-l-—-set-label-length)           | `1B 4C n1 n2` | Set label length, big-endian dot count (`n1` = MSB, `n2` = LSB).    |
+| [`ESC q`](#esc-q-—-select-roll-twin-turbo)     | `1B 71 n`     | Select roll (Twin Turbo only): `'0'` auto, `'1'` left, `'2'` right. |
+| [`ESC V`](#esc-v-—-return-revision)            | `1B 56`       | Return 10-byte ASCII model + firmware revision string.              |
+| [`ETB`](#etb-—-transfer-compressed-print-data) | `17` + N      | Transfer one raster line, run-length encoded.                       |
+| [`SYN`](#syn-—-transfer-print-data)            | `16` + N      | Transfer one raster line, uncompressed.                             |
 
 `n` is a single byte unless otherwise noted. All multi-byte counts
 are stated explicitly in each opcode's section — `ESC L` is the only
@@ -93,7 +93,7 @@ Resets all internal parameters to their defaults. Acted upon when
 received. The byte stream the LabelWriter encoder ships uses
 [`ESC @`](#esc-—-reset-printer) at the head of a job instead.
 
-*LabelWriter 450 Series Technical Reference*, p. 17.
+_LabelWriter 450 Series Technical Reference_, p. 17.
 
 ## `ESC @` — reset printer
 
@@ -105,7 +105,7 @@ Resets Dot Tab, bytes-per-line, label length, and other parameters to
 their defaults, and sets Top-of-Form true. Any data still in the
 print buffer is discarded. Emitted as the first command of every job.
 
-*LabelWriter 450 Series Technical Reference*, p. 17.
+_LabelWriter 450 Series Technical Reference_, p. 17.
 
 ## `ESC A` — get printer status
 
@@ -116,19 +116,19 @@ print buffer is discarded. Emitted as the first command of every job.
 The printer replies with **one byte** on the IN endpoint. Bit
 meanings (1 = condition holds):
 
-| Bit  | Mask   | Meaning                                                |
-| ---: | -----: | ------------------------------------------------------ |
-|    0 | `0x01` | Ready (paper in, no jam). Always returned as 1.        |
-|    1 | `0x02` | Top of Form.                                           |
-|    5 | `0x20` | No paper / labels.                                     |
-|    6 | `0x40` | Paper jam.                                             |
-|    7 | `0x80` | Printer error (jam, invalid sequence, and so on).      |
+| Bit |   Mask | Meaning                                           |
+| --: | -----: | ------------------------------------------------- |
+|   0 | `0x01` | Ready (paper in, no jam). Always returned as 1.   |
+|   1 | `0x02` | Top of Form.                                      |
+|   5 | `0x20` | No paper / labels.                                |
+|   6 | `0x40` | Paper jam.                                        |
+|   7 | `0x80` | Printer error (jam, invalid sequence, and so on). |
 
 Bits 2, 3, 4 are reserved. A healthy idle printer returns `0x03`
 (Ready + Top of Form). Bit 7 is also set when an out-of-paper
 condition is detected.
 
-*LabelWriter 450 Series Technical Reference*, p. 17.
+_LabelWriter 450 Series Technical Reference_, p. 17.
 
 ## `ESC B` — set Dot Tab
 
@@ -142,7 +142,7 @@ Shifts the starting dot position to the right by `n` bytes (i.e.
 must be decreased by the same amount; the firmware does not
 cross-check the two values, so the host must keep them consistent.
 
-*LabelWriter 450 Series Technical Reference*, p. 15.
+_LabelWriter 450 Series Technical Reference_, p. 15.
 
 ## `ESC c` — set print density Light
 
@@ -152,7 +152,7 @@ cross-check the two values, so the host must keep them consistent.
 
 Sets the strobe time to 75 % of the standard duty cycle.
 
-*LabelWriter 450 Series Technical Reference*, p. 19.
+_LabelWriter 450 Series Technical Reference_, p. 19.
 
 ## `ESC d` — set print density Medium
 
@@ -162,7 +162,7 @@ Sets the strobe time to 75 % of the standard duty cycle.
 
 Sets the strobe time to 87.5 % of the standard duty cycle.
 
-*LabelWriter 450 Series Technical Reference*, p. 19.
+_LabelWriter 450 Series Technical Reference_, p. 19.
 
 ## `ESC D` — set bytes per line
 
@@ -176,7 +176,7 @@ default is `84` (`84 × 8 = 672` dots). For the 1248-dot 4XL head the
 value is `156`. The firmware does not validate `n` against the head
 width; out-of-range values produce undefined output.
 
-*LabelWriter 450 Series Technical Reference*, p. 15.
+_LabelWriter 450 Series Technical Reference_, p. 15.
 
 ## `ESC e` — set print density Normal
 
@@ -187,7 +187,7 @@ width; out-of-range values produce undefined output.
 Sets the strobe time to 100 % of the standard duty cycle. This is
 the default.
 
-*LabelWriter 450 Series Technical Reference*, p. 19.
+_LabelWriter 450 Series Technical Reference_, p. 19.
 
 ## `ESC E` — form feed
 
@@ -202,7 +202,7 @@ label prints. In continuous-feed mode (negative `ESC L` value), this
 feeds enough dot lines to push the last printed line past the tear
 bar instead.
 
-*LabelWriter 450 Series Technical Reference*, p. 16.
+_LabelWriter 450 Series Technical Reference_, p. 16.
 
 ## `ESC f 1 n` — skip `n` lines
 
@@ -216,7 +216,7 @@ or [`ESC i`](#esc-i-—-barcode-and-graphics-mode)). The literal `0x01`
 byte is part of the opcode, not a parameter. Buffered with the print
 data so it takes effect inline; emitted once per skip.
 
-*LabelWriter 450 Series Technical Reference*, pp. 17–18.
+_LabelWriter 450 Series Technical Reference_, pp. 17–18.
 
 ## `ESC g` — set print density Dark
 
@@ -226,7 +226,7 @@ data so it takes effect inline; emitted once per skip.
 
 Sets the strobe time to 112.5 % of the standard duty cycle.
 
-*LabelWriter 450 Series Technical Reference*, p. 19.
+_LabelWriter 450 Series Technical Reference_, p. 19.
 
 ## `ESC G` — short form feed
 
@@ -240,7 +240,7 @@ previous label remains partially inside the printer and cannot be
 torn off. Use between labels in a multi-label job; the final label
 needs `ESC E` to reach the tear-off position.
 
-*LabelWriter 450 Series Technical Reference*, p. 16.
+_LabelWriter 450 Series Technical Reference_, p. 16.
 
 ## `ESC h` — Text Speed mode
 
@@ -250,7 +250,7 @@ needs `ESC E` to reach the tear-off position.
 
 Selects 300 × 300 dpi printing — the default, high-speed mode.
 
-*LabelWriter 450 Series Technical Reference*, p. 18.
+_LabelWriter 450 Series Technical Reference_, p. 18.
 
 ## `ESC i` — Barcode and Graphics mode
 
@@ -263,7 +263,7 @@ the feed direction per dot row, producing smaller and more precise
 dots at the cost of speed. Useful for small barcodes and
 detail-sensitive graphics.
 
-*LabelWriter 450 Series Technical Reference*, p. 18.
+_LabelWriter 450 Series Technical Reference_, p. 18.
 
 ## `ESC L` — set label length
 
@@ -287,7 +287,7 @@ continuous-feed mode, in which `ESC E` and `ESC G` feed a fixed
 number of dot lines from the current position rather than seeking a
 top-of-form mark.
 
-*LabelWriter 450 Series Technical Reference*, p. 16.
+_LabelWriter 450 Series Technical Reference_, p. 16.
 
 ## `ESC q` — select roll (Twin Turbo)
 
@@ -297,16 +297,16 @@ top-of-form mark.
 
 Twin Turbo only. `n` selects the source roll:
 
-| Byte           | Selection                                                  |
-| -------------- | ---------------------------------------------------------- |
-| `'0'` (`0x30`) | Automatic — firmware toggles between rolls as they empty.  |
-| `'1'` (`0x31`) | Left roll.                                                 |
-| `'2'` (`0x32`) | Right roll.                                                |
+| Byte           | Selection                                                 |
+| -------------- | --------------------------------------------------------- |
+| `'0'` (`0x30`) | Automatic — firmware toggles between rolls as they empty. |
+| `'1'` (`0x31`) | Left roll.                                                |
+| `'2'` (`0x32`) | Right roll.                                               |
 
 In Automatic mode the firmware assumes both rolls carry the same
 media.
 
-*LabelWriter 450 Series Technical Reference*, pp. 16–17.
+_LabelWriter 450 Series Technical Reference_, pp. 16–17.
 
 ## `ESC V` — return revision
 
@@ -322,7 +322,7 @@ Returns a 10-byte ASCII string on the IN endpoint:
 
 Example reply: `98039v0K`.
 
-*LabelWriter 450 Series Technical Reference*, p. 18.
+_LabelWriter 450 Series Technical Reference_, p. 18.
 
 ## `SYN` — transfer print data
 
@@ -341,7 +341,7 @@ After receiving `0x16`, the firmware ingests exactly `N` bytes as
 raster pixels, treating any embedded `ESC`, `SYN`, or `ETB` bytes as
 pixel data — there is no escape mechanism inside a raster row.
 
-*LabelWriter 450 Series Technical Reference*, p. 18.
+_LabelWriter 450 Series Technical Reference_, p. 18.
 
 ## `ETB` — transfer compressed print data
 
@@ -353,17 +353,17 @@ pixel data — there is no escape mechanism inside a raster row.
 raster line that decodes to exactly `8 × N` pixels, where `N` is the
 current bytes-per-line. Each compressed byte encodes one run:
 
-| Bit | Function          | Value                                   |
-| --: | ----------------- | --------------------------------------- |
-|   7 | Pixel colour      | `0` = white, `1` = black                |
-| 6–0 | Run length − 1    | `0..127` (so run length is `1..128`)    |
+| Bit | Function       | Value                                |
+| --: | -------------- | ------------------------------------ |
+|   7 | Pixel colour   | `0` = white, `1` = black             |
+| 6–0 | Run length − 1 | `0..127` (so run length is `1..128`) |
 
 Examples: `00` = 1 white pixel; `80` = 1 black pixel; `0F` = 16 white
 pixels; `FF` = 128 black pixels. The sum of pixels per line must
 equal `bytesPerLine × 8`; no error checking is done. Compressed and
 uncompressed rows may be intermixed.
 
-*LabelWriter 450 Series Technical Reference*, p. 21 (Appendix A).
+_LabelWriter 450 Series Technical Reference_, p. 21 (Appendix A).
 
 ## Synchronisation recovery
 
@@ -376,7 +376,7 @@ back to a command-accepting state the host can send 85 consecutive
 the run is guaranteed to exhaust any in-progress raster expectation
 and leave the parser looking for a command byte.
 
-*LabelWriter 450 Series Technical Reference*, p. 9.
+_LabelWriter 450 Series Technical Reference_, p. 9.
 
 ## References
 

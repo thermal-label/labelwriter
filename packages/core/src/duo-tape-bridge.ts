@@ -54,7 +54,7 @@ interface D1CoreModule {
  */
 export async function loadD1Core(): Promise<D1CoreModule> {
   try {
-    return (await import('@thermal-label/d1-core')) as D1CoreModule;
+    return await import('@thermal-label/d1-core');
   } catch (err) {
     // Node sets `err.code === 'ERR_MODULE_NOT_FOUND'`; Vite/Rollup
     // surface a generic "Failed to fetch dynamically imported module"

@@ -31,26 +31,26 @@ the 5XL. All chassis print at 300 dpi.
 
 ## Opcode vocabulary
 
-| Opcode                                                 | Bytes               | Description                                       |
-| ------------------------------------------------------ | ------------------- | ------------------------------------------------- |
-| [`ESC @`](#esc-—-restart-print-engine)                 | `1B 40`             | Restart print engine (reboot).                    |
-| [`ESC *`](#esc-—-restore-factory-settings)             | `1B 24`             | Restore factory settings.                         |
-| [`ESC A`](#esc-a-—-request-print-engine-status)        | `1B 41 nn`          | Request print engine status (lock byte selects).  |
-| [`ESC C`](#esc-c-—-set-print-density)                  | `1B 43 nn`          | Set print density (duty 0..200 %).                |
-| [`ESC D`](#esc-d-—-start-of-label-print-data)          | `1B 44 …`           | Start of label print data (12-byte header).       |
-| [`ESC e`](#esc-e-—-reset-print-density)                | `1B 65`             | Reset print density to 100 %.                     |
-| [`ESC E`](#esc-e-—-feed-to-tear-position)              | `1B 45`             | Feed to tear position (long form feed).           |
-| [`ESC G`](#esc-g-—-feed-to-print-head)                 | `1B 47`             | Feed to print head (short form feed).             |
-| [`ESC h`](#esc-h-esc-i-—-output-mode)                 | `1B 68`             | Select text output mode.                          |
-| [`ESC i`](#esc-h-esc-i-—-output-mode)                 | `1B 69`             | Select graphics output mode.                      |
-| [`ESC L`](#esc-l-—-set-maximum-label-length)           | `1B 4C …`           | Set maximum label length (continuous stock).      |
-| [`ESC n`](#esc-n-—-set-label-index)                    | `1B 6E N N N N`     | Set label index (u32 LE).                         |
-| [`ESC o`](#esc-o-—-set-label-count)                    | `1B 6F nn`          | Set label count.                                  |
-| [`ESC Q`](#esc-q-—-end-of-print-job)                   | `1B 51`             | End of print job (mandatory trailer).             |
-| [`ESC s`](#esc-s-—-start-of-print-job)                 | `1B 73 N N N N`     | Start of print job (u32 LE Job ID).               |
-| [`ESC T`](#esc-t-—-set-content-type)                   | `1B 74 nn`          | Set content type / speed mode.                    |
-| [`ESC U`](#esc-u-—-get-sku-information)                | `1B 55`             | Get SKU information (63-byte NFC dump).           |
-| [`ESC V`](#esc-v-—-get-engine-version)                 | `1B 56`             | Get engine version (34-byte HW/FW/PID block).     |
+| Opcode                                          | Bytes           | Description                                      |
+| ----------------------------------------------- | --------------- | ------------------------------------------------ |
+| [`ESC @`](#esc-—-restart-print-engine)          | `1B 40`         | Restart print engine (reboot).                   |
+| [`ESC *`](#esc-—-restore-factory-settings)      | `1B 24`         | Restore factory settings.                        |
+| [`ESC A`](#esc-a-—-request-print-engine-status) | `1B 41 nn`      | Request print engine status (lock byte selects). |
+| [`ESC C`](#esc-c-—-set-print-density)           | `1B 43 nn`      | Set print density (duty 0..200 %).               |
+| [`ESC D`](#esc-d-—-start-of-label-print-data)   | `1B 44 …`       | Start of label print data (12-byte header).      |
+| [`ESC e`](#esc-e-—-reset-print-density)         | `1B 65`         | Reset print density to 100 %.                    |
+| [`ESC E`](#esc-e-—-feed-to-tear-position)       | `1B 45`         | Feed to tear position (long form feed).          |
+| [`ESC G`](#esc-g-—-feed-to-print-head)          | `1B 47`         | Feed to print head (short form feed).            |
+| [`ESC h`](#esc-h-esc-i-—-output-mode)           | `1B 68`         | Select text output mode.                         |
+| [`ESC i`](#esc-h-esc-i-—-output-mode)           | `1B 69`         | Select graphics output mode.                     |
+| [`ESC L`](#esc-l-—-set-maximum-label-length)    | `1B 4C …`       | Set maximum label length (continuous stock).     |
+| [`ESC n`](#esc-n-—-set-label-index)             | `1B 6E N N N N` | Set label index (u32 LE).                        |
+| [`ESC o`](#esc-o-—-set-label-count)             | `1B 6F nn`      | Set label count.                                 |
+| [`ESC Q`](#esc-q-—-end-of-print-job)            | `1B 51`         | End of print job (mandatory trailer).            |
+| [`ESC s`](#esc-s-—-start-of-print-job)          | `1B 73 N N N N` | Start of print job (u32 LE Job ID).              |
+| [`ESC T`](#esc-t-—-set-content-type)            | `1B 74 nn`      | Set content type / speed mode.                   |
+| [`ESC U`](#esc-u-—-get-sku-information)         | `1B 55`         | Get SKU information (63-byte NFC dump).          |
+| [`ESC V`](#esc-v-—-get-engine-version)          | `1B 56`         | Get engine version (34-byte HW/FW/PID block).    |
 
 All multi-byte integers are little-endian.
 
@@ -83,8 +83,8 @@ ESC Q                        — end of print job (mandatory)
 the job. Between labels, use `ESC G`; after the last label, use
 `ESC E` so the printed label reaches the tear bar. The `ESC s` job
 ID is echoed back in every status reply during the job so the host
-can correlate. See *LabelWriter 550 Series Printers Technical
-Reference Manual*, pp. 4–6, for the job-structure diagram.
+can correlate. See _LabelWriter 550 Series Printers Technical
+Reference Manual_, pp. 4–6, for the job-structure diagram.
 
 The print data follows the `ESC D` header **directly** — no `SYN`
 prefix, no per-row framing, no length byte. Row width is fixed by
@@ -130,39 +130,39 @@ manual. The hex is authoritative on the wire.
 
 Three-byte form. The `lock` byte selects the request type:
 
-| `lock` | Purpose                                                |
-| -----: | ------------------------------------------------------ |
-|    `0` | No lock — heartbeat / status query                     |
-|    `1` | Lock interface for printing (acquire before a job)     |
-|    `2` | Status query between labels in an active print job     |
+| `lock` | Purpose                                            |
+| -----: | -------------------------------------------------- |
+|    `0` | No lock — heartbeat / status query                 |
+|    `1` | Lock interface for printing (acquire before a job) |
+|    `2` | Status query between labels in an active print job |
 
 The printer replies with **32 bytes** on the IN endpoint:
 
-| Offset | Field             | Type   | Notes                                                            |
-| -----: | ----------------- | ------ | ---------------------------------------------------------------- |
-|      0 | Print status      | u8     | See sub-state table below.                                       |
-|    1–4 | Job ID            | u32 LE | Echoes the most recent `ESC s`. `0` when idle.                   |
-|    5–6 | Label index       | u16 LE | Echoes the current `ESC n`.                                      |
-|      7 | Reserved          | u8     | Default `0`.                                                     |
-|      8 | Print-head status | u8     | `0` ok · `1` overheated · `2` status unknown (default).          |
-|      9 | Print density     | u8     | Duty percent. `0` disables printing; `1..200` is the duty value. |
-|     10 | Main bay status   | u8     | NFC media diagnostic — see table below.                          |
-|  11–22 | SKU number        | char × 12 | 12-byte ASCII SKU of the inserted consumable. `0` = empty.   |
-|  23–26 | Error ID          | u32 LE | `0` = no error; non-zero = error code.                           |
-|  27–28 | Label count       | u16 LE | Remaining labels on the inserted roll. `0` = empty.              |
-|     29 | EPS status        | u8     | Bit 0 = external power supply present. Bits 4–7 reserved.        |
-|     30 | Print-head voltage| u8     | `0` unknown · `1` ok · `2` low · `3` critically low · `4` too low for printing. |
-|     31 | Reserved          | u8     | Default `0xFF`.                                                  |
+| Offset | Field              | Type      | Notes                                                                           |
+| -----: | ------------------ | --------- | ------------------------------------------------------------------------------- |
+|      0 | Print status       | u8        | See sub-state table below.                                                      |
+|    1–4 | Job ID             | u32 LE    | Echoes the most recent `ESC s`. `0` when idle.                                  |
+|    5–6 | Label index        | u16 LE    | Echoes the current `ESC n`.                                                     |
+|      7 | Reserved           | u8        | Default `0`.                                                                    |
+|      8 | Print-head status  | u8        | `0` ok · `1` overheated · `2` status unknown (default).                         |
+|      9 | Print density      | u8        | Duty percent. `0` disables printing; `1..200` is the duty value.                |
+|     10 | Main bay status    | u8        | NFC media diagnostic — see table below.                                         |
+|  11–22 | SKU number         | char × 12 | 12-byte ASCII SKU of the inserted consumable. `0` = empty.                      |
+|  23–26 | Error ID           | u32 LE    | `0` = no error; non-zero = error code.                                          |
+|  27–28 | Label count        | u16 LE    | Remaining labels on the inserted roll. `0` = empty.                             |
+|     29 | EPS status         | u8        | Bit 0 = external power supply present. Bits 4–7 reserved.                       |
+|     30 | Print-head voltage | u8        | `0` unknown · `1` ok · `2` low · `3` critically low · `4` too low for printing. |
+|     31 | Reserved           | u8        | Default `0xFF`.                                                                 |
 
 ### Print-status sub-states (byte 0)
 
-| Value | Meaning                                                            |
-| ----: | ------------------------------------------------------------------ |
-|   `0` | Idle — lock held by this host.                                     |
-|   `1` | Printing.                                                          |
-|   `2` | Error.                                                             |
-|   `3` | Cancel.                                                            |
-|   `4` | Printer just woke from standby.                                    |
+| Value | Meaning                                                                                                                               |
+| ----: | ------------------------------------------------------------------------------------------------------------------------------------- |
+|   `0` | Idle — lock held by this host.                                                                                                        |
+|   `1` | Printing.                                                                                                                             |
+|   `2` | Error.                                                                                                                                |
+|   `3` | Cancel.                                                                                                                               |
+|   `4` | Printer just woke from standby.                                                                                                       |
 |   `5` | Status reply **before** the lock is granted to the requesting host (i.e. another host holds the lock, or the printer hasn't decided). |
 
 Values `0`..`3` only appear once the lock has been granted to the
@@ -176,24 +176,24 @@ NFC-derived diagnostic of the loaded roll. The 550 chassis reads
 an NFC tag embedded in every genuine spool; non-genuine media is
 detected here and printing is refused.
 
-| Code | Meaning                          |
-| ---: | -------------------------------- |
-|  `0` | Bay status unknown.              |
-|  `1` | Bay open; media presence unknown.|
-|  `2` | No media present.                |
-|  `3` | Media not inserted properly.     |
-|  `4` | Media present — status unknown.  |
-|  `5` | Media present — empty.           |
-|  `6` | Media present — critically low.  |
-|  `7` | Media present — low.             |
-|  `8` | Media present — ok.              |
-|  `9` | Media present — jammed.          |
-| `10` | Media present — counterfeit.     |
+| Code | Meaning                           |
+| ---: | --------------------------------- |
+|  `0` | Bay status unknown.               |
+|  `1` | Bay open; media presence unknown. |
+|  `2` | No media present.                 |
+|  `3` | Media not inserted properly.      |
+|  `4` | Media present — status unknown.   |
+|  `5` | Media present — empty.            |
+|  `6` | Media present — critically low.   |
+|  `7` | Media present — low.              |
+|  `8` | Media present — ok.               |
+|  `9` | Media present — jammed.           |
+| `10` | Media present — counterfeit.      |
 
 Code `10` is surfaced by firmware when the inserted spool fails NFC
 validation. The host cannot bypass this — the check happens during
-cassette insertion, independent of the wire protocol. See *Label
-Length*, Tech Ref p. 7: "Only authentic Dymo labels with a valid
+cassette insertion, independent of the wire protocol. See _Label
+Length_, Tech Ref p. 7: "Only authentic Dymo labels with a valid
 NFC Tag can be used for printing."
 
 ## `ESC C` — set print density
@@ -215,13 +215,13 @@ output, higher values darker. The setting persists until reset by
 
 12-byte fixed header followed immediately by the raster payload.
 
-| Field        | Bytes  | Meaning                                                       |
-| ------------ | -----: | ------------------------------------------------------------- |
-| `bpp`        |      1 | Bits per pixel. Default `1`.                                  |
-| `align`      |      1 | Print alignment. `2` = bottom (the only documented value).    |
-| `width`      |   4 LE | Number of raster lines along the feed direction (u32).        |
-| `height`     |   4 LE | Number of dots per raster line, across the head (u32).        |
-| `print data` |      … | `width × ceil(height × bpp / 8)` bytes, contiguous.           |
+| Field        | Bytes | Meaning                                                    |
+| ------------ | ----: | ---------------------------------------------------------- |
+| `bpp`        |     1 | Bits per pixel. Default `1`.                               |
+| `align`      |     1 | Print alignment. `2` = bottom (the only documented value). |
+| `width`      |  4 LE | Number of raster lines along the feed direction (u32).     |
+| `height`     |  4 LE | Number of dots per raster line, across the head (u32).     |
+| `print data` |     … | `width × ceil(height × bpp / 8)` bytes, contiguous.        |
 
 Axis convention per the Tech Ref p. 12 diagram: `width` is the
 feed-direction line count; `height` is the cross-head dot count.
@@ -346,8 +346,8 @@ the job. Any 32-bit value is acceptable.
 1B 74 <speed>
 ```
 
-| `speed` | Mode          |
-| ------: | ------------- |
+| `speed` | Mode                   |
+| ------: | ---------------------- |
 |  `0x10` | Normal speed (default) |
 |  `0x20` | High speed             |
 
@@ -364,39 +364,39 @@ p. 8 — the LW 5XL does not support high speed at all).
 Retrieves the NFC dump of the inserted consumable. The printer
 replies with a **63-byte** structure (Tech Ref, pp. 16–19):
 
-| Offset | Field                       | Type    | Notes                                                  |
-| -----: | --------------------------- | ------- | ------------------------------------------------------ |
-|    0–1 | Magic                       | u16 LE  | `0xCAB6` — validates the response.                     |
-|      2 | Version                     | u8      | Currently `'0'`.                                       |
-|      3 | Length                      | u8      | Payload length.                                        |
-|    4–5 | CRC                         | u16 LE  | CRC over payload.                                      |
-|   8–19 | SKU number                  | char × 12 | ASCII SKU.                                           |
-|     20 | Brand ID                    | u8      | `0x00` = DYMO, `0x01..0xFF` undefined.                 |
-|     21 | Region                      | u8      | `0xFF` = global.                                       |
-|     22 | Material type               | u8      | `0x00` card · `0x01` clear · `0x02` durable · `0x03` paper · `0x04` permanent · `0x05` plastic · `0x06` removable · `0x07` time-exp. |
-|     23 | Label type                  | u8      | `0x00` continuous · `0x01` die · `0x02` card.          |
-|     24 | Label colour                | u8      | `0x00` clear · `0x01` white · `0x02` pink · `0x03` yellow · `0x04` green · `0x05` blue. |
-|     25 | Content colour              | u8      | `0x00` black · `0x01` red/black.                       |
-|     26 | Marker type                 | u8      | Marker / cut-edge geometry; values `0x00..0x03`.       |
-|     27 | Reserved                    | u8      |                                                        |
-|  28–29 | Marker pitch                | u16 LE  | Length in mm.                                          |
-|  30–31 | Marker 1 width              | u16 LE  | Length in mm.                                          |
-|  32–33 | Marker 1 to start of label  | u16 LE  | Length in mm.                                          |
-|  34–35 | Marker 2 width              | u16 LE  | Length in mm.                                          |
-|  36–37 | Marker 2 offset             | u16 LE  | Length in mm.                                          |
-|  38–39 | Vertical offset             | u16 LE  | Length in mm.                                          |
-|  40–41 | Label length                | u16 LE  | Length in mm. `0` / `0xFFFF` for continuous stock.     |
-|  42–43 | Label width                 | u16 LE  | Length in mm.                                          |
-|  44–45 | Printable area H. offset    | u16 LE  | Length in mm.                                          |
-|  46–47 | Printable area V. offset    | u16 LE  | Length in mm.                                          |
-|  48–49 | Liner width                 | u16 LE  | Length in mm.                                          |
-|  50–51 | Total label count           | u16 LE  | Labels on a full roll.                                 |
-|  52–53 | Total length                | u16 LE  | Roll length in mm.                                     |
-|  54–55 | Counter margin              | u16 LE  | Used by the printer to compute labels remaining.       |
-|     56 | Counter strategy            | u8      | `0x00` = count up from `0x0000`; `0x01` = count down from `0xFFFF - amount - margin`. |
-|  57–59 | Reserved                    |         |                                                        |
-|  60–61 | Production date             | ASCII × 2 | `DDYY` format.                                       |
-|  62–63 | Production time             | ASCII × 2 | `HHMM` format.                                       |
+| Offset | Field                      | Type      | Notes                                                                                                                                |
+| -----: | -------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+|    0–1 | Magic                      | u16 LE    | `0xCAB6` — validates the response.                                                                                                   |
+|      2 | Version                    | u8        | Currently `'0'`.                                                                                                                     |
+|      3 | Length                     | u8        | Payload length.                                                                                                                      |
+|    4–5 | CRC                        | u16 LE    | CRC over payload.                                                                                                                    |
+|   8–19 | SKU number                 | char × 12 | ASCII SKU.                                                                                                                           |
+|     20 | Brand ID                   | u8        | `0x00` = DYMO, `0x01..0xFF` undefined.                                                                                               |
+|     21 | Region                     | u8        | `0xFF` = global.                                                                                                                     |
+|     22 | Material type              | u8        | `0x00` card · `0x01` clear · `0x02` durable · `0x03` paper · `0x04` permanent · `0x05` plastic · `0x06` removable · `0x07` time-exp. |
+|     23 | Label type                 | u8        | `0x00` continuous · `0x01` die · `0x02` card.                                                                                        |
+|     24 | Label colour               | u8        | `0x00` clear · `0x01` white · `0x02` pink · `0x03` yellow · `0x04` green · `0x05` blue.                                              |
+|     25 | Content colour             | u8        | `0x00` black · `0x01` red/black.                                                                                                     |
+|     26 | Marker type                | u8        | Marker / cut-edge geometry; values `0x00..0x03`.                                                                                     |
+|     27 | Reserved                   | u8        |                                                                                                                                      |
+|  28–29 | Marker pitch               | u16 LE    | Length in mm.                                                                                                                        |
+|  30–31 | Marker 1 width             | u16 LE    | Length in mm.                                                                                                                        |
+|  32–33 | Marker 1 to start of label | u16 LE    | Length in mm.                                                                                                                        |
+|  34–35 | Marker 2 width             | u16 LE    | Length in mm.                                                                                                                        |
+|  36–37 | Marker 2 offset            | u16 LE    | Length in mm.                                                                                                                        |
+|  38–39 | Vertical offset            | u16 LE    | Length in mm.                                                                                                                        |
+|  40–41 | Label length               | u16 LE    | Length in mm. `0` / `0xFFFF` for continuous stock.                                                                                   |
+|  42–43 | Label width                | u16 LE    | Length in mm.                                                                                                                        |
+|  44–45 | Printable area H. offset   | u16 LE    | Length in mm.                                                                                                                        |
+|  46–47 | Printable area V. offset   | u16 LE    | Length in mm.                                                                                                                        |
+|  48–49 | Liner width                | u16 LE    | Length in mm.                                                                                                                        |
+|  50–51 | Total label count          | u16 LE    | Labels on a full roll.                                                                                                               |
+|  52–53 | Total length               | u16 LE    | Roll length in mm.                                                                                                                   |
+|  54–55 | Counter margin             | u16 LE    | Used by the printer to compute labels remaining.                                                                                     |
+|     56 | Counter strategy           | u8        | `0x00` = count up from `0x0000`; `0x01` = count down from `0xFFFF - amount - margin`.                                                |
+|  57–59 | Reserved                   |           |                                                                                                                                      |
+|  60–61 | Production date            | ASCII × 2 | `DDYY` format.                                                                                                                       |
+|  62–63 | Production time            | ASCII × 2 | `HHMM` format.                                                                                                                       |
 
 The Marker / Counter Strategy fields cover both die-cut and
 continuous variants; many fields are `0` / `0xFFFF` on continuous
@@ -415,18 +415,18 @@ the 63-Byte response to ESC U").
 Retrieves the hardware / firmware identity block. The printer
 replies with **34 bytes** (Tech Ref, p. 20):
 
-| Offset | Field           | Type        | Notes                                          |
-| -----: | --------------- | ----------- | ---------------------------------------------- |
-|   0–15 | Hardware version| char × 16   | UTF-8 string, right-padded with `0x00`.        |
-|  16–19 | FW kind         | char × 4    | `"FWAP"` = application, `"FWBL"` = bootloader. |
-|  20–23 | Major version   | char × 4    | ASCII version string.                          |
-|  24–27 | Minor version   | char × 4    | ASCII version string.                          |
-|  28–31 | Release date    | char × 4    | `MMYY` format.                                 |
-|  32–33 | USB PID         | u16 LE      | This chassis's product ID.                     |
+| Offset | Field            | Type      | Notes                                          |
+| -----: | ---------------- | --------- | ---------------------------------------------- |
+|   0–15 | Hardware version | char × 16 | UTF-8 string, right-padded with `0x00`.        |
+|  16–19 | FW kind          | char × 4  | `"FWAP"` = application, `"FWBL"` = bootloader. |
+|  20–23 | Major version    | char × 4  | ASCII version string.                          |
+|  24–27 | Minor version    | char × 4  | ASCII version string.                          |
+|  28–31 | Release date     | char × 4  | `MMYY` format.                                 |
+|  32–33 | USB PID          | u16 LE    | This chassis's product ID.                     |
 
 ## References
 
-- *LabelWriter® 550 Series Printers Technical Reference Manual*,
+- _LabelWriter® 550 Series Printers Technical Reference Manual_,
   for LabelWriter 550 / 550 Turbo / 5XL, Sanford L.P., 2021. The
   authoritative byte-level reference. Cited inline by page; not
   redistributed.
