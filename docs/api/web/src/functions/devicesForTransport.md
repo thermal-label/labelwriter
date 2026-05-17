@@ -6,7 +6,7 @@
 
 # Function: devicesForTransport()
 
-> **devicesForTransport**(`transport`): readonly [`DeviceEntry`](../../../core/src/interfaces/DeviceEntry.md)[]
+> **devicesForTransport**(`transport`): readonly [`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)[]
 
 Filter the registry to entries declaring `transport`. Used to
 populate `DeviceIdentificationRequiredError.candidates`.
@@ -15,8 +15,8 @@ populate `DeviceIdentificationRequiredError.candidates`.
 
 ### transport
 
-[`TransportType`](../../../core/src/type-aliases/TransportType.md)
+[`TransportType`](/contracts/api/type-aliases/TransportType)
 
 ## Returns
 
-readonly [`DeviceEntry`](../../../core/src/interfaces/DeviceEntry.md)[]
+readonly [`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)[]

@@ -6,7 +6,7 @@
 
 # Function: parseDuoTapeStatus()
 
-> **parseDuoTapeStatus**(`bytes`): `Promise`\<[`PrinterStatus`](../interfaces/PrinterStatus.md)\>
+> **parseDuoTapeStatus**(`bytes`): `Promise`\<[`PrinterStatus`](/contracts/api/interfaces/PrinterStatus)\>
 
 Lazy parser for the Duo tape engine's 1-byte status reply. Throws
 `DuoTapeUnavailableError` if d1-core isn't installed.
@@ -19,4 +19,4 @@ Lazy parser for the Duo tape engine's 1-byte status reply. Throws
 
 ## Returns
 
-`Promise`\<[`PrinterStatus`](../interfaces/PrinterStatus.md)\>
+`Promise`\<[`PrinterStatus`](/contracts/api/interfaces/PrinterStatus)\>

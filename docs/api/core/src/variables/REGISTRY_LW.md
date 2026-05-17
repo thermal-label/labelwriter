@@ -6,7 +6,7 @@
 
 # Variable: REGISTRY\_LW
 
-> `const` **REGISTRY\_LW**: [`DeviceRegistry`](../interfaces/DeviceRegistry.md) = `REGISTRY`
+> `const` **REGISTRY\_LW**: [`DeviceRegistry`](/contracts/api/interfaces/DeviceRegistry) = `REGISTRY`
 
 Aggregated LabelWriter device registry.
 

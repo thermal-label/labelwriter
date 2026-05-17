@@ -16,7 +16,7 @@ response. 1 byte for the 450 family, 32 for the 550 family
 
 ### device
 
-[`DeviceEntry`](../interfaces/DeviceEntry.md)
+[`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)
 
 ## Returns
 

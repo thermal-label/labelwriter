@@ -24,11 +24,11 @@ pre-computed `tapeColour` (ESC C selector).
 
 ### device
 
-[`DeviceEntry`](../interfaces/DeviceEntry.md)
+[`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)
 
 ### bitmap
 
-`LabelBitmap`
+[`LabelBitmap`](/contracts/api/interfaces/LabelBitmap)
 
 ### options?
 
@@ -36,7 +36,7 @@ pre-computed `tapeColour` (ESC C selector).
 
 ### media?
 
-[`MediaDescriptor`](../interfaces/MediaDescriptor.md)
+[`MediaDescriptor`](/contracts/api/interfaces/MediaDescriptor)
 
 ## Returns
 

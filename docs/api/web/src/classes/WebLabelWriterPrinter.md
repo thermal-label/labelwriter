@@ -21,7 +21,7 @@ media auto-rotates landscape input via the media's
 
 ## Implements
 
-- [`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md)
+- [`PrinterAdapter`](/contracts/api/interfaces/PrinterAdapter)
 
 ## Constructors
 
@@ -33,11 +33,11 @@ media auto-rotates landscape input via the media's
 
 ##### device
 
-[`DeviceEntry`](../../../core/src/interfaces/DeviceEntry.md)
+[`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)
 
 ##### transport
 
-[`Transport`](../../../core/src/interfaces/Transport.md)
+[`Transport`](/contracts/api/interfaces/Transport)
 
 ##### options?
 
@@ -51,7 +51,7 @@ media auto-rotates landscape input via the media's
 
 ### device
 
-> `readonly` **device**: [`DeviceEntry`](../../../core/src/interfaces/DeviceEntry.md)
+> `readonly` **device**: [`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)
 
 The device entry for the connected printer.
 
@@ -61,13 +61,13 @@ raw TCP connection to a known IP).
 
 #### Implementation of
 
-[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`device`](../../../core/src/interfaces/PrinterAdapter.md#device)
+`PrinterAdapter.device`
 
 ***
 
 ### engine
 
-> `readonly` **engine**: [`PrintEngine`](../../../core/src/interfaces/PrintEngine.md)
+> `readonly` **engine**: [`PrintEngine`](/contracts/api/interfaces/PrintEngine)
 
 ***
 
@@ -85,7 +85,7 @@ Driver family identifier, e.g. `'brother-ql'` or `'labelwriter'`.
 
 #### Implementation of
 
-[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`family`](../../../core/src/interfaces/PrinterAdapter.md#family)
+`PrinterAdapter.family`
 
 ## Accessors
 
@@ -101,11 +101,9 @@ Whether the printer is currently connected.
 
 `boolean`
 
-Whether the printer is currently connected.
-
 #### Implementation of
 
-[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`connected`](../../../core/src/interfaces/PrinterAdapter.md#connected)
+`PrinterAdapter.connected`
 
 ***
 
@@ -121,11 +119,9 @@ Human-readable model name from the driver's device registry.
 
 `string`
 
-Human-readable model name from the driver's device registry.
-
 #### Implementation of
 
-[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`model`](../../../core/src/interfaces/PrinterAdapter.md#model)
+`PrinterAdapter.model`
 
 ## Methods
 
@@ -141,13 +137,13 @@ Close the connection. Always call in `finally` blocks.
 
 #### Implementation of
 
-[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`close`](../../../core/src/interfaces/PrinterAdapter.md#close)
+`PrinterAdapter.close`
 
 ***
 
 ### createPreview()
 
-> **createPreview**(`image`, `options?`): `Promise`\<[`PreviewResult`](../../../core/src/interfaces/PreviewResult.md)\>
+> **createPreview**(`image`, `options?`): `Promise`\<[`PreviewResult`](/contracts/api/interfaces/PreviewResult)\>
 
 Generate a preview showing how this printer would reproduce the
 design on the given media. Returns separated 1bpp planes with
@@ -166,13 +162,13 @@ For offline preview without a live connection, use the static
 
 ##### image
 
-`RawImageData`
+[`RawImageData`](/contracts/api/interfaces/RawImageData)
 
 — full RGBA, typically from `designer.render()`.
 
 ##### options?
 
-[`PreviewOptions`](../../../core/src/interfaces/PreviewOptions.md)
+[`PreviewOptions`](/contracts/api/interfaces/PreviewOptions)
 
 — optional media override. If media is omitted, uses
   detected media from the last `getStatus()`. If no status is
@@ -181,11 +177,11 @@ For offline preview without a live connection, use the static
 
 #### Returns
 
-`Promise`\<[`PreviewResult`](../../../core/src/interfaces/PreviewResult.md)\>
+`Promise`\<[`PreviewResult`](/contracts/api/interfaces/PreviewResult)\>
 
 #### Implementation of
 
-[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`createPreview`](../../../core/src/interfaces/PrinterAdapter.md#createpreview)
+`PrinterAdapter.createPreview`
 
 ***
 
@@ -223,7 +219,7 @@ full contract.
 
 ### getStatus()
 
-> **getStatus**(): `Promise`\<[`PrinterStatus`](../../../core/src/interfaces/PrinterStatus.md)\>
+> **getStatus**(): `Promise`\<[`PrinterStatus`](/contracts/api/interfaces/PrinterStatus)\>
 
 Status read for this instance's scoped engine. Dispatches by
 `engine.protocol`:
@@ -240,11 +236,11 @@ routes by its own engine.
 
 #### Returns
 
-`Promise`\<[`PrinterStatus`](../../../core/src/interfaces/PrinterStatus.md)\>
+`Promise`\<[`PrinterStatus`](/contracts/api/interfaces/PrinterStatus)\>
 
 #### Implementation of
 
-[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`getStatus`](../../../core/src/interfaces/PrinterAdapter.md#getstatus)
+`PrinterAdapter.getStatus`
 
 ***
 
@@ -276,7 +272,7 @@ own poll loop (the harness creates one subscription per role).
 
 #### Implementation of
 
-[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`onStatus`](../../../core/src/interfaces/PrinterAdapter.md#onstatus)
+`PrinterAdapter.onStatus`
 
 ***
 
@@ -311,13 +307,13 @@ between sequential `print()` calls within the same session).
 
 ##### image
 
-`RawImageData`
+[`RawImageData`](/contracts/api/interfaces/RawImageData)
 
 — full RGBA, typically from `designer.render()`.
 
 ##### media?
 
-[`MediaDescriptor`](../../../core/src/interfaces/MediaDescriptor.md)
+[`MediaDescriptor`](/contracts/api/interfaces/MediaDescriptor)
 
 — which media to print on. Determines dimensions,
   margins, and colour mode. If omitted, uses detected media from
@@ -339,7 +335,7 @@ MediaNotSpecifiedError if no media is known.
 
 #### Implementation of
 
-[`PrinterAdapter`](../../../core/src/interfaces/PrinterAdapter.md).[`print`](../../../core/src/interfaces/PrinterAdapter.md#print)
+`PrinterAdapter.print`
 
 ***
 

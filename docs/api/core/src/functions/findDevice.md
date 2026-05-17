@@ -6,7 +6,7 @@
 
 # Function: findDevice()
 
-> **findDevice**(`vid`, `pid`): [`DeviceEntry`](../interfaces/DeviceEntry.md) \| `undefined`
+> **findDevice**(`vid`, `pid`): [`DeviceEntry`](/contracts/api/interfaces/DeviceEntry) \| `undefined`
 
 Find a registry entry by USB VID and PID.
 
@@ -27,4 +27,4 @@ after parsing.
 
 ## Returns
 
-[`DeviceEntry`](../interfaces/DeviceEntry.md) \| `undefined`
+[`DeviceEntry`](/contracts/api/interfaces/DeviceEntry) \| `undefined`

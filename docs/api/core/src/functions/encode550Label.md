@@ -23,11 +23,11 @@ carry the 450's `SYN` / `ETB` framing and therefore cannot RLE.
 
 ### device
 
-[`DeviceEntry`](../interfaces/DeviceEntry.md)
+[`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)
 
 ### bitmap
 
-`LabelBitmap`
+[`LabelBitmap`](/contracts/api/interfaces/LabelBitmap)
 
 ### options?
 
@@ -35,7 +35,7 @@ carry the 450's `SYN` / `ETB` framing and therefore cannot RLE.
 
 ### media?
 
-[`MediaDescriptor`](../interfaces/MediaDescriptor.md)
+[`MediaDescriptor`](/contracts/api/interfaces/MediaDescriptor)
 
 ## Returns
 

@@ -16,7 +16,7 @@ side). Used by adapters to route status queries through d1-core's
 
 ### engine
 
-[`PrintEngine`](../interfaces/PrintEngine.md)
+[`PrintEngine`](/contracts/api/interfaces/PrintEngine)
 
 ## Returns
 

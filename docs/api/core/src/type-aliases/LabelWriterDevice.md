@@ -6,7 +6,7 @@
 
 # Type Alias: LabelWriterDevice
 
-> **LabelWriterDevice** = [`DeviceEntry`](../interfaces/DeviceEntry.md)
+> **LabelWriterDevice** = [`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)
 
 Dymo LabelWriter device descriptor.
 

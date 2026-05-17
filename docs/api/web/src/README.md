@@ -8,18 +8,12 @@
 
 ## Classes
 
-- [DeviceIdentificationRequiredError](classes/DeviceIdentificationRequiredError.md)
 - [WebLabelWriterPrinter](classes/WebLabelWriterPrinter.md)
 
 ## Interfaces
 
 - [RequestOptions](interfaces/RequestOptions.md)
 - [WebLabelWriterPrinterOptions](interfaces/WebLabelWriterPrinterOptions.md)
-
-## Type Aliases
-
-- [ConnectOptions](type-aliases/ConnectOptions.md)
-- [PrinterAdapterMap](type-aliases/PrinterAdapterMap.md)
 
 ## Variables
 

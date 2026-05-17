@@ -6,7 +6,7 @@
 
 # Function: parseStatus()
 
-> **parseStatus**(`device`, `bytes`): [`PrinterStatus`](../interfaces/PrinterStatus.md)
+> **parseStatus**(`device`, `bytes`): [`PrinterStatus`](/contracts/api/interfaces/PrinterStatus)
 
 Dispatch to the right protocol parser.
 
@@ -17,7 +17,7 @@ the transport. The two protocols differ — 450 is one byte, 550 is 32.
 
 ### device
 
-[`DeviceEntry`](../interfaces/DeviceEntry.md)
+[`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)
 
 ### bytes
 
@@ -25,4 +25,4 @@ the transport. The two protocols differ — 450 is one byte, 550 is 32.
 
 ## Returns
 
-[`PrinterStatus`](../interfaces/PrinterStatus.md)
+[`PrinterStatus`](/contracts/api/interfaces/PrinterStatus)

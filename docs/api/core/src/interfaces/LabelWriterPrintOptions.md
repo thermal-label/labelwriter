@@ -26,25 +26,13 @@ bypasses it.
 
 ## Extends
 
-- [`PrintOptions`](PrintOptions.md)
+- [`PrintOptions`](/contracts/api/interfaces/PrintOptions)
 
 ## Properties
 
 ### compress?
 
 > `optional` **compress?**: `boolean`
-
-***
-
-### copies?
-
-> `optional` **copies?**: `number`
-
-Number of copies to print. Default 1.
-
-#### Inherited from
-
-[`PrintOptions`](PrintOptions.md).[`copies`](PrintOptions.md#copies)
 
 ***
 
@@ -62,7 +50,7 @@ additional values such as `'medium'` or `'high'`. Drivers throw
 
 #### Overrides
 
-[`PrintOptions`](PrintOptions.md).[`density`](PrintOptions.md#density)
+`PrintOptions.density`
 
 ***
 
@@ -77,7 +65,7 @@ this. See `LabelWriterPrintOptions` JSDoc above for the full shape.
 
 #### Overrides
 
-[`PrintOptions`](PrintOptions.md).[`engine`](PrintOptions.md#engine)
+`PrintOptions.engine`
 
 ***
 

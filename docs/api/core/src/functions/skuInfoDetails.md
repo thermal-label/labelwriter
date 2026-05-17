@@ -6,7 +6,7 @@
 
 # Function: skuInfoDetails()
 
-> **skuInfoDetails**(`sku`): [`StatusDetail`](../interfaces/StatusDetail.md)[]
+> **skuInfoDetails**(`sku`): [`StatusDetail`](/contracts/api/README)[]
 
 Build driver-formatted `details[]` rows describing the *specific
 loaded roll instance* from an `ESC U` SKU dump.
@@ -25,4 +25,4 @@ SKU id). The driver attaches them to the cached status so subsequent
 
 ## Returns
 
-[`StatusDetail`](../interfaces/StatusDetail.md)[]
+[`StatusDetail`](/contracts/api/README)[]

@@ -27,7 +27,7 @@ without one, the engine is declared in the registry but unreachable.
 
 ### engine
 
-> `readonly` **engine**: [`PrintEngine`](PrintEngine.md)
+> `readonly` **engine**: [`PrintEngine`](/contracts/api/interfaces/PrintEngine)
 
 ***
 
@@ -39,13 +39,13 @@ without one, the engine is declared in the registry but unreachable.
 
 ### getStatus()?
 
-> `optional` **getStatus**(): `Promise`\<[`PrinterStatus`](PrinterStatus.md)\>
+> `optional` **getStatus**(): `Promise`\<[`PrinterStatus`](/contracts/api/interfaces/PrinterStatus)\>
 
 Query just this engine's status — useful on multi-engine devices.
 
 #### Returns
 
-`Promise`\<[`PrinterStatus`](PrinterStatus.md)\>
+`Promise`\<[`PrinterStatus`](/contracts/api/interfaces/PrinterStatus)\>
 
 ***
 
@@ -57,11 +57,11 @@ Query just this engine's status — useful on multi-engine devices.
 
 ##### image
 
-`RawImageData`
+[`RawImageData`](/contracts/api/interfaces/RawImageData)
 
 ##### media?
 
-[`MediaDescriptor`](MediaDescriptor.md)
+[`MediaDescriptor`](/contracts/api/interfaces/MediaDescriptor)
 
 ##### options?
 

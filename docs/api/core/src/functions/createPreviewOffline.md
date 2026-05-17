@@ -6,7 +6,7 @@
 
 # Function: createPreviewOffline()
 
-> **createPreviewOffline**(`image`, `media`): [`PreviewResult`](../interfaces/PreviewResult.md)
+> **createPreviewOffline**(`image`, `media`): [`PreviewResult`](/contracts/api/interfaces/PreviewResult)
 
 Offline preview without a live printer connection.
 
@@ -19,7 +19,7 @@ RGBA with the same Atkinson dither used by `print()`.
 
 ### image
 
-`RawImageData`
+[`RawImageData`](/contracts/api/interfaces/RawImageData)
 
 ### media
 
@@ -27,4 +27,4 @@ RGBA with the same Atkinson dither used by `print()`.
 
 ## Returns
 
-[`PreviewResult`](../interfaces/PreviewResult.md)
+[`PreviewResult`](/contracts/api/interfaces/PreviewResult)

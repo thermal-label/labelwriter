@@ -10,7 +10,7 @@
 
 ### engine?
 
-> `optional` **engine?**: [`PrintEngine`](../../../core/src/interfaces/PrintEngine.md)
+> `optional` **engine?**: [`PrintEngine`](/contracts/api/interfaces/PrintEngine)
 
 The engine this instance is scoped to. Defaults to `device.engines[0]`
 — back-compat for single-engine LWs (3xx/4xx/5xx) and the Twin Turbo

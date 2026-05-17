@@ -12,11 +12,11 @@
 
 ### device
 
-[`DeviceEntry`](../interfaces/DeviceEntry.md)
+[`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)
 
 ### bitmap
 
-`LabelBitmap`
+[`LabelBitmap`](/contracts/api/interfaces/LabelBitmap)
 
 ### options?
 
@@ -24,7 +24,7 @@
 
 ### media?
 
-[`MediaDescriptor`](../interfaces/MediaDescriptor.md)
+[`MediaDescriptor`](/contracts/api/interfaces/MediaDescriptor)
 
 ## Returns
 

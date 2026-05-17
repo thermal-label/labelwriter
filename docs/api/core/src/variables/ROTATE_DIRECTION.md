@@ -6,7 +6,7 @@
 
 # Variable: ROTATE\_DIRECTION
 
-> `const` **ROTATE\_DIRECTION**: [`RotateDirection`](../type-aliases/RotateDirection.md) = `90`
+> `const` **ROTATE\_DIRECTION**: [`RotateDirection`](/contracts/api/type-aliases/RotateDirection) = `90`
 
 Direction the LabelWriter print head rotates landscape input.
 

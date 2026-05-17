@@ -9,32 +9,16 @@
 ## Classes
 
 - [DuoTapeUnavailableError](classes/DuoTapeUnavailableError.md)
-- [MediaNotSpecifiedError](classes/MediaNotSpecifiedError.md)
-- [UnsupportedOperationError](classes/UnsupportedOperationError.md)
 
 ## Interfaces
 
-- [DeviceEntry](interfaces/DeviceEntry.md)
-- [DeviceRegistry](interfaces/DeviceRegistry.md)
-- [~~DeviceSupport~~](interfaces/DeviceSupport.md)
 - [EngineVersion](interfaces/EngineVersion.md)
 - [LabelWriterEngineCapabilities](interfaces/LabelWriterEngineCapabilities.md)
 - [LabelWriterEngineHandle](interfaces/LabelWriterEngineHandle.md)
 - [LabelWriterMedia](interfaces/LabelWriterMedia.md)
 - [LabelWriterPrintOptions](interfaces/LabelWriterPrintOptions.md)
 - [LabelWriterTapeMedia](interfaces/LabelWriterTapeMedia.md)
-- [MediaDescriptor](interfaces/MediaDescriptor.md)
-- [PreviewOptions](interfaces/PreviewOptions.md)
-- [PreviewPlane](interfaces/PreviewPlane.md)
-- [PreviewResult](interfaces/PreviewResult.md)
-- [PrintEngine](interfaces/PrintEngine.md)
-- [PrinterAdapter](interfaces/PrinterAdapter.md)
-- [PrinterError](interfaces/PrinterError.md)
-- [PrinterStatus](interfaces/PrinterStatus.md)
-- [PrintOptions](interfaces/PrintOptions.md)
 - [SkuInfo](interfaces/SkuInfo.md)
-- [StatusDetail](interfaces/StatusDetail.md)
-- [Transport](interfaces/Transport.md)
 
 ## Type Aliases
 
@@ -44,8 +28,6 @@
 - [DuoTapeWidth](type-aliases/DuoTapeWidth.md)
 - [LabelWriterAnyMedia](type-aliases/LabelWriterAnyMedia.md)
 - [LabelWriterDevice](type-aliases/LabelWriterDevice.md)
-- [RotateDirection](type-aliases/RotateDirection.md)
-- [TransportType](type-aliases/TransportType.md)
 
 ## Variables
 
@@ -113,7 +95,6 @@
 - [parseEngineVersion](functions/parseEngineVersion.md)
 - [parseSkuInfo](functions/parseSkuInfo.md)
 - [parseStatus](functions/parseStatus.md)
-- [pickRotation](functions/pickRotation.md)
 - [skuInfoDetails](functions/skuInfoDetails.md)
 - [skuInfoToMedia](functions/skuInfoToMedia.md)
 - [statusByteCount](functions/statusByteCount.md)

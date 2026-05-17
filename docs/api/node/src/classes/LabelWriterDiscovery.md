@@ -14,7 +14,7 @@ printers are opened by explicit `openPrinter({ host, port })`.
 
 ## Implements
 
-- `PrinterDiscovery`
+- [`PrinterDiscovery`](/contracts/api/interfaces/PrinterDiscovery)
 
 ## Constructors
 
@@ -42,13 +42,13 @@ Driver family identifier — matches `DeviceEntry.family`.
 
 ### listPrinters()
 
-> **listPrinters**(): `Promise`\<`DiscoveredPrinter`[]\>
+> **listPrinters**(): `Promise`\<[`DiscoveredPrinter`](/contracts/api/interfaces/DiscoveredPrinter)[]\>
 
 List connected printers on this driver's supported transports.
 
 #### Returns
 
-`Promise`\<`DiscoveredPrinter`[]\>
+`Promise`\<[`DiscoveredPrinter`](/contracts/api/interfaces/DiscoveredPrinter)[]\>
 
 #### Implementation of
 
@@ -68,7 +68,7 @@ If no options are provided, opens the first available printer.
 
 ##### options?
 
-`OpenOptions` = `{}`
+[`OpenOptions`](/contracts/api/interfaces/OpenOptions) = `{}`
 
 #### Returns
 

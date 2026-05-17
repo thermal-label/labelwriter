@@ -21,7 +21,7 @@ Lock semantics (550 only, per spec p.13):
 
 ### device
 
-[`DeviceEntry`](../interfaces/DeviceEntry.md)
+[`DeviceEntry`](/contracts/api/interfaces/DeviceEntry)
 
 ### lock?
 

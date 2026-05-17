@@ -20,11 +20,11 @@ shape of `D1Media` at runtime.
 
 ### bitmap
 
-`LabelBitmap`
+[`LabelBitmap`](/contracts/api/interfaces/LabelBitmap)
 
 ### engine
 
-[`PrintEngine`](../interfaces/PrintEngine.md)
+[`PrintEngine`](/contracts/api/interfaces/PrintEngine)
 
 ### options
 
