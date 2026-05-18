@@ -168,6 +168,16 @@ Production time in `HHMM` format.
 
 ***
 
+### rawBytes
+
+> **rawBytes**: `Uint8Array`
+
+The raw `ESC U` response, verbatim. Mirrors `PrinterStatus.rawBytes`
+— lets a downstream report carry the undecoded frame for triage when
+the parse is wrong or a firmware revision adds fields.
+
+***
+
 ### region
 
 > **region**: `number`

@@ -429,6 +429,12 @@ export interface EngineVersion {
   fwReleaseDate: string;
   /** USB Product ID (u16, little-endian over bytes 32-33). */
   pid: number;
+  /**
+   * The raw `ESC V` response, verbatim. Mirrors `PrinterStatus.rawBytes`
+   * — lets a downstream report carry the undecoded frame for triage when
+   * the parse is wrong or a firmware revision adds fields.
+   */
+  rawBytes: Uint8Array;
 }
 
 function asciiTrim(bytes: Uint8Array): string {
@@ -451,7 +457,7 @@ export function parseEngineVersion(bytes: Uint8Array): EngineVersion {
   const fwMinor = asciiTrim(bytes.subarray(24, 28));
   const fwReleaseDate = asciiTrim(bytes.subarray(28, 32));
   const pid = (bytes[32] ?? 0) | ((bytes[33] ?? 0) << 8);
-  return { hwVersion, fwKind, fwMajor, fwMinor, fwReleaseDate, pid };
+  return { hwVersion, fwKind, fwMajor, fwMinor, fwReleaseDate, pid, rawBytes: bytes };
 }
 
 /**
@@ -511,6 +517,12 @@ export interface SkuInfo {
   productionDate: string;
   /** Production time in `HHMM` format. */
   productionTime: string;
+  /**
+   * The raw `ESC U` response, verbatim. Mirrors `PrinterStatus.rawBytes`
+   * — lets a downstream report carry the undecoded frame for triage when
+   * the parse is wrong or a firmware revision adds fields.
+   */
+  rawBytes: Uint8Array;
 }
 
 const MATERIAL_TABLE = [
@@ -583,6 +595,7 @@ export function parseSkuInfo(bytes: Uint8Array): SkuInfo {
     counterStrategy,
     productionDate: asciiTrim(bytes.subarray(60, 62)),
     productionTime: asciiTrim(bytes.subarray(62, 64)),
+    rawBytes: bytes,
   };
 }
 

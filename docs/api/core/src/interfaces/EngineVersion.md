@@ -55,3 +55,13 @@ Firmware kind: `'application'` (FWAP) or `'bootloader'` (FWBL).
 > **pid**: `number`
 
 USB Product ID (u16, little-endian over bytes 32-33).
+
+***
+
+### rawBytes
+
+> **rawBytes**: `Uint8Array`
+
+The raw `ESC V` response, verbatim. Mirrors `PrinterStatus.rawBytes`
+— lets a downstream report carry the undecoded frame for triage when
+the parse is wrong or a firmware revision adds fields.
