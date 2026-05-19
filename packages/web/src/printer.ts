@@ -52,6 +52,16 @@ import {
 } from '@thermal-label/contracts';
 import { WebUsbTransport } from '@thermal-label/transport/web';
 
+/**
+ * Print-flow debug tracing — ships ONLY on the `debug/print-flow`
+ * branch / `0.6.3-debug.x` prerelease line (npm dist-tag `debug`).
+ * Delete this helper and its call sites before merging to main.
+ */
+function dbg(msg: string): void {
+  // eslint-disable-next-line no-console
+  console.debug(`[lw-web] ${msg}`);
+}
+
 const D1_STATUS_BYTE_COUNT = 1;
 
 /**
@@ -194,11 +204,23 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
       );
     }
 
+    dbg(
+      `print start: device=${this.device.key} engine=${effectiveEngine.role} ` +
+        `protocol=${effectiveEngine.protocol} ` +
+        `image=${String(image.width)}x${String(image.height)} ` +
+        `media=${media ? 'explicit' : this.lastStatus?.detectedMedia ? 'cached' : 'unset'} ` +
+        `copies=${String(options?.copies ?? 1)}`,
+    );
+
     // 550 family: acquire the print lock and check printer health
     // before sending the job. See the node driver for the full
     // contract. Released by `ESC Q` in the job trailer.
     if (this.engine.protocol === 'lw5-raster') {
       await this.doAcquire550Lock();
+      dbg(
+        `550 lock acquired: ready=${String(this.lastStatus?.ready)} ` +
+          `errors=${String(this.lastStatus?.errors.length ?? 0)}`,
+      );
     }
 
     let resolvedMedia = (media ?? this.lastStatus?.detectedMedia) as LabelWriterMedia | undefined;
@@ -218,8 +240,10 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     if (!resolvedMedia) {
       throw new MediaNotSpecifiedError();
     }
+    dbg(`media resolved: ${JSON.stringify(resolvedMedia)}`);
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
+    dbg(`rotate=${String(rotate)} bitmap=${String(bitmap.widthPx)}x${String(bitmap.heightPx)}`);
     // Force `engine` to this instance's role so the encoder dispatches
     // on the right protocol (lw-raster / lw5-raster / d1-tape).
     const encodeOptions: LabelWriterPrintOptions = { ...options, engine: this.engine.role };
@@ -228,7 +252,9 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     const bytes = isDuoTapeEngine(this.engine)
       ? await encodeDuoTapeLabel(this.device, bitmap, encodeOptions, resolvedMedia)
       : encodeLabel(this.device, bitmap, encodeOptions, resolvedMedia);
+    dbg(`encoded ${String(bytes.length)} bytes — writing to transport`);
     await this.transport.write(bytes);
+    dbg(`print complete: ${String(bytes.length)} bytes written`);
   }
 
   /**
