@@ -250,8 +250,10 @@ describe('WebLabelWriterPrinter', () => {
     sku[1] = 0xca;
     new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
     sku[23] = 0x01;
-    sku[40] = 89;
-    sku[42] = 28;
+    sku[40] = 0x3d;
+    sku[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+    sku[42] = 0x3b;
+    sku[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
     // Two scripted replies: the ESC A status read, then the ESC U SKU read.
     const device = createMockUSBDevice(LW_550.vid, LW_550.pid, [status, sku]);
     const printer = await fromUSBDevice(device);
@@ -286,8 +288,10 @@ describe('WebLabelWriterPrinter', () => {
     sku[1] = 0xca;
     new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
     sku[23] = 0x01;
-    sku[40] = 89;
-    sku[42] = 28;
+    sku[40] = 0x3d;
+    sku[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+    sku[42] = 0x3b;
+    sku[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
     const device = createMockUSBDevice(LW_550.vid, LW_550.pid, sku);
     const printer = await fromUSBDevice(device);
     const before = device.__transfers.length;
@@ -295,7 +299,7 @@ describe('WebLabelWriterPrinter', () => {
     const sent = device.__transfers[before]!.data;
     expect(Array.from(sent)).toEqual([0x1b, 0x55]);
     expect(result?.sku).toBe('30252');
-    expect(result?.labelWidthMm).toBe(28);
+    expect(result?.labelWidthMm).toBe(57.1);
   });
 
   it('getMedia() returns undefined when the SKU magic is wrong', async () => {
@@ -310,8 +314,10 @@ describe('WebLabelWriterPrinter', () => {
     sku[1] = 0xca;
     new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
     sku[23] = 0x01;
-    sku[40] = 89;
-    sku[42] = 28;
+    sku[40] = 0x3d;
+    sku[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+    sku[42] = 0x3b;
+    sku[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
     const status = new Uint8Array(32);
     status[10] = 8;
     status[30] = 1;
@@ -342,8 +348,10 @@ describe('WebLabelWriterPrinter', () => {
     new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
     sku[22] = 0x03; // material: paper
     sku[23] = 0x01; // labelType: die
-    sku[40] = 89;
-    sku[42] = 28;
+    sku[40] = 0x3d;
+    sku[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+    sku[42] = 0x3b;
+    sku[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
     const status = new Uint8Array(32);
     status[10] = 8;
     status[30] = 1;
@@ -549,8 +557,10 @@ describe('WebLabelWriterPrinter — 550 lock health', () => {
     sku[1] = 0xca;
     new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
     sku[23] = 0x01;
-    sku[40] = 89;
-    sku[42] = 28;
+    sku[40] = 0x3d;
+    sku[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+    sku[42] = 0x3b;
+    sku[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
     const status = new Uint8Array(32);
     status[10] = 8;
     status[30] = 1;
@@ -621,8 +631,10 @@ describe('WebLabelWriterPrinter — createPreview with cached detected media', (
     sku[1] = 0xca;
     new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
     sku[23] = 0x01; // die-cut
-    sku[40] = 89;
-    sku[42] = 28;
+    sku[40] = 0x3d;
+    sku[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+    sku[42] = 0x3b;
+    sku[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
     const device = createMockUSBDevice(LW_550.vid, LW_550.pid, sku);
     const printer = await fromUSBDevice(device);
     await printer.getMedia();
@@ -630,7 +642,7 @@ describe('WebLabelWriterPrinter — createPreview with cached detected media', (
     // detectedMedia rather than falling back to DEFAULT_MEDIA.
     const preview = await printer.createPreview(solidRgba(8, 8));
     expect(preview.assumed).toBe(false);
-    expect(preview.media.widthMm).toBe(28);
+    expect(preview.media.widthMm).toBe(57.1);
   });
 });
 

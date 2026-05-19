@@ -464,8 +464,16 @@ export function parseEngineVersion(bytes: Uint8Array): EngineVersion {
  * Parsed `ESC U` response — the 63-byte NFC SKU dump.
  *
  * Field layout matches the spec table on p.16-19. All multi-byte
- * integers are little-endian. Dimensions are in millimetres
- * (per the spec `1...2^16 = length in mm`).
+ * integers are little-endian.
+ *
+ * Geometry fields (`label*Mm`, `marker*Mm`, the `*OffsetMm` pair,
+ * `linerWidthMm`, `totalLengthMm`) are **deci-millimetres** on the
+ * wire and converted to true mm here. The spec table calls them
+ * `1...2^16 = length in mm`, but that unit is an erratum — an
+ * S0722540 (57×32 mm) roll reports 571 / 317. The deci-mm reading is
+ * confirmed by on-the-wire capture, not the PDF; this is the same
+ * class of spec error already noted for the status frame's
+ * width/length in `support_550_devices.md` §2.3.
  */
 export interface SkuInfo {
   /** Magic number `0xCAB6` — used to validate the response. */
@@ -502,9 +510,9 @@ export interface SkuInfo {
   marker2WidthMm: number;
   marker2OffsetMm: number;
   verticalOffsetMm: number;
-  /** Label length in mm (u16). 0 / 0xFFFF for continuous. */
+  /** Label length in mm — one decimal; deci-mm on the wire. 0 for continuous. */
   labelLengthMm: number;
-  /** Label width in mm (u16). */
+  /** Label width in mm — one decimal; deci-mm on the wire. */
   labelWidthMm: number;
   printableHorizontalOffsetMm: number;
   printableVerticalOffsetMm: number;
@@ -543,6 +551,17 @@ function u16le(bytes: Uint8Array, offset: number): number {
   return (bytes[offset] ?? 0) | ((bytes[offset + 1] ?? 0) << 8);
 }
 
+/**
+ * Read a u16-LE geometry field and convert deci-mm → mm.
+ *
+ * Keeps the single decimal the NFC tag actually carries (571 → 57.1)
+ * without inventing further precision. See the `SkuInfo` doc for why
+ * the spec's "length in mm" is an erratum.
+ */
+function u16DeciMm(bytes: Uint8Array, offset: number): number {
+  return u16le(bytes, offset) / 10;
+}
+
 export function parseSkuInfo(bytes: Uint8Array): SkuInfo {
   if (bytes.length < SKU_INFO_BYTE_COUNT) {
     throw new Error(
@@ -578,19 +597,20 @@ export function parseSkuInfo(bytes: Uint8Array): SkuInfo {
     labelColor: LABEL_COLOR_TABLE[labelColorIdx] ?? 'unknown',
     contentColor: CONTENT_COLOR_TABLE[contentColorIdx] ?? 'unknown',
     markerType: bytes[26] ?? 0,
-    markerPitchMm: u16le(bytes, 28),
-    marker1WidthMm: u16le(bytes, 30),
-    marker1ToStartMm: u16le(bytes, 32),
-    marker2WidthMm: u16le(bytes, 34),
-    marker2OffsetMm: u16le(bytes, 36),
-    verticalOffsetMm: u16le(bytes, 38),
-    labelLengthMm: u16le(bytes, 40),
-    labelWidthMm: u16le(bytes, 42),
-    printableHorizontalOffsetMm: u16le(bytes, 44),
-    printableVerticalOffsetMm: u16le(bytes, 46),
-    linerWidthMm: u16le(bytes, 48),
+    markerPitchMm: u16DeciMm(bytes, 28),
+    marker1WidthMm: u16DeciMm(bytes, 30),
+    marker1ToStartMm: u16DeciMm(bytes, 32),
+    marker2WidthMm: u16DeciMm(bytes, 34),
+    marker2OffsetMm: u16DeciMm(bytes, 36),
+    verticalOffsetMm: u16DeciMm(bytes, 38),
+    labelLengthMm: u16DeciMm(bytes, 40),
+    labelWidthMm: u16DeciMm(bytes, 42),
+    printableHorizontalOffsetMm: u16DeciMm(bytes, 44),
+    printableVerticalOffsetMm: u16DeciMm(bytes, 46),
+    linerWidthMm: u16DeciMm(bytes, 48),
+    // totalLabelCount and counterMargin are counts, not lengths — no scaling.
     totalLabelCount: u16le(bytes, 50),
-    totalLengthMm: u16le(bytes, 52),
+    totalLengthMm: u16DeciMm(bytes, 52),
     counterMargin: u16le(bytes, 54),
     counterStrategy,
     productionDate: asciiTrim(bytes.subarray(60, 62)),

@@ -446,11 +446,12 @@ describe('parseSkuInfo', () => {
     buf[23] = 0x01; // labelType: die
     buf[24] = 0x01; // labelColor: white
     buf[25] = 0x00; // contentColor: black
-    // labelLengthMm at 40-41, labelWidthMm at 42-43
-    buf[40] = 89;
-    buf[41] = 0;
-    buf[42] = 28;
-    buf[43] = 0;
+    // labelLengthMm at 40-41, labelWidthMm at 42-43 — deci-mm on the
+    // wire (S0722540 / 57×32 mm roll: 317 → 31.7, 571 → 57.1)
+    buf[40] = 0x3d;
+    buf[41] = 0x01; // labelLengthMm 317 → 31.7
+    buf[42] = 0x3b;
+    buf[43] = 0x02; // labelWidthMm 571 → 57.1
     return buf;
   }
 
@@ -470,10 +471,11 @@ describe('parseSkuInfo', () => {
     expect(sku.contentColor).toBe('black');
   });
 
-  it('decodes label dimensions from u16-LE bytes 40-43', () => {
+  it('decodes label dimensions from deci-mm u16-LE bytes 40-43', () => {
     const sku = parseSkuInfo(makeSku());
-    expect(sku.labelLengthMm).toBe(89);
-    expect(sku.labelWidthMm).toBe(28);
+    // 317 / 571 deci-mm → 31.7 / 57.1 mm, not 317 / 571.
+    expect(sku.labelLengthMm).toBe(31.7);
+    expect(sku.labelWidthMm).toBe(57.1);
   });
 
   it('falls back to "unknown" for out-of-range enum bytes', () => {
@@ -509,20 +511,23 @@ describe('skuInfoToMedia', () => {
     const buf = new Uint8Array(63);
     new TextEncoder().encodeInto('30252       ', buf.subarray(8, 20));
     buf[23] = 0x01; // labelType: die
-    buf[40] = 89;
-    buf[42] = 28;
+    buf[40] = 0x3d;
+    buf[41] = 0x01; // labelLengthMm 317 → 31.7
+    buf[42] = 0x3b;
+    buf[43] = 0x02; // labelWidthMm 571 → 57.1
     const m = skuInfoToMedia(parseSkuInfo(buf));
     expect(m.id).toBe('sku-30252');
     expect(m.type).toBe('die-cut');
-    expect(m.widthMm).toBe(28);
-    expect(m.heightMm).toBe(89);
+    expect(m.widthMm).toBe(57.1);
+    expect(m.heightMm).toBe(31.7);
   });
 
   it('continuous SKU (labelType=0 OR labelLengthMm=0) → continuous, omits heightMm', () => {
     const buf = new Uint8Array(63);
     buf[23] = 0x00; // labelType: continuous
     buf[40] = 0;
-    buf[42] = 56;
+    buf[42] = 0x30;
+    buf[43] = 0x02; // labelWidthMm 560 → 56.0
     const m = skuInfoToMedia(parseSkuInfo(buf));
     expect(m.type).toBe('continuous');
     expect(m.widthMm).toBe(56);
@@ -538,8 +543,10 @@ describe('skuInfoDetails', () => {
     new TextEncoder().encodeInto('30252       ', buf.subarray(8, 20));
     buf[22] = 0x03; // material: paper
     buf[23] = 0x01; // labelType: die
-    buf[40] = 89; // labelLengthMm
-    buf[42] = 28; // labelWidthMm
+    buf[40] = 0x3d;
+    buf[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+    buf[42] = 0x3b;
+    buf[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
     buf[50] = 0x20; // totalLabelCount = 0x0120 = 288
     buf[51] = 0x01;
     buf[56] = 0x01; // counterStrategy: count-down
@@ -582,8 +589,10 @@ describe('withDetectedMedia', () => {
     buf[1] = 0xca;
     new TextEncoder().encodeInto('30252       ', buf.subarray(8, 20));
     buf[23] = 0x01; // labelType: die
-    buf[40] = 89; // labelLengthMm
-    buf[42] = 28; // labelWidthMm
+    buf[40] = 0x3d;
+    buf[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+    buf[42] = 0x3b;
+    buf[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
     return parseSkuInfo(buf);
   }
 
@@ -596,8 +605,8 @@ describe('withDetectedMedia', () => {
     };
     const decorated = withDetectedMedia(base, dieCutSku());
     expect(decorated.detectedMedia).toBeDefined();
-    expect(decorated.detectedMedia?.widthMm).toBe(28);
-    expect(decorated.detectedMedia?.heightMm).toBe(89);
+    expect(decorated.detectedMedia?.widthMm).toBe(57.1);
+    expect(decorated.detectedMedia?.heightMm).toBe(31.7);
     // The other status fields pass through unchanged.
     expect(decorated.ready).toBe(true);
     expect(decorated.mediaLoaded).toBe(true);

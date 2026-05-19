@@ -1,3 +1,7 @@
+// This file exercises `findMediaByDimensions`, which is @deprecated
+// pending removal in 0.7.0 — the no-deprecated rule is off for the file
+// so its own coverage doesn't trip the gate.
+/* eslint-disable @typescript-eslint/no-deprecated */
 import { describe, expect, it } from 'vitest';
 import { mediaCompatibleWith } from '@thermal-label/contracts';
 import type { PrintEngine } from '@thermal-label/contracts';
@@ -33,6 +37,14 @@ describe('MEDIA registry', () => {
     expect(MEDIA.FILE_FOLDER.heightMm).toBe(87);
     expect(MEDIA.CONTINUOUS_57MM.widthMm).toBe(57);
     expect((MEDIA.CONTINUOUS_57MM as LabelWriterMedia).heightMm).toBeUndefined();
+  });
+
+  it('stores MULTI_PURPOSE_MEDIUM in across-head orientation (57×32, lengthDots 378)', () => {
+    // The ESC U tag reports widthMm = across-head, heightMm = feed; the
+    // entry was previously transposed (32×57 / lengthDots 673).
+    expect(MEDIA.MULTI_PURPOSE_MEDIUM.widthMm).toBe(57);
+    expect(MEDIA.MULTI_PURPOSE_MEDIUM.heightMm).toBe(32);
+    expect(MEDIA.MULTI_PURPOSE_MEDIUM.lengthDots).toBe(378);
   });
 
   it('all ids are unique', () => {
