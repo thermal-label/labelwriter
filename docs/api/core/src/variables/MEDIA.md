@@ -872,7 +872,7 @@
 
 #### MULTI\_PURPOSE\_MEDIUM.heightMm
 
-> `readonly` **heightMm**: `57` = `57`
+> `readonly` **heightMm**: `32` = `32`
 
 #### MULTI\_PURPOSE\_MEDIUM.id
 
@@ -880,7 +880,7 @@
 
 #### MULTI\_PURPOSE\_MEDIUM.lengthDots
 
-> `readonly` **lengthDots**: `673` = `673`
+> `readonly` **lengthDots**: `378` = `378`
 
 #### MULTI\_PURPOSE\_MEDIUM.name
 
@@ -900,7 +900,7 @@
 
 #### MULTI\_PURPOSE\_MEDIUM.widthMm
 
-> `readonly` **widthMm**: `32` = `32`
+> `readonly` **widthMm**: `57` = `57`
 
 ### MULTI\_PURPOSE\_SMALL
 
