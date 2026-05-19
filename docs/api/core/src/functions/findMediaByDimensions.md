@@ -4,7 +4,7 @@
 
 [labelwriter](../../../README.md) / [core/src](../README.md) / findMediaByDimensions
 
-# Function: findMediaByDimensions()
+# ~~Function: findMediaByDimensions()~~
 
 > **findMediaByDimensions**(`widthMm`, `heightMm`): [`LabelWriterMedia`](../interfaces/LabelWriterMedia.md) \| `undefined`
 
@@ -30,3 +30,12 @@ unknown-roll diagnostics.
 ## Returns
 
 [`LabelWriterMedia`](../interfaces/LabelWriterMedia.md) \| `undefined`
+
+## Deprecated
+
+Unused — no caller maps `detectedMedia` onto a catalogue
+entry; the print/preview path consumes the SKU-derived descriptor
+directly. The exact dimension equality below also cannot match the
+deci-mm values `parseSkuInfo` now produces (e.g. `57.1`), so don't
+resurrect this without making it tolerant. Scheduled for removal in
+0.7.0.

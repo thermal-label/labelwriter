@@ -222,11 +222,15 @@
     id: 'multi-purpose-medium',
     name: '57×32mm Medium',
     category: 'multi-purpose',
-    widthMm: 32,
-    heightMm: 57,
+    // widthMm is the across-head dimension — the 550 head is ~57 mm
+    // (672 dots @ 300 dpi), so 57 mm spans the full head — and heightMm
+    // is the feed length. The ESC U NFC tag reports this roll as
+    // 57.1 × 31.7; this entry was previously transposed (32 × 57).
+    widthMm: 57,
+    heightMm: 32,
     type: 'die-cut',
     cornerRadiusMm: 3,
-    lengthDots: 673,
+    lengthDots: 378, // 32 mm × 11.81 dots/mm @ 300 dpi
     skus: ['30334', '1933084'],
     targetModels: ['lw'],
   },

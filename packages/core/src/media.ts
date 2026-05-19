@@ -20,6 +20,13 @@ export const DEFAULT_MEDIA: LabelWriterMedia = MEDIA.ADDRESS_STANDARD;
  * the 550 doesn't have a tape head. Returns undefined for sizes
  * outside the registry; callers can still surface `rawBytes` for
  * unknown-roll diagnostics.
+ *
+ * @deprecated Unused — no caller maps `detectedMedia` onto a catalogue
+ * entry; the print/preview path consumes the SKU-derived descriptor
+ * directly. The exact dimension equality below also cannot match the
+ * deci-mm values `parseSkuInfo` now produces (e.g. `57.1`), so don't
+ * resurrect this without making it tolerant. Scheduled for removal in
+ * 0.7.0.
  */
 export function findMediaByDimensions(
   widthMm: number,

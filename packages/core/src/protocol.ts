@@ -337,6 +337,10 @@ export async function encodeDuoTapeLabel(
   media?: MediaDescriptor,
 ): Promise<Uint8Array> {
   const { engine } = resolveEngine(device, options.engine);
+  dbg(
+    `encodeDuoTapeLabel ${device.key} engine=${engine.role} ` +
+      `bitmap=${String(bitmap.widthPx)}x${String(bitmap.heightPx)}`,
+  );
   if (engine.protocol !== 'd1-tape') {
     throw new UnsupportedOperationError(
       `encodeDuoTapeLabel on ${device.key} engine "${engine.role}"`,
@@ -355,6 +359,16 @@ export async function encodeDuoTapeLabel(
   return buildDuoTapeStream(bitmap, engine, d1Options, tapeMedia);
 }
 
+/**
+ * Print-flow debug tracing — ships ONLY on the `debug/print-flow`
+ * branch / `0.6.3-debug.x` prerelease line (npm dist-tag `debug`).
+ * Delete this helper and its call sites before merging to main.
+ */
+function dbg(msg: string): void {
+  // eslint-disable-next-line no-console
+  console.debug(`[lw-core] ${msg}`);
+}
+
 export function encodeLabel(
   device: DeviceEntry,
   bitmap: LabelBitmap,
@@ -365,6 +379,10 @@ export function encodeLabel(
 
   const { engine, selectRollByte } = resolveEngine(device, options.engine);
   assertEncoderSupports(engine, device.key);
+  dbg(
+    `encodeLabel ${device.key} engine=${engine.role} protocol=${engine.protocol} ` +
+      `bitmap=${String(bitmap.widthPx)}x${String(bitmap.heightPx)} copies=${String(copies)}`,
+  );
 
   // 550 family uses a fundamentally different job structure (job
   // header / per-label header / job trailer), so dispatch out before
@@ -431,5 +449,10 @@ export function encodeLabel(
     parts.push(buildFormFeed());
   }
 
-  return concat(...parts);
+  const wire = concat(...parts);
+  dbg(
+    `encodeLabel 450 ${device.key}: ${String(fitted.heightPx)} rows → ` +
+      `${String(wire.length)} bytes`,
+  );
+  return wire;
 }

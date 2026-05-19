@@ -45,6 +45,24 @@ jobs:
           done
           echo "✅ All versions match tag $TAG"
 
+      - name: Determine release channel
+        id: channel
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [[ "${{ github.event_name }}" == "push" && "$VERSION" == *-* ]]; then
+            # Prerelease tag (e.g. v0.6.3-debug.0): publish under the
+            # prerelease identifier as an npm dist-tag, never to `latest`.
+            NPM_TAG="${VERSION#*-}"
+            NPM_TAG="${NPM_TAG%%.*}"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+            echo "npm_tag=$NPM_TAG" >> "$GITHUB_OUTPUT"
+            echo "🔖 Prerelease $VERSION → npm dist-tag '$NPM_TAG'"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+            echo "npm_tag=latest" >> "$GITHUB_OUTPUT"
+            echo "🔖 Stable $VERSION → npm dist-tag 'latest'"
+          fi
+
       - name: Build
         run: pnpm build
 
@@ -52,7 +70,7 @@ jobs:
         run: pnpm test
 
       - name: Publish
-        run: pnpm publish -r --access public --no-git-checks --provenance
+        run: pnpm publish -r --access public --no-git-checks --provenance --tag ${{ steps.channel.outputs.npm_tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -61,4 +79,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          make_latest: true
+          make_latest: ${{ steps.channel.outputs.prerelease == 'false' }}
+          prerelease: ${{ steps.channel.outputs.prerelease }}

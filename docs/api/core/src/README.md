@@ -85,7 +85,7 @@
 - [encodeDuoTapeLabel](functions/encodeDuoTapeLabel.md)
 - [encodeLabel](functions/encodeLabel.md)
 - [findDevice](functions/findDevice.md)
-- [findMediaByDimensions](functions/findMediaByDimensions.md)
+- [~~findMediaByDimensions~~](functions/findMediaByDimensions.md)
 - [findTapeMediaByWidth](functions/findTapeMediaByWidth.md)
 - [findTapeMediaByWidthAll](functions/findTapeMediaByWidthAll.md)
 - [isDuoTapeEngine](functions/isDuoTapeEngine.md)

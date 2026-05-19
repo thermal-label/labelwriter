@@ -41,7 +41,11 @@ export { DEVICES, REGISTRY_LW, findDevice } from './devices.js';
  * this driver alone.
  */
 export const PROTOCOLS: ReadonlySet<string> = new Set(['lw-raster', 'lw5-raster', 'd1-tape']);
-export { DEFAULT_MEDIA, MEDIA, findMediaByDimensions } from './media.js';
+export { DEFAULT_MEDIA, MEDIA } from './media.js';
+// `findMediaByDimensions` is @deprecated (removal in 0.7.0); re-exported
+// for back-compat until then.
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+export { findMediaByDimensions } from './media.js';
 export { ROTATE_DIRECTION } from './orientation.js';
 export {
   buildReset,

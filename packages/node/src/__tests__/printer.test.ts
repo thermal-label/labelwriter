@@ -213,8 +213,10 @@ describe('LabelWriterPrinter', () => {
       new TextEncoder().encodeInto('30252       ', buf.subarray(8, 20));
       buf[20] = 0x00; // brand DYMO
       buf[23] = 0x01; // labelType: die
-      buf[40] = 89; // labelLengthMm
-      buf[42] = 28; // labelWidthMm
+      buf[40] = 0x3d;
+      buf[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+      buf[42] = 0x3b;
+      buf[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
       return buf;
     }
 
@@ -232,7 +234,7 @@ describe('LabelWriterPrinter', () => {
       expect(Array.from(firstWrite)).toEqual([0x1b, 0x55]);
       expect(vi.mocked(transport.read)).toHaveBeenCalledWith(63);
       expect(sku?.sku).toBe('30252');
-      expect(sku?.labelWidthMm).toBe(28);
+      expect(sku?.labelWidthMm).toBe(57.1);
     });
 
     it('550: returns undefined when magic is wrong (no media / counterfeit)', async () => {
@@ -273,8 +275,10 @@ describe('LabelWriterPrinter', () => {
       buf[1] = 0xca;
       new TextEncoder().encodeInto('30252       ', buf.subarray(8, 20));
       buf[23] = 0x01;
-      buf[40] = 89;
-      buf[42] = 28;
+      buf[40] = 0x3d;
+      buf[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+      buf[42] = 0x3b;
+      buf[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
       return buf;
     }
 
@@ -609,8 +613,10 @@ describe('LabelWriterPrinter', () => {
       sku[1] = 0xca;
       new TextEncoder().encodeInto('30252       ', sku.subarray(8, 20));
       sku[23] = 0x01;
-      sku[40] = 89;
-      sku[42] = 28;
+      sku[40] = 0x3d;
+      sku[41] = 0x01; // labelLengthMm 317 → 31.7 (deci-mm)
+      sku[42] = 0x3b;
+      sku[43] = 0x02; // labelWidthMm 571 → 57.1 (deci-mm)
       const status = new Uint8Array(32);
       status[10] = 8;
       status[30] = 1;
@@ -622,7 +628,7 @@ describe('LabelWriterPrinter', () => {
       await printer.getMedia();
       const after = await printer.getStatus();
       expect(after.detectedMedia).toBeDefined();
-      expect(after.detectedMedia?.widthMm).toBe(28);
+      expect(after.detectedMedia?.widthMm).toBe(57.1);
     });
 
     it('print() rejects an unknown engine role with the available-roles hint', async () => {
