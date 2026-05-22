@@ -314,8 +314,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
       if (pendingHandshake) {
         const prev = await this.transport.read(STATUS_BYTE_COUNT_550, PRINT_HANDSHAKE_TIMEOUT_MS);
         dbg(
-          `550 deferred handshake: status len=${String(prev.length)} ` +
-            `byte0=${String(prev[0])}`,
+          `550 deferred handshake: status len=${String(prev.length)} ` + `byte0=${String(prev[0])}`,
         );
         pendingHandshake = false;
       }
