@@ -12,6 +12,7 @@
 
 ## Interfaces
 
+- [Composed550Job](interfaces/Composed550Job.md)
 - [EngineVersion](interfaces/EngineVersion.md)
 - [LabelWriterEngineCapabilities](interfaces/LabelWriterEngineCapabilities.md)
 - [LabelWriterEngineHandle](interfaces/LabelWriterEngineHandle.md)
@@ -78,6 +79,7 @@
 - [buildSetLabelLength](functions/buildSetLabelLength.md)
 - [buildShortFormFeed](functions/buildShortFormFeed.md)
 - [buildStatusRequest](functions/buildStatusRequest.md)
+- [compose550Job](functions/compose550Job.md)
 - [createPreviewOffline](functions/createPreviewOffline.md)
 - [density550Percent](functions/density550Percent.md)
 - [duoTapeStatusRequest](functions/duoTapeStatusRequest.md)
