@@ -315,7 +315,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
         const prev = await this.transport.read(STATUS_BYTE_COUNT_550, PRINT_HANDSHAKE_TIMEOUT_MS);
         dbg(
           `550 deferred handshake: status len=${String(prev.length)} ` +
-            `byte0=${String(prev[0] ?? -1)}`,
+            `byte0=${String(prev[0])}`,
         );
         pendingHandshake = false;
       }
@@ -327,7 +327,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
         const status = await this.transport.read(STATUS_BYTE_COUNT_550, PRINT_HANDSHAKE_TIMEOUT_MS);
         dbg(
           `550 final handshake: status len=${String(status.length)} ` +
-            `byte0=${String(status[0] ?? -1)}`,
+            `byte0=${String(status[0])}`,
         );
       } else {
         // `ESC A 2` — host does not wait; drain on the next iteration.

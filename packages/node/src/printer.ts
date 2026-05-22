@@ -275,7 +275,7 @@ export class LabelWriterPrinter implements PrinterAdapter {
         const prev = await transport.read(STATUS_BYTE_COUNT_550);
         dbg(
           `550 deferred handshake: status len=${String(prev.length)} ` +
-            `byte0=${String(prev[0] ?? -1)}`,
+            `byte0=${String(prev[0])}`,
         );
         pendingHandshake = false;
       }
@@ -286,7 +286,7 @@ export class LabelWriterPrinter implements PrinterAdapter {
         const status = await transport.read(STATUS_BYTE_COUNT_550);
         dbg(
           `550 final handshake: status len=${String(status.length)} ` +
-            `byte0=${String(status[0] ?? -1)}`,
+            `byte0=${String(status[0])}`,
         );
       } else {
         pendingHandshake = true;
