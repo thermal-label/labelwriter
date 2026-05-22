@@ -128,7 +128,7 @@ describe('LabelWriterPrinter', () => {
       expect(written[0]![1]).toBe(0x40);
     });
 
-    it('prepends a job header for 550 devices (after the lock-acquire ESC A 1)', async () => {
+    it('runs the interactive 550 job (lock · preamble · label · handshake · finalize)', async () => {
       // Lock-acquire preamble reads 32 bytes; supply a healthy status
       // (bay=8 ok, voltage=1 ok) so acquire550Lock proceeds.
       const status = new Uint8Array(32);
@@ -138,12 +138,15 @@ describe('LabelWriterPrinter', () => {
       const printer = new LabelWriterPrinter(device550, transport, 'usb');
       await printer.print(solidRgba(672, 10), MEDIA.ADDRESS_STANDARD);
 
-      // First write is the lock-acquire ESC A 1; second write is the
-      // print job which starts with ESC s.
-      expect(written.length).toBe(2);
+      // Interactive 550 sequence: ESC A 1 (lock) · preamble (ESC s) ·
+      // label segment (ESC n) · ESC A 0 (footer handshake) · finalize
+      // (ESC E + ESC Q).
+      expect(written.length).toBe(5);
       expect(Array.from(written[0]!)).toEqual([0x1b, 0x41, 0x01]);
-      expect(written[1]![0]).toBe(0x1b);
-      expect(written[1]![1]).toBe(0x73);
+      expect([written[1]![0], written[1]![1]]).toEqual([0x1b, 0x73]); // ESC s
+      expect([written[2]![0], written[2]![1]]).toEqual([0x1b, 0x6e]); // ESC n
+      expect(Array.from(written[3]!)).toEqual([0x1b, 0x41, 0x00]); // ESC A 0
+      expect(Array.from(written[4]!)).toEqual([0x1b, 0x45, 0x1b, 0x51]); // ESC E + ESC Q
     });
 
     it('550 print without explicit media throws (status carries no detectedMedia today)', async () => {
@@ -259,12 +262,12 @@ describe('LabelWriterPrinter', () => {
       const printer = new LabelWriterPrinter(device550, transport, 'usb');
       await printer.getMedia();
       // No explicit media on print; should reuse cached SKU media
-      // (no extra ESC U fetch — cache hit). Two writes after getMedia:
-      // ESC A 1 (lock acquire) and the print job itself.
+      // (no extra ESC U fetch — cache hit). The interactive 550 job is
+      // 5 writes: ESC A 1 (lock) · preamble · label · ESC A 0 · finalize.
       const writesBefore = vi.mocked(transport.write).mock.calls.length;
       await printer.print(solidRgba(672, 4));
       const writesAfter = vi.mocked(transport.write).mock.calls.length;
-      expect(writesAfter - writesBefore).toBe(2);
+      expect(writesAfter - writesBefore).toBe(5);
     });
   });
 

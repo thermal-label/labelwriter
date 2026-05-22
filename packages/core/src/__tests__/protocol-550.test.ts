@@ -21,6 +21,7 @@ import {
   build550SetLabelCount,
   density550Percent,
   PRINT_STATUS_LOCK_NOT_GRANTED,
+  compose550Job,
   encode550Label,
   parseEngineVersion,
   parseSkuInfo,
@@ -64,11 +65,9 @@ describe('550 byte builders', () => {
     expect(Array.from(build550ContentType('high'))).toEqual([0x1b, 0x74, 0x20]);
   });
 
-  it('build550LabelIndex: ESC n + u32LE index', () => {
-    expect(Array.from(build550LabelIndex(0))).toEqual([0x1b, 0x6e, 0, 0, 0, 0]);
-    expect(Array.from(build550LabelIndex(0x01020304))).toEqual([
-      0x1b, 0x6e, 0x04, 0x03, 0x02, 0x01,
-    ]);
+  it('build550LabelIndex: ESC n + u16LE index', () => {
+    expect(Array.from(build550LabelIndex(0))).toEqual([0x1b, 0x6e, 0, 0]);
+    expect(Array.from(build550LabelIndex(0x0304))).toEqual([0x1b, 0x6e, 0x04, 0x03]);
   });
 
   it('build550LabelHeader: ESC D + bpp + align + u32LE width + u32LE height (12 bytes)', () => {
@@ -228,8 +227,8 @@ describe('encode550Label', () => {
     let i = 11;
     expect(out[i]).toBe(0x1b);
     expect(out[i + 1]).toBe(0x6e);
-    // Skip 6 bytes of ESC n
-    i += 6;
+    // Skip 4 bytes of ESC n (ESC + n + u16 index)
+    i += 4;
     expect(out[i]).toBe(0x1b);
     expect(out[i + 1]).toBe(0x44);
     // BPP=1, align=2, width=8, height=672
@@ -240,24 +239,23 @@ describe('encode550Label', () => {
 
   it('raster block has no SYN/ETB framing — pure header + data', () => {
     const out = encode550Label(lw550, bm(672, 4));
-    // 11 (job header) + 6 (ESC n) + 12 (ESC D) = 29 bytes preamble
+    // 11 (job header) + 4 (ESC n) + 12 (ESC D) = 27 bytes preamble
     // Followed by 4 raster lines × 84 bytes = 336 bytes of pure data
-    // Then ESC E + ESC Q = 4 bytes trailer
-    expect(out.length).toBe(29 + 4 * 84 + 2 + 2);
+    // Then ESC G + ESC E + ESC Q = 6 bytes trailer
+    expect(out.length).toBe(27 + 4 * 84 + 2 + 2 + 2);
     // The data block must not contain any SYN (0x16) framing —
     // verify the first raster byte is NOT preceded by 0x16
-    const firstDataByte = 29;
+    const firstDataByte = 27;
     // Just confirm length math holds
     expect(out[firstDataByte]).toBe(0); // empty bitmap → all-zero rows
   });
 
-  it('emits ESC G between copies and ESC E for the last copy', () => {
+  it('footers every copy with ESC G; ESC E once in the job trailer', () => {
     const out = encode550Label(lw550, bm(672, 4), { copies: 3 });
-    // Find all label trailers
     const escGCount = countEsc(out, 0x47);
     const escECount = countEsc(out, 0x45);
-    expect(escGCount).toBe(2); // between copy 1→2 and 2→3
-    expect(escECount).toBe(1); // after copy 3
+    expect(escGCount).toBe(3); // ESC G after every label
+    expect(escECount).toBe(1); // ESC E once, in finalize
   });
 
   it('exactly one ESC Q regardless of copy count', () => {
@@ -277,13 +275,11 @@ describe('encode550Label', () => {
 
   it('label index increments per copy, starting at 0', () => {
     const out = encode550Label(lw550, bm(672, 1), { copies: 3 });
-    // Find all ESC n occurrences
+    // Find all ESC n occurrences — index is u16LE.
     const indices: number[] = [];
-    for (let i = 0; i < out.length - 5; i++) {
+    for (let i = 0; i < out.length - 3; i++) {
       if (out[i] === 0x1b && out[i + 1] === 0x6e) {
-        indices.push(
-          (out[i + 2]! | (out[i + 3]! << 8) | (out[i + 4]! << 16) | (out[i + 5]! << 24)) >>> 0,
-        );
+        indices.push(out[i + 2]! | (out[i + 3]! << 8));
       }
     }
     expect(indices).toEqual([0, 1, 2]);
@@ -373,6 +369,50 @@ describe('encode550Label', () => {
         0;
       expect(width).toBe(expectedWireRows);
     });
+  });
+});
+
+describe('compose550Job', () => {
+  const bm = (widthPx: number, heightPx: number): ReturnType<typeof createBitmap> =>
+    createBitmap(widthPx, heightPx);
+
+  it('preamble starts with ESC s and carries no label or trailer bytes', () => {
+    const job = compose550Job(DEVICES.LW_550, bm(672, 200));
+    expect(job.preamble[0]).toBe(0x1b);
+    expect(job.preamble[1]).toBe(0x73); // ESC s
+    expect(findEscByte(job.preamble, 0x6e)).toBeUndefined(); // no ESC n
+    expect(findEscByte(job.preamble, 0x44)).toBeUndefined(); // no ESC D
+    expect(findEscByte(job.preamble, 0x51)).toBeUndefined(); // no ESC Q
+  });
+
+  it('emits one label segment per copy, each starting ESC n and ending ESC G', () => {
+    const job = compose550Job(DEVICES.LW_550, bm(672, 200), { copies: 3 });
+    expect(job.labels).toHaveLength(3);
+    for (const label of job.labels) {
+      expect(label[0]).toBe(0x1b);
+      expect(label[1]).toBe(0x6e); // ESC n
+      expect(label.at(-2)).toBe(0x1b);
+      expect(label.at(-1)).toBe(0x47); // ESC G
+    }
+  });
+
+  it('finalize is exactly ESC E + ESC Q', () => {
+    const job = compose550Job(DEVICES.LW_550, bm(672, 200));
+    expect(Array.from(job.finalize)).toEqual([0x1b, 0x45, 0x1b, 0x51]);
+  });
+
+  it('encode550Label equals preamble + labels + finalize concatenated', () => {
+    const job = compose550Job(DEVICES.LW_550, bm(672, 200), { copies: 2 });
+    const flat = encode550Label(DEVICES.LW_550, bm(672, 200), { copies: 2 });
+    const segLen =
+      job.preamble.length +
+      job.labels.reduce((n, l) => n + l.length, 0) +
+      job.finalize.length;
+    expect(flat.length).toBe(segLen);
+  });
+
+  it('throws when the device has no lw5-raster engine', () => {
+    expect(() => compose550Job(DEVICES.LW_450, bm(672, 200))).toThrow(/lw5-raster/);
   });
 });
 

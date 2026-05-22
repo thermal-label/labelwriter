@@ -8,6 +8,7 @@ import {
   build550GetVersion,
   build550Recovery,
   build550StatusRequest,
+  compose550Job,
   PRINT_STATUS_LOCK_NOT_GRANTED,
   STATUS_BYTE_COUNT_550,
   buildErrorRecovery,
@@ -28,6 +29,7 @@ import {
   skuInfoDetails,
   skuInfoToMedia,
   statusByteCount,
+  type Composed550Job,
   type DeviceEntry,
   type EngineVersion,
   type LabelWriterEngineHandle,
@@ -84,6 +86,17 @@ const D1_STATUS_BYTE_COUNT = 1;
  * discrepancy. Out of scope for this fix.
  */
 const STATUS_READ_TIMEOUT_MS = 2000;
+
+/**
+ * Read deadline for the 550 print-footer status handshake — the
+ * `ESC A` reply the firmware expects the host to drain after every
+ * `ESC G` (see `write550Job`). Longer than `STATUS_READ_TIMEOUT_MS`
+ * because the firmware may answer only once the label has physically
+ * fed; a 300 dpi diagnostic label is a couple of seconds. The deadline
+ * still converts a wedged firmware into a thrown `TransportTimeoutError`
+ * the harness can surface, instead of an unbounded hang.
+ */
+const PRINT_HANDSHAKE_TIMEOUT_MS = 15000;
 
 export interface RequestOptions {
   filters?: USBDeviceFilter[];
@@ -247,14 +260,82 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // Force `engine` to this instance's role so the encoder dispatches
     // on the right protocol (lw-raster / lw5-raster / d1-tape).
     const encodeOptions: LabelWriterPrintOptions = { ...options, engine: this.engine.role };
+
+    // 550 family: the print job is an interactive half-duplex exchange.
+    // The firmware stalls draining the bulk-OUT endpoint after each
+    // label's `ESC G` footer until the host issues `ESC A` and reads
+    // the 32-byte status reply — a monolithic write hangs. See
+    // `write550Job`.
+    if (this.engine.protocol === 'lw5-raster') {
+      const job = compose550Job(this.device, bitmap, encodeOptions, resolvedMedia);
+      dbg(
+        `composed 550 job: preamble=${String(job.preamble.length)}B ` +
+          `labels=${String(job.labels.length)} finalize=${String(job.finalize.length)}B`,
+      );
+      await this.write550Job(job);
+      return;
+    }
+
     // Duo tape engine: dispatch through the async encoder that
-    // lazy-loads d1-core. Raster engines stay on the sync path.
+    // lazy-loads d1-core. lw-raster (450 family) stays on the sync path.
     const bytes = isDuoTapeEngine(this.engine)
       ? await encodeDuoTapeLabel(this.device, bitmap, encodeOptions, resolvedMedia)
       : encodeLabel(this.device, bitmap, encodeOptions, resolvedMedia);
     dbg(`encoded ${String(bytes.length)} bytes — writing to transport`);
     await this.transport.write(bytes);
     dbg(`print complete: ${String(bytes.length)} bytes written`);
+  }
+
+  /**
+   * Write a composed 550 job interactively.
+   *
+   * The 550 firmware stops draining the bulk-OUT endpoint after each
+   * label's `ESC G` footer until the host issues `ESC A` and reads the
+   * 32-byte status reply (confirmed against minlux/dymon's Wireshark
+   * capture + the LW 550 Technical Reference). So: write the preamble,
+   * then per label write the segment + `ESC A`, drain the handshake
+   * status, then write `ESC E` + `ESC Q`.
+   *
+   * `ESC A` lock byte per the 550 spec: `0` for the LAST label — the
+   * final status query, which also drops the host lock; `2` between
+   * labels — the host does not block on that reply before streaming the
+   * next label, so the read is deferred to the next iteration.
+   *
+   * The handshake read is timed — a non-responsive firmware surfaces
+   * as a thrown `TransportTimeoutError` the caller can show, rather
+   * than an unbounded `print()` hang.
+   */
+  private async write550Job(job: Composed550Job): Promise<void> {
+    await this.transport.write(job.preamble);
+    // A deferred `ESC A 2` reply from the previous label, not yet drained.
+    let pendingHandshake = false;
+    for (const [i, segment] of job.labels.entries()) {
+      const isLast = i === job.labels.length - 1;
+      if (pendingHandshake) {
+        const prev = await this.transport.read(STATUS_BYTE_COUNT_550, PRINT_HANDSHAKE_TIMEOUT_MS);
+        dbg(
+          `550 deferred handshake: status len=${String(prev.length)} ` +
+            `byte0=${String(prev[0] ?? -1)}`,
+        );
+        pendingHandshake = false;
+      }
+      await this.transport.write(segment);
+      dbg(`550 label ${String(i + 1)}/${String(job.labels.length)} written — footer handshake`);
+      await this.transport.write(build550StatusRequest(isLast ? 0 : 2));
+      if (isLast) {
+        // `ESC A 0` — final status query; wait for the reply.
+        const status = await this.transport.read(STATUS_BYTE_COUNT_550, PRINT_HANDSHAKE_TIMEOUT_MS);
+        dbg(
+          `550 final handshake: status len=${String(status.length)} ` +
+            `byte0=${String(status[0] ?? -1)}`,
+        );
+      } else {
+        // `ESC A 2` — host does not wait; drain on the next iteration.
+        pendingHandshake = true;
+      }
+    }
+    await this.transport.write(job.finalize);
+    dbg('550 interactive print complete — finalize written');
   }
 
   /**

@@ -7,6 +7,7 @@ import {
   build550GetVersion,
   build550Recovery,
   build550StatusRequest,
+  compose550Job,
   PRINT_STATUS_LOCK_NOT_GRANTED,
   STATUS_BYTE_COUNT_550,
   buildErrorRecovery,
@@ -25,6 +26,7 @@ import {
   renderImage,
   skuInfoToMedia,
   statusByteCount,
+  type Composed550Job,
   type DeviceEntry,
   type EngineVersion,
   type LabelWriterEngineHandle,
@@ -230,14 +232,68 @@ export class LabelWriterPrinter implements PrinterAdapter {
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
     dbg(`rotate=${String(rotate)} bitmap=${String(bitmap.widthPx)}x${String(bitmap.heightPx)}`);
+    // 550 family: interactive half-duplex print — the firmware needs an
+    // `ESC A` + 32-byte status read after each label's `ESC G` footer or
+    // it stalls the bulk-OUT endpoint. See `write550Job`.
+    if (engine.protocol === 'lw5-raster') {
+      const job = compose550Job(this.device, bitmap, options, resolvedMedia);
+      dbg(
+        `composed 550 job: preamble=${String(job.preamble.length)}B ` +
+          `labels=${String(job.labels.length)} finalize=${String(job.finalize.length)}B`,
+      );
+      await this.write550Job(transport, job);
+      return;
+    }
+
     // Duo tape engine: dispatch through the async encoder that
-    // lazy-loads d1-core. Raster engines stay on the sync path.
+    // lazy-loads d1-core. lw-raster (450 family) stays on the sync path.
     const bytes = isDuoTapeEngine(engine)
       ? await encodeDuoTapeLabel(this.device, bitmap, options, resolvedMedia)
       : encodeLabel(this.device, bitmap, options, resolvedMedia);
     dbg(`encoded ${String(bytes.length)} bytes — writing to transport`);
     await transport.write(bytes);
     dbg(`print complete: ${String(bytes.length)} bytes written`);
+  }
+
+  /**
+   * Write a composed 550 job interactively — the 550 firmware needs an
+   * `ESC A` + 32-byte status read after each label's `ESC G` footer or
+   * it stalls the bulk-OUT endpoint. See the web printer's `write550Job`
+   * for the full rationale (minlux/dymon prior art).
+   *
+   * `ESC A` lock byte: `0` for the last label (final status query +
+   * lock release); `2` between labels (host does not block on the
+   * reply — it is drained on the next iteration).
+   */
+  private async write550Job(transport: Transport, job: Composed550Job): Promise<void> {
+    await transport.write(job.preamble);
+    // A deferred `ESC A 2` reply from the previous label, not yet drained.
+    let pendingHandshake = false;
+    for (const [i, segment] of job.labels.entries()) {
+      const isLast = i === job.labels.length - 1;
+      if (pendingHandshake) {
+        const prev = await transport.read(STATUS_BYTE_COUNT_550);
+        dbg(
+          `550 deferred handshake: status len=${String(prev.length)} ` +
+            `byte0=${String(prev[0] ?? -1)}`,
+        );
+        pendingHandshake = false;
+      }
+      await transport.write(segment);
+      dbg(`550 label ${String(i + 1)}/${String(job.labels.length)} written — footer handshake`);
+      await transport.write(build550StatusRequest(isLast ? 0 : 2));
+      if (isLast) {
+        const status = await transport.read(STATUS_BYTE_COUNT_550);
+        dbg(
+          `550 final handshake: status len=${String(status.length)} ` +
+            `byte0=${String(status[0] ?? -1)}`,
+        );
+      } else {
+        pendingHandshake = true;
+      }
+    }
+    await transport.write(job.finalize);
+    dbg('550 interactive print complete — finalize written');
   }
 
   /**

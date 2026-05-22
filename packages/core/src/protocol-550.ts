@@ -23,18 +23,22 @@ import type { LabelWriterPrintOptions, Density } from './types.js';
  * a job stream that the 550 firmware cannot parse; this module is
  * the clean fork.
  *
- * Wire layout this module emits:
+ * Wire layout — see `compose550Job` for the segmented form the driver
+ * actually writes. The 550 needs a status handshake between each
+ * label's footer and the job trailer, so a monolithic write hangs:
  *
  *   ESC s <jobID:u32>                                    (job header)
  *   ESC h | ESC i                                        (mode)
  *   ESC C <duty:u8>                                      (density)
  *
  *   per copy (label index 0..N-1):
- *     ESC n <index:u32>                                  (label header)
+ *     ESC n <index:u16>                                  (label header)
  *     ESC D <bpp:u8> <align:u8> <width:u32> <height:u32> (label header)
  *     <raster bytes>                                     (no SYN prefix)
- *     ESC G  (between copies) | ESC E (last copy)        (label trailer)
+ *     ESC G                                              (label footer)
+ *     [ driver: ESC A <lock> -> read 32-byte status ]    (footer handshake)
  *
+ *   ESC E                                                (feed to tear)
  *   ESC Q                                                (job trailer)
  *
  * Spec ambiguities settled by deliberate choice:
@@ -97,16 +101,18 @@ export function build550ContentType(speed: 'normal' | 'high'): Uint8Array {
   return new Uint8Array([ESC, 0x74, speed === 'high' ? 0x20 : 0x10]);
 }
 
-/** `ESC n <index>` — Set Label Index. 4-byte u32, little-endian. */
+/**
+ * `ESC n <index>` — Set Label Index. 2-byte u16, little-endian.
+ *
+ * The 550 status frame echoes the label index back in a u16 field
+ * (status bytes 5-6), and minlux/dymon's Wireshark capture of the DYMO
+ * software shows a 2-byte field on the wire. An earlier revision
+ * emitted a u32 here — two bytes too wide — which left two stray `0x00`
+ * bytes in the job stream ahead of `ESC D` and can desync the
+ * firmware's command parser.
+ */
 export function build550LabelIndex(index: number): Uint8Array {
-  return new Uint8Array([
-    ESC,
-    0x6e,
-    index & 0xff,
-    (index >> 8) & 0xff,
-    (index >> 16) & 0xff,
-    (index >> 24) & 0xff,
-  ]);
+  return new Uint8Array([ESC, 0x6e, index & 0xff, (index >> 8) & 0xff]);
 }
 
 /**
@@ -341,23 +347,50 @@ function concat(...arrays: Uint8Array[]): Uint8Array {
 }
 
 /**
- * Encode a complete 550-protocol print job for one or more copies.
+ * A 550 print job split into the segments an interactive print routine
+ * writes, with a status handshake between them.
+ *
+ * The 550 firmware stops draining the bulk-OUT endpoint after each
+ * label's `ESC G` footer until the host issues `ESC A` and reads the
+ * 32-byte status reply — a monolithic write of the whole job therefore
+ * hangs mid-stream. Confirmed against minlux/dymon's Wireshark capture
+ * (`dymon.cpp`) and the LW 550 Technical Reference. The driver must:
+ * write `preamble`, then for each `labels` segment write it, issue
+ * `ESC A` and drain the 32-byte status, then write `finalize`.
+ */
+export interface Composed550Job {
+  /** Job preamble — written once: `ESC s`, `ESC h`/`ESC i`, `ESC C`, optional `ESC T`. */
+  preamble: Uint8Array;
+  /**
+   * One segment per copy: `ESC n` + `ESC D` + raster + `ESC G`. After
+   * writing each, the driver must issue `ESC A` and drain the 32-byte
+   * status reply before the next segment / the trailer.
+   */
+  labels: Uint8Array[];
+  /** Job trailer — written once after the last label's handshake: `ESC E` + `ESC Q`. */
+  finalize: Uint8Array;
+}
+
+/**
+ * Compose a 550 print job as interleavable segments — see
+ * `Composed550Job` for why the 550 can't take a monolithic write.
  *
  * The bitmap is fitted to the engine's `headDots` (right-padded if
  * narrower, cropped if wider) so each raster line is exactly
  * `headDots / 8` bytes. Copies share the same bitmap; each gets its
- * own `ESC n` index and `ESC D` header. Inter-copy feed is `ESC G`;
- * the final feed is `ESC E`. Job is closed with `ESC Q`.
+ * own `ESC n` index and `ESC D` header and ends with an `ESC G`
+ * footer. `ESC E` (feed to tear) + `ESC Q` (end job) close the job
+ * once, in `finalize`.
  *
  * `compress` is silently ignored — the 550 raster format does not
  * carry the 450's `SYN` / `ETB` framing and therefore cannot RLE.
  */
-export function encode550Label(
+export function compose550Job(
   device: DeviceEntry,
   bitmap: LabelBitmap,
   options: LabelWriterPrintOptions = {},
   media?: MediaDescriptor,
-): Uint8Array {
+): Composed550Job {
   const engine = device.engines.find(e => e.protocol === 'lw5-raster');
   if (!engine) {
     throw new Error(`Device ${device.key} has no engine with protocol "lw5-raster".`);
@@ -366,8 +399,6 @@ export function encode550Label(
   const headDots = engine.headDots;
   const bytesPerLine = headDots / 8;
   // Cross-feed-pad / leading-skip / trailing-skip per plan 08 §6.
-  // With empty `printableArea` (today's state) this is byte-identical
-  // to the previous `fitBitmapWidth` behaviour.
   const fitted = composeWireBitmap550(bitmap, engine, media);
   const widthLines = fitted.heightPx;
 
@@ -390,23 +421,56 @@ export function encode550Label(
     );
   }
 
-  const parts: Uint8Array[] = [];
-  parts.push(build550JobHeader(jobId));
-  parts.push(build550Mode(mode));
-  parts.push(build550Density(density550Percent(density)));
+  const preambleParts: Uint8Array[] = [
+    build550JobHeader(jobId),
+    build550Mode(mode),
+    build550Density(density550Percent(density)),
+  ];
   if (options.speed !== undefined) {
-    parts.push(build550ContentType(options.speed));
+    preambleParts.push(build550ContentType(options.speed));
   }
 
+  // Every label ends with `ESC G` — the 550 footer the driver follows
+  // with the `ESC A` status handshake. (The 450 family uses `ESC G`
+  // only between copies and `ESC E` as the last copy's trailer; the
+  // 550 footers every label and feeds-to-tear once, in `finalize`.)
+  const labels: Uint8Array[] = [];
   for (let c = 0; c < copies; c++) {
-    parts.push(build550LabelIndex(c));
-    parts.push(build550LabelHeader(widthLines, headDots));
-    parts.push(rasterBlock);
-    parts.push(c < copies - 1 ? build550ShortFormFeed() : build550FormFeed());
+    labels.push(
+      concat(
+        build550LabelIndex(c),
+        build550LabelHeader(widthLines, headDots),
+        rasterBlock,
+        build550ShortFormFeed(),
+      ),
+    );
   }
 
-  parts.push(build550EndJob());
-  return concat(...parts);
+  return {
+    preamble: concat(...preambleParts),
+    labels,
+    finalize: concat(build550FormFeed(), build550EndJob()),
+  };
+}
+
+/**
+ * Encode a complete 550 print job as one contiguous byte array —
+ * `preamble` + every `labels` segment + `finalize` from
+ * `compose550Job`, with the inter-segment status handshakes omitted.
+ *
+ * This is the offline / test view of the job. **Real printing must go
+ * through `compose550Job` + the driver's interactive routine** —
+ * writing this blob in one shot hangs the 550 firmware (see
+ * `Composed550Job`).
+ */
+export function encode550Label(
+  device: DeviceEntry,
+  bitmap: LabelBitmap,
+  options: LabelWriterPrintOptions = {},
+  media?: MediaDescriptor,
+): Uint8Array {
+  const job = compose550Job(device, bitmap, options, media);
+  return concat(job.preamble, ...job.labels, job.finalize);
 }
 
 // ─────────────────────────────────────────────────────────────────
