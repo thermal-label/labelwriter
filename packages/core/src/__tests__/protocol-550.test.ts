@@ -405,9 +405,7 @@ describe('compose550Job', () => {
     const job = compose550Job(DEVICES.LW_550, bm(672, 200), { copies: 2 });
     const flat = encode550Label(DEVICES.LW_550, bm(672, 200), { copies: 2 });
     const segLen =
-      job.preamble.length +
-      job.labels.reduce((n, l) => n + l.length, 0) +
-      job.finalize.length;
+      job.preamble.length + job.labels.reduce((n, l) => n + l.length, 0) + job.finalize.length;
     expect(flat.length).toBe(segLen);
   });
 
