@@ -318,17 +318,16 @@ describe('encode550Label', () => {
     expect(findEscByte(out, 0x74)).toBeUndefined();
   });
 
-  // Plan 08 §6 (Labelwriter subsection): the 550 encoder mirrors the
-  // 450 dead-zone pipeline. With every DEVICES entry shipping
-  // `printableArea: undefined` today, resolved area is
-  // `ZERO_PRINTABLE_AREA` and the wire output stays byte-identical.
-  describe('printable-area integration (plan 08 §6)', () => {
-    it('field-absent: ESC D widthLines equals bitmap height', () => {
+  // Plan 08 §6 rolled back on 2026-05-23 (debug/print-flow): the 550
+  // encoder no longer reads `printableArea`. ESC D widthLines now
+  // tracks `bitmap.heightPx` verbatim regardless of the device's
+  // configured leading.
+  describe('encoder ignores printableArea (round 2, debug/print-flow)', () => {
+    it('ESC D widthLines equals bitmap height for the field-absent case', () => {
       const heightPx = 200;
       const out = encode550Label(lw550, bm(672, heightPx));
       const escD = findEscByte(out, 0x44);
       expect(escD).toBeDefined();
-      // Width = u32LE at bytes 4..7 of ESC D = number of raster lines
       const width =
         (out[escD! + 4]! |
           (out[escD! + 5]! << 8) |
@@ -340,24 +339,19 @@ describe('encode550Label', () => {
 
     function deviceWithPrintableArea(printableArea: PrintableArea): DeviceEntry {
       const baseEngine = lw550.engines[0]!;
-      return {
-        ...lw550,
-        engines: [{ ...baseEngine, printableArea }],
-      };
+      return { ...lw550, engines: [{ ...baseEngine, printableArea }] };
     }
 
-    it('populated fields: widthLines drops by leading + trailing dots', () => {
+    it('ESC D widthLines still tracks bitmap.heightPx with a non-zero leading', () => {
       const dpi = 300;
       const leadingMm = (70 * 25.4) / dpi;
-      const trailingMm = (18 * 25.4) / dpi;
       const dev = deviceWithPrintableArea({
         leading: leadingMm,
-        trailing: trailingMm,
+        trailing: 0,
         left: 0,
         right: 0,
       });
       const heightPx = 1051;
-      const expectedWireRows = heightPx - 70 - 18;
       const out = encode550Label(dev, bm(672, heightPx));
       const escD = findEscByte(out, 0x44);
       expect(escD).toBeDefined();
@@ -367,7 +361,7 @@ describe('encode550Label', () => {
           (out[escD! + 6]! << 16) |
           (out[escD! + 7]! << 24)) >>>
         0;
-      expect(width).toBe(expectedWireRows);
+      expect(width).toBe(heightPx);
     });
   });
 });
@@ -663,35 +657,13 @@ describe('withDetectedMedia', () => {
   });
 });
 
-describe('encode550Label — printable-area edge cases', () => {
+describe('encode550Label — edge cases', () => {
   function withArea(printableArea: PrintableArea): DeviceEntry {
     const baseEngine = DEVICES.LW_550.engines[0]!;
     return { ...DEVICES.LW_550, engines: [{ ...baseEngine, printableArea }] };
   }
 
-  it('bitmap shorter than the leading dead-zone collapses to a zero-row wire bitmap', () => {
-    // leadingDots exceeds the bitmap height → wireRows clamps to 0 and
-    // the encoder emits no raster rows (just the job framing).
-    const dpi = 300;
-    const leadingMm = (100 * 25.4) / dpi; // 100 dots leading
-    const dev = withArea({ leading: leadingMm, trailing: 0, left: 0, right: 0 });
-    const out = encode550Label(dev, createBitmap(672, 20)); // 20-row bitmap
-    // No SYN/raster lines — ESC D widthLines is 0.
-    const escD = findEscByte(out, 0x44);
-    expect(escD).toBeDefined();
-    const width =
-      (out[escD! + 4]! |
-        (out[escD! + 5]! << 8) |
-        (out[escD! + 6]! << 16) |
-        (out[escD! + 7]! << 24)) >>>
-      0;
-    expect(width).toBe(0);
-  });
-
-  it('zero printable-area with a head-width bitmap passes the bitmap straight through', () => {
-    // Zero dead-zone on every edge + an authored bitmap exactly headDots
-    // wide → the encoder's fast path returns the input bitmap unchanged
-    // (no crop, no pad).
+  it('a head-width bitmap passes straight through (no width-fit work)', () => {
     const dev = withArea({ leading: 0, trailing: 0, left: 0, right: 0 });
     const headDots = dev.engines[0]!.headDots;
     const heightPx = 40;
@@ -707,12 +679,12 @@ describe('encode550Label — printable-area edge cases', () => {
     expect(widthLines).toBe(heightPx);
   });
 
-  it('left-only dead-zone with a head-width label crops then pads the wire bitmap', () => {
-    // `left` is non-zero so the encoder leaves the zero-area fast path
-    // and runs the crop + pad pipeline. Authoring a head-width bitmap
-    // keeps the surviving slice non-empty so `sourceColCount > 0`.
+  it('printableArea is ignored — non-zero left does not change widthLines', () => {
+    // The pre-2026-05-23 encoder ran a crop+pad pipeline whenever any
+    // dead-zone edge was non-zero; the round-2 encoder ignores
+    // printableArea entirely and ESC D widthLines tracks bitmap.heightPx.
     const dpi = 300;
-    const leftMm = (24 * 25.4) / dpi; // exactly 24 dots
+    const leftMm = (24 * 25.4) / dpi;
     const dev = withArea({ leading: 0, trailing: 0, left: leftMm, right: 0 });
     const headDots = dev.engines[0]!.headDots;
     const heightPx = 12;
@@ -725,7 +697,6 @@ describe('encode550Label — printable-area edge cases', () => {
         (out[escD! + 6]! << 16) |
         (out[escD! + 7]! << 24)) >>>
       0;
-    // No leading/trailing skip — widthLines equals the bitmap height.
     expect(widthLines).toBe(heightPx);
   });
 });

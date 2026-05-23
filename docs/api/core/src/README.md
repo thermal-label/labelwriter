@@ -19,6 +19,7 @@
 - [LabelWriterMedia](interfaces/LabelWriterMedia.md)
 - [LabelWriterPrintOptions](interfaces/LabelWriterPrintOptions.md)
 - [LabelWriterTapeMedia](interfaces/LabelWriterTapeMedia.md)
+- [PrintableCanvasDots](interfaces/PrintableCanvasDots.md)
 - [SkuInfo](interfaces/SkuInfo.md)
 
 ## Type Aliases
@@ -90,6 +91,7 @@
 - [~~findMediaByDimensions~~](functions/findMediaByDimensions.md)
 - [findTapeMediaByWidth](functions/findTapeMediaByWidth.md)
 - [findTapeMediaByWidthAll](functions/findTapeMediaByWidthAll.md)
+- [getPrintableCanvasDots](functions/getPrintableCanvasDots.md)
 - [isDuoTapeEngine](functions/isDuoTapeEngine.md)
 - [isEngineDrivable](functions/isEngineDrivable.md)
 - [loadD1Core](functions/loadD1Core.md)

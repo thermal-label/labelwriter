@@ -125,6 +125,8 @@ export type {
 } from './types.js';
 
 export { isEngineDrivable, isDuoTapeEngine } from './protocol.js';
+export { getPrintableCanvasDots } from './printable-canvas.js';
+export type { PrintableCanvasDots } from './printable-canvas.js';
 
 export {
   D1_TAPE_COLOR_HEX,

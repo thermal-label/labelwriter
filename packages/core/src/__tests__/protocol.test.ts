@@ -415,24 +415,44 @@ describe('encodeLabel', () => {
     }
   });
 
-  // Plan 08 §6 (Labelwriter subsection): the encoder resolves
-  // `printableArea` and crops/pads the wire bitmap accordingly. As of
-  // 2026-05-08 every LW 3xx/4xx/5xx engine ships `printableArea.leading
-  // = 6 mm` (chassis-mechanical bench-validated value); the field-absent
-  // case is exercised here against a synthesised bare device so the
-  // skip-rows branch and its no-op path stay independently asserted.
-  describe('printable-area integration (plan 08 §6)', () => {
-    it('field-absent: row count equals bitmap height (skip-rows is a no-op at zero)', () => {
-      const headDots = device450Bare.engines[0]!.headDots;
+  // Plan 08 §6 rolled back on 2026-05-23 (debug/print-flow): the
+  // encoder no longer reads `printableArea` — dead-zone offsets are
+  // applied by the authoring layer via `getPrintableCanvasDots`. These
+  // tests pin the encoder's new contract: every row of the input
+  // bitmap reaches the wire regardless of the device's leading value.
+  describe('encoder ignores printableArea (round 2, debug/print-flow)', () => {
+    /**
+     * Synthesize a single-engine LW device with a populated
+     * `printableArea`. Used here to prove the encoder makes no
+     * decisions on it.
+     */
+    function deviceWithPrintableArea(printableArea: PrintableArea): DeviceEntry {
+      const base = DEVICES.LW_330_TURBO;
+      const baseEngine = base.engines[0]!;
+      return { ...base, engines: [{ ...baseEngine, printableArea }] };
+    }
+
+    it('wire row count equals bitmap.heightPx for a non-zero leading', () => {
+      const dpi = 300;
+      const leadingMm = (70 * 25.4) / dpi; // 70 dots — would have been the old crop budget
+      const dev = deviceWithPrintableArea({
+        leading: leadingMm,
+        trailing: 0,
+        left: 0,
+        right: 0,
+      });
+      const headDots = dev.engines[0]!.headDots;
+      const bytesPerRow = headDots / 8;
       const heightPx = 200;
       const bm = makeBitmap(headDots, heightPx);
-      const out = encodeLabel(device450Bare, bm);
+      const out = encodeLabel(dev, bm);
+
       let rowCount = 0;
       let i = 0;
       while (i < out.length) {
         if (out[i] === 0x16) {
           rowCount++;
-          i += 1 + headDots / 8;
+          i += 1 + bytesPerRow;
         } else {
           i++;
         }
@@ -440,12 +460,19 @@ describe('encodeLabel', () => {
       expect(rowCount).toBe(heightPx);
     });
 
-    it('field-absent: ESC L label-length byte equals bitmap height', () => {
-      const headDots = device450Bare.engines[0]!.headDots;
+    it('ESC L label-length still tracks the caller (bitmap.heightPx by default)', () => {
+      const dpi = 300;
+      const leadingMm = (70 * 25.4) / dpi;
+      const dev = deviceWithPrintableArea({
+        leading: leadingMm,
+        trailing: 0,
+        left: 0,
+        right: 0,
+      });
+      const headDots = dev.engines[0]!.headDots;
       const heightPx = 250;
       const bm = makeBitmap(headDots, heightPx);
-      const out = encodeLabel(device450Bare, bm);
-      // ESC L emits little-endian u16; find the bytes directly.
+      const out = encodeLabel(dev, bm);
       let escL = -1;
       for (let i = 0; i < out.length - 3; i++) {
         if (out[i] === 0x1b && out[i + 1] === 0x4c) {
@@ -458,182 +485,26 @@ describe('encodeLabel', () => {
       expect(length).toBe(heightPx);
     });
 
-    /**
-     * Synthesize a single-engine LW device with a populated
-     * `printableArea`. Works against the LW 330 Turbo measured values
-     * (lever-arch, May 2026) the plan calls out, but the field stays
-     * absent on the registry entry until a follow-up data-population
-     * PR — the dead-zone-aware path is exercised by overriding here.
-     */
-    function deviceWithPrintableArea(printableArea: PrintableArea): DeviceEntry {
-      const base = DEVICES.LW_330_TURBO;
-      const baseEngine = base.engines[0]!;
-      return {
-        ...base,
-        engines: [{ ...baseEngine, printableArea }],
-      };
-    }
-
-    it('populated fields: wire row count drops by leading + trailing dots', () => {
-      // LW 330 Turbo: 300 dpi → 70 dots ≈ 5.93 mm leading,
-      //                          18 dots ≈ 1.52 mm trailing,
-      //                          18 dots ≈ 1.52 mm left,
-      //                           0 dots right.
-      const dpi = 300;
-      const leadingMm = (70 * 25.4) / dpi; // back-solves to exactly 70 dots
-      const trailingMm = (18 * 25.4) / dpi;
-      const leftMm = (18 * 25.4) / dpi;
-      const dev = deviceWithPrintableArea({
-        leading: leadingMm,
-        trailing: trailingMm,
-        left: leftMm,
-        right: 0,
-      });
-      const headDots = dev.engines[0]!.headDots; // 672
-      const bytesPerRow = headDots / 8;
-
-      const heightPx = 1051; // ADDRESS_LARGE-style label rows at 300 dpi
-      const expectedWireRows = heightPx - 70 - 18; // 963
-
-      const bm = makeBitmap(headDots, heightPx);
-      const out = encodeLabel(dev, bm);
-
-      // Count `0x16` raster prefix bytes.
-      let rowCount = 0;
-      let i = 0;
-      while (i < out.length) {
-        if (out[i] === 0x16) {
-          rowCount++;
-          i += 1 + bytesPerRow;
-        } else {
-          i++;
-        }
-      }
-      expect(rowCount).toBe(expectedWireRows);
-
-      // ESC L label-length is the authored bitmap height (= label
-      // pitch), NOT the shorter wire row count. Plan 08 §6 footer:
-      // sending the wire-row count to ESC L makes the form-feed
-      // think the label is shorter than it really is, which compounds
-      // across consecutive prints. The encoder takes the input
-      // `bitmap.heightPx` (= label pitch) for ESC L and the post-skip
-      // wire count for the raster stream.
+    it('options.labelLengthDots is the supported override for short-authored bitmaps', () => {
+      // The authoring contract: when the harness authors a bitmap at
+      // the printable canvas height (< media.lengthDots), it MUST pass
+      // `options.labelLengthDots` so the printer's form-feed pitch
+      // stays correct.
+      const dev = DEVICES.LW_450; // any LW device
+      const headDots = dev.engines[0]!.headDots;
+      const printableHeight = 1051 - 71; // simulated 6 mm leading at 300 dpi
+      const bm = makeBitmap(headDots, printableHeight);
+      const out = encodeLabel(dev, bm, { labelLengthDots: 1051 });
       let escL = -1;
-      for (let j = 0; j < out.length - 3; j++) {
-        if (out[j] === 0x1b && out[j + 1] === 0x4c) {
-          escL = j;
+      for (let i = 0; i < out.length - 3; i++) {
+        if (out[i] === 0x1b && out[i + 1] === 0x4c) {
+          escL = i;
           break;
         }
       }
       expect(escL).toBeGreaterThan(-1);
       const length = (out[escL + 2] ?? 0) | ((out[escL + 3] ?? 0) << 8);
-      expect(length).toBe(heightPx);
-    });
-
-    it('populated fields: cross-feed pad places content at wire col `leftDots`', () => {
-      const dpi = 300;
-      const leftMm = (18 * 25.4) / dpi; // exactly 18 dots
-      const dev = deviceWithPrintableArea({
-        leading: 0,
-        trailing: 0,
-        left: leftMm,
-        right: 0,
-      });
-      const headDots = dev.engines[0]!.headDots;
-      const bytesPerRow = headDots / 8;
-
-      // Label is narrower than the head: authored width 425 dots
-      // (typical 36 mm label @ 300 dpi). Fill it solid black so we can
-      // see exactly which wire columns the encoder fired.
-      const labelWidthDots = 425;
-      const bm = createBitmap(labelWidthDots, 4);
-      const stride = Math.ceil(labelWidthDots / 8);
-      // Fill the whole buffer with 0xff, then mask the trailing bits
-      // in each row's last byte (per LabelBitmap invariant: bits past
-      // `widthPx` stay zero).
-      bm.data.fill(0xff);
-      const trailingBits = labelWidthDots % 8;
-      if (trailingBits !== 0) {
-        const mask = (0xff << (8 - trailingBits)) & 0xff;
-        for (let y = 0; y < bm.heightPx; y++) {
-          const last = y * stride + (stride - 1);
-          bm.data[last] = (bm.data[last] ?? 0) & mask;
-        }
-      }
-
-      const out = encodeLabel(dev, bm);
-
-      // Pull the first raster row and inspect bit positions.
-      let firstRowOffset = -1;
-      for (let i = 0; i < out.length - 1; i++) {
-        if (out[i] === 0x16) {
-          firstRowOffset = i + 1;
-          break;
-        }
-      }
-      expect(firstRowOffset).toBeGreaterThan(-1);
-      const row = out.subarray(firstRowOffset, firstRowOffset + bytesPerRow);
-
-      function bitAt(col: number): number {
-        const byte = row[col >> 3] ?? 0;
-        return (byte >> (7 - (col & 7))) & 1;
-      }
-
-      // leftDots = 18 — cols 0..17 are the unprintable-left dead-zone
-      // and must be white.
-      for (let c = 0; c < 18; c++) {
-        expect(bitAt(c)).toBe(0);
-      }
-      // Authored content occupies cols 18..(18 + (425 - 18)) = 18..425.
-      // Right-shifted by leftDots — the authored col 18 lands at wire
-      // col 18 (sourceColStart = leftDots), and the slice ends at wire
-      // col 18 + (425 - 18) = 425.
-      for (let c = 18; c < 425; c++) {
-        expect(bitAt(c)).toBe(1);
-      }
-      // Past the label width (cols 425..671) the head fires harmlessly
-      // into air — wire cols stay zero.
-      for (let c = 425; c < headDots; c++) {
-        expect(bitAt(c)).toBe(0);
-      }
-    });
-
-    /**
-     * Synthesize a single-engine LW device with a populated
-     * `printableArea` — same shape as `deviceWithPrintableArea` above
-     * but in this block's scope.
-     */
-    function withArea(printableArea: PrintableArea): DeviceEntry {
-      const base = DEVICES.LW_330_TURBO;
-      const baseEngine = base.engines[0]!;
-      return { ...base, engines: [{ ...baseEngine, printableArea }] };
-    }
-
-    it('leading/trailing-only dead-zone with a head-width label: slice needs no cross-feed pad', () => {
-      // `left` and `right` are zero and the authored bitmap is exactly
-      // headDots wide, so `leftPad` and `rightPad` are both 0 — the
-      // encoder returns the cropped slice directly without padBitmap.
-      const dpi = 300;
-      const leadingMm = (10 * 25.4) / dpi; // exactly 10 dots
-      const trailingMm = (4 * 25.4) / dpi; // exactly 4 dots
-      const dev = withArea({ leading: leadingMm, trailing: trailingMm, left: 0, right: 0 });
-      const headDots = dev.engines[0]!.headDots;
-      const bytesPerRow = headDots / 8;
-      const heightPx = 60;
-      const bm = createBitmap(headDots, heightPx);
-      const out = encodeLabel(dev, bm);
-      let rowCount = 0;
-      let i = 0;
-      while (i < out.length) {
-        if (out[i] === 0x16) {
-          rowCount++;
-          i += 1 + bytesPerRow;
-        } else {
-          i++;
-        }
-      }
-      // Wire rows = heightPx - leadingDots - trailingDots = 60 - 10 - 4.
-      expect(rowCount).toBe(heightPx - 10 - 4);
+      expect(length).toBe(1051);
     });
   });
 });

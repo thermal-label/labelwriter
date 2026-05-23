@@ -1,4 +1,4 @@
-import { createBitmap, padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
+import { padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
 import type {
   DeviceEntry,
   MediaDescriptor,
@@ -7,7 +7,6 @@ import type {
   PrinterStatus,
   StatusDetail,
 } from '@thermal-label/contracts';
-import { getPrintableArea } from '@thermal-label/contracts';
 import type { LabelWriterPrintOptions, Density } from './types.js';
 
 /**
@@ -276,63 +275,20 @@ export function density550Percent(density: Density): number {
   }
 }
 
-/** Convert mm to dots at the given DPI, rounding to the nearest dot. */
-function mmToDots(mm: number, dpi: number): number {
-  return Math.round((mm * dpi) / 25.4);
-}
-
 /**
- * Compose the wire bitmap for the LabelWriter 550 family per plan 08
- * §6 (Labelwriter subsection): **send fewer rows** for the leading /
- * trailing dead zones, cross-feed pad with white columns inside
- * `headDots`-wide rows. See `composeWireBitmap` in `protocol.ts` for
- * the full rationale — this is the 550-shaped clone, kept here
- * because the 550 encoder is a deliberate fork (different job header
- * / `ESC D` block / trailer) and the two protocols don't share
- * fitting logic.
- *
- * With empty `printableArea` (today's state) this is byte-identical
- * to the previous `fitBitmapWidth` behaviour.
+ * Fit the authored bitmap to the engine's head width for the
+ * LabelWriter 550 family. Width-only — see `composeWireBitmap` in
+ * `protocol.ts` for the dead-zone rationale; the 5xx fork mirrors the
+ * same width-only contract so callers see identical behaviour across
+ * the LW lineup.
  */
-function composeWireBitmap550(
-  bitmap: LabelBitmap,
-  engine: PrintEngine,
-  media: MediaDescriptor | undefined,
-): LabelBitmap {
+function composeWireBitmap550(bitmap: LabelBitmap, engine: PrintEngine): LabelBitmap {
   const headDots = engine.headDots;
-  const dpi = engine.dpi;
-  const { leading, trailing, left, right } = getPrintableArea(engine, media);
-  const leadingDots = mmToDots(leading, dpi);
-  const trailingDots = mmToDots(trailing, dpi);
-  const leftDots = mmToDots(left, dpi);
-  const rightDots = mmToDots(right, dpi);
-
-  const labelWidthDots = Math.min(bitmap.widthPx, headDots);
-  const wireRows = Math.max(0, bitmap.heightPx - leadingDots - trailingDots);
-  if (wireRows === 0) return { widthPx: headDots, heightPx: 0, data: new Uint8Array(0) };
-
-  const sourceColStart = Math.min(leftDots, labelWidthDots);
-  const sourceColEnd = Math.max(sourceColStart, labelWidthDots - rightDots);
-  const sourceColCount = sourceColEnd - sourceColStart;
-
-  if (leadingDots === 0 && trailingDots === 0 && leftDots === 0 && rightDots === 0) {
-    if (bitmap.widthPx === headDots) return bitmap;
-    if (bitmap.widthPx < headDots) {
-      return padBitmap(bitmap, { right: headDots - bitmap.widthPx });
-    }
-    return cropBitmap(bitmap, 0, 0, headDots, bitmap.heightPx);
+  if (bitmap.widthPx === headDots) return bitmap;
+  if (bitmap.widthPx < headDots) {
+    return padBitmap(bitmap, { right: headDots - bitmap.widthPx });
   }
-
-  const slice =
-    /* v8 ignore next 2 -- sourceColCount > 0 whenever any printable content survives; the createBitmap(0,…) arm is an unreachable degenerate-input guard (createBitmap rejects width 0 anyway) */
-    sourceColCount > 0
-      ? cropBitmap(bitmap, sourceColStart, leadingDots, sourceColCount, wireRows)
-      : createBitmap(0, wireRows);
-
-  const leftPad = sourceColStart;
-  const rightPad = headDots - sourceColStart - sourceColCount;
-  if (leftPad === 0 && rightPad === 0) return slice;
-  return padBitmap(slice, { left: leftPad, right: rightPad });
+  return cropBitmap(bitmap, 0, 0, headDots, bitmap.heightPx);
 }
 
 function concat(...arrays: Uint8Array[]): Uint8Array {
@@ -391,6 +347,11 @@ export function compose550Job(
   options: LabelWriterPrintOptions = {},
   media?: MediaDescriptor,
 ): Composed550Job {
+  // Media is no longer read by the 550 encoder — round-2 dead-zone
+  // work moved canvas-sizing to the caller. Parameter kept for API
+  // stability; the `void` keeps tsc + eslint quiet without renaming
+  // the public arg to `_media` (which would leak into typedoc output).
+  void media;
   const engine = device.engines.find(e => e.protocol === 'lw5-raster');
   if (!engine) {
     throw new Error(`Device ${device.key} has no engine with protocol "lw5-raster".`);
@@ -398,8 +359,9 @@ export function compose550Job(
 
   const headDots = engine.headDots;
   const bytesPerLine = headDots / 8;
-  // Cross-feed-pad / leading-skip / trailing-skip per plan 08 §6.
-  const fitted = composeWireBitmap550(bitmap, engine, media);
+  // Width-only fit. Dead-zone offsets live on the authoring canvas;
+  // see `getPrintableCanvasDots` for the helper the harness uses.
+  const fitted = composeWireBitmap550(bitmap, engine);
   const widthLines = fitted.heightPx;
 
   const density = options.density ?? 'normal';
