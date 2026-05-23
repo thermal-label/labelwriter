@@ -258,8 +258,20 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     const bitmap = renderImage(image, { dither: true, rotate });
     dbg(`rotate=${String(rotate)} bitmap=${String(bitmap.widthPx)}x${String(bitmap.heightPx)}`);
     // Force `engine` to this instance's role so the encoder dispatches
-    // on the right protocol (lw-raster / lw5-raster / d1-tape).
+    // on the right protocol (lw-raster / lw5-raster / d1-tape). When
+    // the caller authored a short bitmap (printable-canvas-sized — see
+    // `getPrintableCanvasDots` in labelwriter-core), auto-supply
+    // `labelLengthDots = media.lengthDots` so ESC L still describes the
+    // full label feed pitch. Explicit `options.labelLengthDots` always
+    // wins; tape media has no fixed lengthDots and falls back to
+    // bitmap.heightPx inside the encoder.
+    const mediaLengthDots = (resolvedMedia as { lengthDots?: number }).lengthDots;
     const encodeOptions: LabelWriterPrintOptions = { ...options, engine: this.engine.role };
+    if (encodeOptions.labelLengthDots === undefined) {
+      if (typeof mediaLengthDots === 'number' && mediaLengthDots > bitmap.heightPx) {
+        encodeOptions.labelLengthDots = mediaLengthDots;
+      }
+    }
 
     // 550 family: the print job is an interactive half-duplex exchange.
     // The firmware stalls draining the bulk-OUT endpoint after each
