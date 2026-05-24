@@ -235,6 +235,23 @@
     targetModels: ['lw'],
   },
   {
+    // DYMO 11354 — same 57×32 die-cut geometry as MULTI_PURPOSE_MEDIUM
+    // but removable adhesive (ESC U NFC tag reports material=removable).
+    // 30334 is the permanent-adhesive product and stays a separate entry.
+    // Two SKUs: 11354 is the article number, S0722540 the order code.
+    key: 'MULTI_PURPOSE_MEDIUM_REMOVABLE',
+    id: 'multi-purpose-medium-removable',
+    name: '57×32mm Removable Multi-Purpose',
+    category: 'multi-purpose',
+    widthMm: 57,
+    heightMm: 32,
+    type: 'die-cut',
+    cornerRadiusMm: 3,
+    lengthDots: 378, // 32 mm × 11.81 dots/mm @ 300 dpi
+    skus: ['11354', 'S0722540'],
+    targetModels: ['lw'],
+  },
+  {
     key: 'MULTI_PURPOSE_LARGE',
     id: 'multi-purpose-large',
     name: '70×54mm Large',

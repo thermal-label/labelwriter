@@ -95,14 +95,18 @@ describe('MEDIA registry', () => {
     }
   });
 
-  it('no two die-cut entries share (widthMm, heightMm)', () => {
+  // Geometry is no longer a unique key: 11354 (removable) and 30334
+  // (permanent) are both 57×32 die-cut. The SKU is the catalogue's
+  // unique identifier — dimension lookup (`findMediaByDimensions`) is
+  // deprecated for removal in 0.7.0.
+  it('no SKU appears in more than one entry', () => {
     const seen = new Map<string, string>();
     for (const m of ALL_MEDIA) {
-      if (m.type !== 'die-cut') continue;
-      const key = `${String(m.widthMm)}x${String(m.heightMm)}`;
-      const prior = seen.get(key);
-      expect(prior, `${String(m.id)} collides with ${prior ?? ''} at ${key}`).toBeUndefined();
-      seen.set(key, String(m.id));
+      for (const sku of m.skus ?? []) {
+        const prior = seen.get(sku);
+        expect(prior, `${String(m.id)} reuses SKU ${sku} from ${prior ?? ''}`).toBeUndefined();
+        seen.set(sku, String(m.id));
+      }
     }
   });
 });
@@ -115,8 +119,10 @@ describe('SKU coverage', () => {
     }
   });
 
-  it('SKUs match Dymo paper format: 5-digit legacy or 7-digit modern', () => {
-    const re = /^\d{5}$|^\d{7}$/;
+  it('SKUs match Dymo paper format: numeric legacy/modern or S-form order code', () => {
+    // 5-digit legacy (30334), 7-digit modern (1933084), or the
+    // `S` + 7-digit order code the LW 550 NFC tag reports (S0722540).
+    const re = /^\d{5}$|^\d{7}$|^S\d{7}$/;
     for (const m of ALL_MEDIA) {
       for (const sku of m.skus ?? []) {
         expect(re.test(sku), `${String(m.id)}: ${sku}`).toBe(true);
@@ -214,10 +220,16 @@ describe('findMediaByDimensions', () => {
     expect(findMediaByDimensions(123, 456)).toBeUndefined();
   });
 
-  it('round-trips every die-cut entry by its (widthMm, heightMm)', () => {
+  it('resolves every die-cut entry to a geometry-matching entry', () => {
+    // Geometry is not unique (see "no SKU appears in more than one
+    // entry") — `findMediaByDimensions` returns the first match, so
+    // assert the result shares the queried dimensions, not identity.
     for (const m of ALL_MEDIA) {
       if (m.type !== 'die-cut') continue;
-      expect(findMediaByDimensions(m.widthMm, m.heightMm!), String(m.id)).toBe(m);
+      const hit = findMediaByDimensions(m.widthMm, m.heightMm!);
+      expect(hit, String(m.id)).toBeDefined();
+      expect(hit!.widthMm, String(m.id)).toBe(m.widthMm);
+      expect(hit!.heightMm, String(m.id)).toBe(m.heightMm);
     }
   });
 });
