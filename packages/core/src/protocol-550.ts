@@ -314,43 +314,26 @@ function concat(...arrays: Uint8Array[]): Uint8Array {
 }
 
 /**
- * A 550 print job split into the segments an interactive print routine
- * writes, with a status handshake between them.
- *
- * The 550 firmware stops draining the bulk-OUT endpoint after each
- * label's `ESC G` footer until the host issues `ESC A` and reads the
- * 32-byte status reply — a monolithic write of the whole job therefore
- * hangs mid-stream. Confirmed against minlux/dymon's Wireshark capture
- * (`dymon.cpp`) and the LW 550 Technical Reference. The driver must:
- * write `preamble`, then for each `labels` segment write it, issue
- * `ESC A` and drain the 32-byte status, then write `finalize`.
+ * A 550 print job split into the segments an interactive write routine
+ * interleaves with `ESC A` status reads. See the
+ * `lw5-raster` protocol doc — "Inter-label status handshake" — for the
+ * wire contract this shape encodes; `write550Job` is its driver.
  */
 export interface Composed550Job {
-  /** Job preamble — written once: `ESC s`, `ESC h`/`ESC i`, `ESC C`, optional `ESC T`. */
+  /** Once: `ESC s`, `ESC h`/`ESC i`, `ESC C`, optional `ESC T`. */
   preamble: Uint8Array;
-  /**
-   * One segment per copy: `ESC n` + `ESC D` + raster + `ESC G`. After
-   * writing each, the driver must issue `ESC A` and drain the 32-byte
-   * status reply before the next segment / the trailer.
-   */
+  /** One per copy: `ESC n` + `ESC D` + raster + `ESC G`. */
   labels: Uint8Array[];
-  /** Job trailer — written once after the last label's handshake: `ESC E` + `ESC Q`. */
+  /** Once, after the last label's handshake: `ESC E` + `ESC Q`. */
   finalize: Uint8Array;
 }
 
 /**
  * Compose a 550 print job as interleavable segments — see
- * `Composed550Job` for why the 550 can't take a monolithic write.
- *
- * The bitmap is fitted to the engine's `headDots` (right-padded if
- * narrower, cropped if wider) so each raster line is exactly
- * `headDots / 8` bytes. Copies share the same bitmap; each gets its
- * own `ESC n` index and `ESC D` header and ends with an `ESC G`
- * footer. `ESC E` (feed to tear) + `ESC Q` (end job) close the job
- * once, in `finalize`.
- *
- * `compress` is silently ignored — the 550 raster format does not
- * carry the 450's `SYN` / `ETB` framing and therefore cannot RLE.
+ * `Composed550Job`. The bitmap is fitted to `headDots` (right-pad
+ * narrower, crop wider) so each raster line is `headDots / 8` bytes.
+ * `compress` is ignored — the 550 raster format has no `SYN` / `ETB`
+ * framing.
  */
 export function compose550Job(
   device: DeviceEntry,
@@ -448,34 +431,20 @@ export function encode550Label(
 
 export interface Write550JobOptions {
   /**
-   * Per-handshake read deadline, ms. The 550 may take a couple of
-   * seconds to answer the post-`ESC G` `ESC A` while the label is
-   * physically feeding. Omit (or pass `undefined`) to delegate the
-   * deadline to the transport's own policy — the WebUSB transport
-   * has no implicit timeout and an unresponsive firmware would hang
-   * the read forever, so web callers should set a finite value.
+   * Per-handshake read deadline, ms. Omit to delegate to the
+   * transport's own policy — WebUSB has no implicit timeout, so web
+   * callers should set a finite value.
    */
   handshakeReadTimeoutMs?: number;
 }
 
 /**
- * Write a composed 550 job interactively over the given transport.
+ * Write a composed 550 job interactively. See the `lw5-raster`
+ * protocol doc — "Inter-label status handshake" — for the wire
+ * contract.
  *
- * The 550 firmware stops draining the bulk-OUT endpoint after each
- * label's `ESC G` footer until the host issues `ESC A` and reads the
- * 32-byte status reply (confirmed against minlux/dymon's Wireshark
- * capture + the LW 550 Technical Reference). So: write the preamble,
- * then per label write the segment + `ESC A`, drain the handshake
- * status, then write `ESC E` + `ESC Q`.
- *
- * `ESC A` lock byte per the 550 spec: `0` for the LAST label — the
- * final status query, which also drops the host lock; `2` between
- * labels — the host does not block on that reply before streaming
- * the next label, so the read is deferred to the next iteration.
- *
- * Pure protocol orchestration — no driver state is touched; both the
- * node and web `LabelWriterPrinter`s dispatch through here so a bug
- * fix lands in one place.
+ * Lock byte: `0` on the last label (final query + lock release), `2`
+ * between labels (host defers the read to the next iteration).
  */
 export async function write550Job(
   transport: Transport,

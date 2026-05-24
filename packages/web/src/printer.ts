@@ -273,12 +273,8 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
       }
     }
 
-    // 550 family: the print job is an interactive half-duplex exchange.
-    // The firmware stalls draining the bulk-OUT endpoint after each
-    // label's `ESC G` footer until the host issues `ESC A` and reads
-    // the 32-byte status reply — a monolithic write hangs. The loop
-    // lives in labelwriter-core's `write550Job`; we pass a finite
-    // read deadline because WebUSB has no implicit timeout.
+    // 550 dispatch — see `write550Job`. Web supplies a finite read
+    // deadline; WebUSB has no implicit timeout.
     if (this.engine.protocol === 'lw5-raster') {
       const job = compose550Job(this.device, bitmap, encodeOptions, resolvedMedia);
       dbg(

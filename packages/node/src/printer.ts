@@ -232,12 +232,8 @@ export class LabelWriterPrinter implements PrinterAdapter {
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
     dbg(`rotate=${String(rotate)} bitmap=${String(bitmap.widthPx)}x${String(bitmap.heightPx)}`);
-    // 550 family: interactive half-duplex print — the firmware needs an
-    // `ESC A` + 32-byte status read after each label's `ESC G` footer or
-    // it stalls the bulk-OUT endpoint. The loop lives in
-    // labelwriter-core's `write550Job`. Node leaves the handshake reads
-    // untimed; the CLI surface is the deliberate place to address node-
-    // side hang behaviour.
+    // 550 dispatch — see `write550Job`. Node leaves the handshake
+    // reads untimed (CLI-side timeout policy is a separate concern).
     if (engine.protocol === 'lw5-raster') {
       const job = compose550Job(this.device, bitmap, options, resolvedMedia);
       dbg(
