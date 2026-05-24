@@ -21,6 +21,7 @@
 - [LabelWriterTapeMedia](interfaces/LabelWriterTapeMedia.md)
 - [PrintableCanvasDots](interfaces/PrintableCanvasDots.md)
 - [SkuInfo](interfaces/SkuInfo.md)
+- [Write550JobOptions](interfaces/Write550JobOptions.md)
 
 ## Type Aliases
 
@@ -103,3 +104,4 @@
 - [skuInfoToMedia](functions/skuInfoToMedia.md)
 - [statusByteCount](functions/statusByteCount.md)
 - [withDetectedMedia](functions/withDetectedMedia.md)
+- [write550Job](functions/write550Job.md)

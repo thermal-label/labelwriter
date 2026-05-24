@@ -6,8 +6,19 @@ import type {
   PrinterError,
   PrinterStatus,
   StatusDetail,
+  Transport,
 } from '@thermal-label/contracts';
 import type { LabelWriterPrintOptions, Density } from './types.js';
+
+/**
+ * Print-flow debug tracing — ships ONLY on the `debug/print-flow`
+ * branch / `0.6.3-debug.x` prerelease line (npm dist-tag `debug`).
+ * Delete this helper and its call sites before merging to main.
+ */
+function dbg(msg: string): void {
+  // eslint-disable-next-line no-console
+  console.debug(`[lw-core] ${msg}`);
+}
 
 /**
  * Wire-protocol encoder for the LabelWriter 550 family
@@ -433,6 +444,74 @@ export function encode550Label(
 ): Uint8Array {
   const job = compose550Job(device, bitmap, options, media);
   return concat(job.preamble, ...job.labels, job.finalize);
+}
+
+export interface Write550JobOptions {
+  /**
+   * Per-handshake read deadline, ms. The 550 may take a couple of
+   * seconds to answer the post-`ESC G` `ESC A` while the label is
+   * physically feeding. Omit (or pass `undefined`) to delegate the
+   * deadline to the transport's own policy — the WebUSB transport
+   * has no implicit timeout and an unresponsive firmware would hang
+   * the read forever, so web callers should set a finite value.
+   */
+  handshakeReadTimeoutMs?: number;
+}
+
+/**
+ * Write a composed 550 job interactively over the given transport.
+ *
+ * The 550 firmware stops draining the bulk-OUT endpoint after each
+ * label's `ESC G` footer until the host issues `ESC A` and reads the
+ * 32-byte status reply (confirmed against minlux/dymon's Wireshark
+ * capture + the LW 550 Technical Reference). So: write the preamble,
+ * then per label write the segment + `ESC A`, drain the handshake
+ * status, then write `ESC E` + `ESC Q`.
+ *
+ * `ESC A` lock byte per the 550 spec: `0` for the LAST label — the
+ * final status query, which also drops the host lock; `2` between
+ * labels — the host does not block on that reply before streaming
+ * the next label, so the read is deferred to the next iteration.
+ *
+ * Pure protocol orchestration — no driver state is touched; both the
+ * node and web `LabelWriterPrinter`s dispatch through here so a bug
+ * fix lands in one place.
+ */
+export async function write550Job(
+  transport: Transport,
+  job: Composed550Job,
+  options: Write550JobOptions = {},
+): Promise<void> {
+  const timeout = options.handshakeReadTimeoutMs;
+  await transport.write(job.preamble);
+  dbg(`550 preamble written: ${String(job.preamble.length)}B`);
+  // A deferred `ESC A 2` reply from the previous label, not yet drained.
+  let pendingHandshake = false;
+  for (const [i, segment] of job.labels.entries()) {
+    const isLast = i === job.labels.length - 1;
+    if (pendingHandshake) {
+      const prev = await transport.read(STATUS_BYTE_COUNT_550, timeout);
+      dbg(
+        `550 deferred handshake: status len=${String(prev.length)} byte0=${String(prev[0] ?? -1)}`,
+      );
+      pendingHandshake = false;
+    }
+    await transport.write(segment);
+    dbg(`550 label ${String(i + 1)}/${String(job.labels.length)} written — footer handshake`);
+    await transport.write(build550StatusRequest(isLast ? 0 : 2));
+    if (isLast) {
+      // `ESC A 0` — final status query; wait for the reply.
+      const status = await transport.read(STATUS_BYTE_COUNT_550, timeout);
+      dbg(
+        `550 final handshake: status len=${String(status.length)} byte0=${String(status[0] ?? -1)}`,
+      );
+    } else {
+      // `ESC A 2` — host does not wait; drain on the next iteration.
+      pendingHandshake = true;
+    }
+  }
+  await transport.write(job.finalize);
+  dbg('550 interactive print complete — finalize written');
 }
 
 // ─────────────────────────────────────────────────────────────────
