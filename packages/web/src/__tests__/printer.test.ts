@@ -233,6 +233,27 @@ describe('WebLabelWriterPrinter', () => {
     expect(writes[1]![1]).toBe(0x73);
   });
 
+  it('print() runs the interactive multi-copy handshake on 550 (ESC A 2 → ESC A 0)', async () => {
+    const status = new Uint8Array(32);
+    status[10] = 8; // bay ok
+    status[30] = 1; // head voltage ok
+    const device = createMockUSBDevice(LW_550.vid, LW_550.pid, status);
+    const printer = await fromUSBDevice(device);
+    const before = device.__transfers.length;
+    await printer.print(solidRgba(672, 4), MEDIA.ADDRESS_STANDARD, { copies: 2 });
+    const writes = device.__transfers.slice(before).map(t => t.data);
+    // ESC A 1 (lock) · preamble · label 0 · ESC A 2 (between labels) ·
+    // label 1 · ESC A 0 (last label) · finalize (ESC E + ESC Q).
+    expect(writes).toHaveLength(7);
+    expect(Array.from(writes[0]!)).toEqual([0x1b, 0x41, 0x01]);
+    expect([writes[1]![0], writes[1]![1]]).toEqual([0x1b, 0x73]); // ESC s
+    expect([writes[2]![0], writes[2]![1]]).toEqual([0x1b, 0x6e]); // ESC n (copy 0)
+    expect(Array.from(writes[3]!)).toEqual([0x1b, 0x41, 0x02]); // ESC A 2
+    expect([writes[4]![0], writes[4]![1]]).toEqual([0x1b, 0x6e]); // ESC n (copy 1)
+    expect(Array.from(writes[5]!)).toEqual([0x1b, 0x41, 0x00]); // ESC A 0
+    expect(Array.from(writes[6]!)).toEqual([0x1b, 0x45, 0x1b, 0x51]); // ESC E + ESC Q
+  });
+
   it('print() throws when the 550 reports the lock is held by another host', async () => {
     const status = new Uint8Array(32);
     status[0] = 5; // PRINT_STATUS_LOCK_NOT_GRANTED

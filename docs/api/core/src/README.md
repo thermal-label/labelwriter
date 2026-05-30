@@ -12,13 +12,16 @@
 
 ## Interfaces
 
+- [Composed550Job](interfaces/Composed550Job.md)
 - [EngineVersion](interfaces/EngineVersion.md)
 - [LabelWriterEngineCapabilities](interfaces/LabelWriterEngineCapabilities.md)
 - [LabelWriterEngineHandle](interfaces/LabelWriterEngineHandle.md)
 - [LabelWriterMedia](interfaces/LabelWriterMedia.md)
 - [LabelWriterPrintOptions](interfaces/LabelWriterPrintOptions.md)
 - [LabelWriterTapeMedia](interfaces/LabelWriterTapeMedia.md)
+- [PrintableCanvasDots](interfaces/PrintableCanvasDots.md)
 - [SkuInfo](interfaces/SkuInfo.md)
+- [Write550JobOptions](interfaces/Write550JobOptions.md)
 
 ## Type Aliases
 
@@ -78,6 +81,7 @@
 - [buildSetLabelLength](functions/buildSetLabelLength.md)
 - [buildShortFormFeed](functions/buildShortFormFeed.md)
 - [buildStatusRequest](functions/buildStatusRequest.md)
+- [compose550Job](functions/compose550Job.md)
 - [createPreviewOffline](functions/createPreviewOffline.md)
 - [density550Percent](functions/density550Percent.md)
 - [duoTapeStatusRequest](functions/duoTapeStatusRequest.md)
@@ -88,6 +92,7 @@
 - [~~findMediaByDimensions~~](functions/findMediaByDimensions.md)
 - [findTapeMediaByWidth](functions/findTapeMediaByWidth.md)
 - [findTapeMediaByWidthAll](functions/findTapeMediaByWidthAll.md)
+- [getPrintableCanvasDots](functions/getPrintableCanvasDots.md)
 - [isDuoTapeEngine](functions/isDuoTapeEngine.md)
 - [isEngineDrivable](functions/isEngineDrivable.md)
 - [loadD1Core](functions/loadD1Core.md)
@@ -99,3 +104,4 @@
 - [skuInfoToMedia](functions/skuInfoToMedia.md)
 - [statusByteCount](functions/statusByteCount.md)
 - [withDetectedMedia](functions/withDetectedMedia.md)
+- [write550Job](functions/write550Job.md)

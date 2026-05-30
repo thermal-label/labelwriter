@@ -97,7 +97,9 @@ export {
   build550SetLabelCount,
   PRINT_STATUS_LOCK_NOT_GRANTED,
   density550Percent,
+  compose550Job,
   encode550Label,
+  write550Job,
   parseEngineVersion,
   parseSkuInfo,
   skuInfoToMedia,
@@ -107,7 +109,7 @@ export {
   SKU_INFO_BYTE_COUNT,
   STATUS_BYTE_COUNT_550,
 } from './protocol-550.js';
-export type { EngineVersion, SkuInfo } from './protocol-550.js';
+export type { Composed550Job, EngineVersion, SkuInfo, Write550JobOptions } from './protocol-550.js';
 export { createPreviewOffline } from './preview.js';
 export type {
   D1Material,
@@ -124,6 +126,8 @@ export type {
 } from './types.js';
 
 export { isEngineDrivable, isDuoTapeEngine } from './protocol.js';
+export { getPrintableCanvasDots } from './printable-canvas.js';
+export type { PrintableCanvasDots } from './printable-canvas.js';
 
 export {
   D1_TAPE_COLOR_HEX,

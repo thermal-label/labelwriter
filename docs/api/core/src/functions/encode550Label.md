@@ -8,16 +8,14 @@
 
 > **encode550Label**(`device`, `bitmap`, `options?`, `media?`): `Uint8Array`
 
-Encode a complete 550-protocol print job for one or more copies.
+Encode a complete 550 print job as one contiguous byte array —
+`preamble` + every `labels` segment + `finalize` from
+`compose550Job`, with the inter-segment status handshakes omitted.
 
-The bitmap is fitted to the engine's `headDots` (right-padded if
-narrower, cropped if wider) so each raster line is exactly
-`headDots / 8` bytes. Copies share the same bitmap; each gets its
-own `ESC n` index and `ESC D` header. Inter-copy feed is `ESC G`;
-the final feed is `ESC E`. Job is closed with `ESC Q`.
-
-`compress` is silently ignored — the 550 raster format does not
-carry the 450's `SYN` / `ETB` framing and therefore cannot RLE.
+This is the offline / test view of the job. **Real printing must go
+through `compose550Job` + the driver's interactive routine** —
+writing this blob in one shot hangs the 550 firmware (see
+`Composed550Job`).
 
 ## Parameters
 

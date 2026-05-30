@@ -44,7 +44,7 @@ the 5XL. All chassis print at 300 dpi.
 | [`ESC h`](#esc-h-esc-i-—-output-mode)           | `1B 68`         | Select text output mode.                         |
 | [`ESC i`](#esc-h-esc-i-—-output-mode)           | `1B 69`         | Select graphics output mode.                     |
 | [`ESC L`](#esc-l-—-set-maximum-label-length)    | `1B 4C …`       | Set maximum label length (continuous stock).     |
-| [`ESC n`](#esc-n-—-set-label-index)             | `1B 6E N N N N` | Set label index (u32 LE).                        |
+| [`ESC n`](#esc-n-—-set-label-index)             | `1B 6E N N`     | Set label index (u16 LE).                        |
 | [`ESC o`](#esc-o-—-set-label-count)             | `1B 6F nn`      | Set label count.                                 |
 | [`ESC Q`](#esc-q-—-end-of-print-job)            | `1B 51`         | End of print job (mandatory trailer).            |
 | [`ESC s`](#esc-s-—-start-of-print-job)          | `1B 73 N N N N` | Start of print job (u32 LE Job ID).              |
@@ -56,8 +56,12 @@ All multi-byte integers are little-endian.
 
 ## Print job structure
 
-A complete job is a single byte stream on the OUT endpoint, framed
-by a job header and trailer with one or more labels between them:
+A complete job is a sequence of bulk-OUT writes framed by a job
+header and trailer with one or more labels between them. The wire
+**layout** is a single byte stream, but the host writes it in
+segments: the firmware blocks the OUT endpoint after every label
+until the host drains a 32-byte status reply (see
+[Inter-label status handshake](#inter-label-status-handshake)).
 
 ```
 [print job header]
@@ -68,23 +72,26 @@ by a job header and trailer with one or more labels between them:
   ESC C <duty>               — set print density
 
 [per label, index 0..N-1]
-  ESC n <index u32>          — label index
+  ESC n <index u16>          — label index
   ESC D <bpp> <align> <width u32> <height u32>
                              — start of label print data (12-byte header)
   <print data>               — width × ceil(height × bpp / 8) bytes
-  ESC G                      — feed to print head (between labels)
-  ESC E                      — feed to tear position (last label)
+  ESC G                      — feed to print head
+  [host: ESC A <lock>          ← MANDATORY footer handshake;
+        read 32-byte status]    firmware stalls bulk-OUT until drained
 
+ESC E                        — feed to tear position (once, after last label)
 ESC Q                        — end of print job (mandatory)
 ```
 
 `ESC s` and `ESC Q` are mandatory. The per-label structure (`ESC n` +
-`ESC D` + print data + `ESC G` or `ESC E`) repeats for every label in
-the job. Between labels, use `ESC G`; after the last label, use
-`ESC E` so the printed label reaches the tear bar. The `ESC s` job
-ID is echoed back in every status reply during the job so the host
-can correlate. See _LabelWriter 550 Series Printers Technical
-Reference Manual_, pp. 4–6, for the job-structure diagram.
+`ESC D` + print data + `ESC G`) repeats for every label in the job;
+every footer is followed by the inter-label `ESC A` handshake. After
+the last label's handshake, `ESC E` feeds the printed label to the
+tear bar and `ESC Q` closes the job. The `ESC s` job ID is echoed
+back in every status reply during the job so the host can correlate.
+See _LabelWriter 550 Series Printers Technical Reference Manual_,
+pp. 4–6, for the job-structure diagram.
 
 The print data follows the `ESC D` header **directly** — no `SYN`
 prefix, no per-row framing, no length byte. Row width is fixed by
@@ -98,6 +105,22 @@ byte `0` indicates whether the lock was granted (`0`..`3`) or whether
 another host holds it (`5`). A host that does not hold the lock can
 still issue `ESC A 0` heartbeats but cannot send a job. The lock
 releases on `ESC Q` (Tech Ref, p. 7).
+
+### Inter-label status handshake
+
+After each label's `ESC G` footer the firmware stops draining the
+bulk-OUT endpoint until the host issues `ESC A` and reads the 32-byte
+reply. Streaming the whole job in one write hangs mid-job and leaves
+the printer lock-held until power-cycle.
+
+| Position       | `lock` byte | Reply timing                                                                          |
+| -------------- | ----------: | ------------------------------------------------------------------------------------- |
+| Between labels |         `2` | Host may defer the read until just before the next label's segment ships.             |
+| Last label     |         `0` | Host must drain the reply before sending `ESC E` + `ESC Q`. Also drops the host lock. |
+
+The `ESC s` job ID and `ESC n` label index are echoed in the reply
+(bytes 1–4 and 5–6) so the host can correlate the handshake to the
+label it just finished.
 
 ## `ESC @` — restart print engine
 
@@ -298,13 +321,14 @@ needed in practice.
 ## `ESC n` — set label index
 
 ```
-1B 6E <index0..3>
+1B 6E <index0..1>
 ```
 
-4-byte little-endian label index. Sent before each label's `ESC D`
+2-byte little-endian label index. Sent before each label's `ESC D`
 block. The first label of a job is index `0`; subsequent labels
 increment. The current index is echoed back in status-reply bytes
-5–6 so the host can track which label is being printed.
+5–6 (also u16) so the host can track which label is being printed —
+the wire field width matches.
 
 ## `ESC o` — set label count
 
@@ -362,7 +386,14 @@ p. 8 — the LW 5XL does not support high speed at all).
 ```
 
 Retrieves the NFC dump of the inserted consumable. The printer
-replies with a **63-byte** structure (Tech Ref, pp. 16–19):
+replies with a **63-byte** structure (Tech Ref, pp. 16–19).
+
+> **Unit caveat — length fields are deci-mm, not mm.** The Tech Ref
+> labels every length field "Length in mm". On the wire the NFC tag
+> encodes **tenths of a millimetre** — confirmed by an S0722540 bench
+> capture (a 57.1 × 31.7 mm roll reports `571` / `317`). Divide by
+> 10 for the millimetre value. Count, strategy, and date fields are
+> not affected.
 
 | Offset | Field                      | Type      | Notes                                                                                                                                |
 | -----: | -------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -379,19 +410,19 @@ replies with a **63-byte** structure (Tech Ref, pp. 16–19):
 |     25 | Content colour             | u8        | `0x00` black · `0x01` red/black.                                                                                                     |
 |     26 | Marker type                | u8        | Marker / cut-edge geometry; values `0x00..0x03`.                                                                                     |
 |     27 | Reserved                   | u8        |                                                                                                                                      |
-|  28–29 | Marker pitch               | u16 LE    | Length in mm.                                                                                                                        |
-|  30–31 | Marker 1 width             | u16 LE    | Length in mm.                                                                                                                        |
-|  32–33 | Marker 1 to start of label | u16 LE    | Length in mm.                                                                                                                        |
-|  34–35 | Marker 2 width             | u16 LE    | Length in mm.                                                                                                                        |
-|  36–37 | Marker 2 offset            | u16 LE    | Length in mm.                                                                                                                        |
-|  38–39 | Vertical offset            | u16 LE    | Length in mm.                                                                                                                        |
-|  40–41 | Label length               | u16 LE    | Length in mm. `0` / `0xFFFF` for continuous stock.                                                                                   |
-|  42–43 | Label width                | u16 LE    | Length in mm.                                                                                                                        |
-|  44–45 | Printable area H. offset   | u16 LE    | Length in mm.                                                                                                                        |
-|  46–47 | Printable area V. offset   | u16 LE    | Length in mm.                                                                                                                        |
-|  48–49 | Liner width                | u16 LE    | Length in mm.                                                                                                                        |
+|  28–29 | Marker pitch               | u16 LE    | Length in deci-mm (÷10 for mm).                                                                                                      |
+|  30–31 | Marker 1 width             | u16 LE    | Length in deci-mm (÷10 for mm).                                                                                                      |
+|  32–33 | Marker 1 to start of label | u16 LE    | Length in deci-mm (÷10 for mm).                                                                                                      |
+|  34–35 | Marker 2 width             | u16 LE    | Length in deci-mm (÷10 for mm).                                                                                                      |
+|  36–37 | Marker 2 offset            | u16 LE    | Length in deci-mm (÷10 for mm).                                                                                                      |
+|  38–39 | Vertical offset            | u16 LE    | Length in deci-mm (÷10 for mm).                                                                                                      |
+|  40–41 | Label length               | u16 LE    | Length in deci-mm (÷10 for mm). `0` / `0xFFFF` for continuous stock.                                                                 |
+|  42–43 | Label width                | u16 LE    | Length in deci-mm (÷10 for mm).                                                                                                      |
+|  44–45 | Printable area H. offset   | u16 LE    | Length in deci-mm (÷10 for mm).                                                                                                      |
+|  46–47 | Printable area V. offset   | u16 LE    | Length in deci-mm (÷10 for mm).                                                                                                      |
+|  48–49 | Liner width                | u16 LE    | Length in deci-mm (÷10 for mm).                                                                                                      |
 |  50–51 | Total label count          | u16 LE    | Labels on a full roll.                                                                                                               |
-|  52–53 | Total length               | u16 LE    | Roll length in mm.                                                                                                                   |
+|  52–53 | Total length               | u16 LE    | Roll length in deci-mm (÷10 for mm).                                                                                                 |
 |  54–55 | Counter margin             | u16 LE    | Used by the printer to compute labels remaining.                                                                                     |
 |     56 | Counter strategy           | u8        | `0x00` = count up from `0x0000`; `0x01` = count down from `0xFFFF - amount - margin`.                                                |
 |  57–59 | Reserved                   |           |                                                                                                                                      |
@@ -430,3 +461,7 @@ replies with **34 bytes** (Tech Ref, p. 20):
   for LabelWriter 550 / 550 Turbo / 5XL, Sanford L.P., 2021. The
   authoritative byte-level reference. Cited inline by page; not
   redistributed.
+- **minlux/dymon** — open-source DYMO print tool; reverse-engineered
+  the LabelWriter Wireless / 550 protocol via Wireshark capture over
+  USB and TCP:9100. `protocol.md` + `src/dymon/dymon.cpp`.
+  <https://github.com/minlux/dymon>.

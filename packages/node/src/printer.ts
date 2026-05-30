@@ -7,6 +7,8 @@ import {
   build550GetVersion,
   build550Recovery,
   build550StatusRequest,
+  compose550Job,
+  write550Job,
   PRINT_STATUS_LOCK_NOT_GRANTED,
   STATUS_BYTE_COUNT_550,
   buildErrorRecovery,
@@ -208,8 +210,16 @@ export class LabelWriterPrinter implements PrinterAdapter {
     }
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
+    // 550 dispatch — see `write550Job`. Node leaves the handshake
+    // reads untimed (CLI-side timeout policy is a separate concern).
+    if (engine.protocol === 'lw5-raster') {
+      const job = compose550Job(this.device, bitmap, options, resolvedMedia);
+      await write550Job(transport, job);
+      return;
+    }
+
     // Duo tape engine: dispatch through the async encoder that
-    // lazy-loads d1-core. Raster engines stay on the sync path.
+    // lazy-loads d1-core. lw-raster (450 family) stays on the sync path.
     const bytes = isDuoTapeEngine(engine)
       ? await encodeDuoTapeLabel(this.device, bitmap, options, resolvedMedia)
       : encodeLabel(this.device, bitmap, options, resolvedMedia);

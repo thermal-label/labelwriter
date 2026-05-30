@@ -1,4 +1,4 @@
-import { createBitmap, padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
+import { padBitmap, cropBitmap, getRow, type LabelBitmap } from '@mbtech-nl/bitmap';
 import type {
   DeviceEntry,
   MediaDescriptor,
@@ -6,8 +6,8 @@ import type {
   PrinterError,
   PrinterStatus,
   StatusDetail,
+  Transport,
 } from '@thermal-label/contracts';
-import { getPrintableArea } from '@thermal-label/contracts';
 import type { LabelWriterPrintOptions, Density } from './types.js';
 
 /**
@@ -23,18 +23,22 @@ import type { LabelWriterPrintOptions, Density } from './types.js';
  * a job stream that the 550 firmware cannot parse; this module is
  * the clean fork.
  *
- * Wire layout this module emits:
+ * Wire layout — see `compose550Job` for the segmented form the driver
+ * actually writes. The 550 needs a status handshake between each
+ * label's footer and the job trailer, so a monolithic write hangs:
  *
  *   ESC s <jobID:u32>                                    (job header)
  *   ESC h | ESC i                                        (mode)
  *   ESC C <duty:u8>                                      (density)
  *
  *   per copy (label index 0..N-1):
- *     ESC n <index:u32>                                  (label header)
+ *     ESC n <index:u16>                                  (label header)
  *     ESC D <bpp:u8> <align:u8> <width:u32> <height:u32> (label header)
  *     <raster bytes>                                     (no SYN prefix)
- *     ESC G  (between copies) | ESC E (last copy)        (label trailer)
+ *     ESC G                                              (label footer)
+ *     [ driver: ESC A <lock> -> read 32-byte status ]    (footer handshake)
  *
+ *   ESC E                                                (feed to tear)
  *   ESC Q                                                (job trailer)
  *
  * Spec ambiguities settled by deliberate choice:
@@ -97,16 +101,18 @@ export function build550ContentType(speed: 'normal' | 'high'): Uint8Array {
   return new Uint8Array([ESC, 0x74, speed === 'high' ? 0x20 : 0x10]);
 }
 
-/** `ESC n <index>` — Set Label Index. 4-byte u32, little-endian. */
+/**
+ * `ESC n <index>` — Set Label Index. 2-byte u16, little-endian.
+ *
+ * The 550 status frame echoes the label index back in a u16 field
+ * (status bytes 5-6), and minlux/dymon's Wireshark capture of the DYMO
+ * software shows a 2-byte field on the wire. An earlier revision
+ * emitted a u32 here — two bytes too wide — which left two stray `0x00`
+ * bytes in the job stream ahead of `ESC D` and can desync the
+ * firmware's command parser.
+ */
 export function build550LabelIndex(index: number): Uint8Array {
-  return new Uint8Array([
-    ESC,
-    0x6e,
-    index & 0xff,
-    (index >> 8) & 0xff,
-    (index >> 16) & 0xff,
-    (index >> 24) & 0xff,
-  ]);
+  return new Uint8Array([ESC, 0x6e, index & 0xff, (index >> 8) & 0xff]);
 }
 
 /**
@@ -270,63 +276,20 @@ export function density550Percent(density: Density): number {
   }
 }
 
-/** Convert mm to dots at the given DPI, rounding to the nearest dot. */
-function mmToDots(mm: number, dpi: number): number {
-  return Math.round((mm * dpi) / 25.4);
-}
-
 /**
- * Compose the wire bitmap for the LabelWriter 550 family per plan 08
- * §6 (Labelwriter subsection): **send fewer rows** for the leading /
- * trailing dead zones, cross-feed pad with white columns inside
- * `headDots`-wide rows. See `composeWireBitmap` in `protocol.ts` for
- * the full rationale — this is the 550-shaped clone, kept here
- * because the 550 encoder is a deliberate fork (different job header
- * / `ESC D` block / trailer) and the two protocols don't share
- * fitting logic.
- *
- * With empty `printableArea` (today's state) this is byte-identical
- * to the previous `fitBitmapWidth` behaviour.
+ * Fit the authored bitmap to the engine's head width for the
+ * LabelWriter 550 family. Width-only — see `composeWireBitmap` in
+ * `protocol.ts` for the dead-zone rationale; the 5xx fork mirrors the
+ * same width-only contract so callers see identical behaviour across
+ * the LW lineup.
  */
-function composeWireBitmap550(
-  bitmap: LabelBitmap,
-  engine: PrintEngine,
-  media: MediaDescriptor | undefined,
-): LabelBitmap {
+function composeWireBitmap550(bitmap: LabelBitmap, engine: PrintEngine): LabelBitmap {
   const headDots = engine.headDots;
-  const dpi = engine.dpi;
-  const { leading, trailing, left, right } = getPrintableArea(engine, media);
-  const leadingDots = mmToDots(leading, dpi);
-  const trailingDots = mmToDots(trailing, dpi);
-  const leftDots = mmToDots(left, dpi);
-  const rightDots = mmToDots(right, dpi);
-
-  const labelWidthDots = Math.min(bitmap.widthPx, headDots);
-  const wireRows = Math.max(0, bitmap.heightPx - leadingDots - trailingDots);
-  if (wireRows === 0) return { widthPx: headDots, heightPx: 0, data: new Uint8Array(0) };
-
-  const sourceColStart = Math.min(leftDots, labelWidthDots);
-  const sourceColEnd = Math.max(sourceColStart, labelWidthDots - rightDots);
-  const sourceColCount = sourceColEnd - sourceColStart;
-
-  if (leadingDots === 0 && trailingDots === 0 && leftDots === 0 && rightDots === 0) {
-    if (bitmap.widthPx === headDots) return bitmap;
-    if (bitmap.widthPx < headDots) {
-      return padBitmap(bitmap, { right: headDots - bitmap.widthPx });
-    }
-    return cropBitmap(bitmap, 0, 0, headDots, bitmap.heightPx);
+  if (bitmap.widthPx === headDots) return bitmap;
+  if (bitmap.widthPx < headDots) {
+    return padBitmap(bitmap, { right: headDots - bitmap.widthPx });
   }
-
-  const slice =
-    /* v8 ignore next 2 -- sourceColCount > 0 whenever any printable content survives; the createBitmap(0,…) arm is an unreachable degenerate-input guard (createBitmap rejects width 0 anyway) */
-    sourceColCount > 0
-      ? cropBitmap(bitmap, sourceColStart, leadingDots, sourceColCount, wireRows)
-      : createBitmap(0, wireRows);
-
-  const leftPad = sourceColStart;
-  const rightPad = headDots - sourceColStart - sourceColCount;
-  if (leftPad === 0 && rightPad === 0) return slice;
-  return padBitmap(slice, { left: leftPad, right: rightPad });
+  return cropBitmap(bitmap, 0, 0, headDots, bitmap.heightPx);
 }
 
 function concat(...arrays: Uint8Array[]): Uint8Array {
@@ -341,23 +304,38 @@ function concat(...arrays: Uint8Array[]): Uint8Array {
 }
 
 /**
- * Encode a complete 550-protocol print job for one or more copies.
- *
- * The bitmap is fitted to the engine's `headDots` (right-padded if
- * narrower, cropped if wider) so each raster line is exactly
- * `headDots / 8` bytes. Copies share the same bitmap; each gets its
- * own `ESC n` index and `ESC D` header. Inter-copy feed is `ESC G`;
- * the final feed is `ESC E`. Job is closed with `ESC Q`.
- *
- * `compress` is silently ignored — the 550 raster format does not
- * carry the 450's `SYN` / `ETB` framing and therefore cannot RLE.
+ * A 550 print job split into the segments an interactive write routine
+ * interleaves with `ESC A` status reads. See the
+ * `lw5-raster` protocol doc — "Inter-label status handshake" — for the
+ * wire contract this shape encodes; `write550Job` is its driver.
  */
-export function encode550Label(
+export interface Composed550Job {
+  /** Once: `ESC s`, `ESC h`/`ESC i`, `ESC C`, optional `ESC T`. */
+  preamble: Uint8Array;
+  /** One per copy: `ESC n` + `ESC D` + raster + `ESC G`. */
+  labels: Uint8Array[];
+  /** Once, after the last label's handshake: `ESC E` + `ESC Q`. */
+  finalize: Uint8Array;
+}
+
+/**
+ * Compose a 550 print job as interleavable segments — see
+ * `Composed550Job`. The bitmap is fitted to `headDots` (right-pad
+ * narrower, crop wider) so each raster line is `headDots / 8` bytes.
+ * `compress` is ignored — the 550 raster format has no `SYN` / `ETB`
+ * framing.
+ */
+export function compose550Job(
   device: DeviceEntry,
   bitmap: LabelBitmap,
   options: LabelWriterPrintOptions = {},
   media?: MediaDescriptor,
-): Uint8Array {
+): Composed550Job {
+  // Media is no longer read by the 550 encoder — round-2 dead-zone
+  // work moved canvas-sizing to the caller. Parameter kept for API
+  // stability; the `void` keeps tsc + eslint quiet without renaming
+  // the public arg to `_media` (which would leak into typedoc output).
+  void media;
   const engine = device.engines.find(e => e.protocol === 'lw5-raster');
   if (!engine) {
     throw new Error(`Device ${device.key} has no engine with protocol "lw5-raster".`);
@@ -365,10 +343,9 @@ export function encode550Label(
 
   const headDots = engine.headDots;
   const bytesPerLine = headDots / 8;
-  // Cross-feed-pad / leading-skip / trailing-skip per plan 08 §6.
-  // With empty `printableArea` (today's state) this is byte-identical
-  // to the previous `fitBitmapWidth` behaviour.
-  const fitted = composeWireBitmap550(bitmap, engine, media);
+  // Width-only fit. Dead-zone offsets live on the authoring canvas;
+  // see `getPrintableCanvasDots` for the helper the harness uses.
+  const fitted = composeWireBitmap550(bitmap, engine);
   const widthLines = fitted.heightPx;
 
   const density = options.density ?? 'normal';
@@ -390,23 +367,101 @@ export function encode550Label(
     );
   }
 
-  const parts: Uint8Array[] = [];
-  parts.push(build550JobHeader(jobId));
-  parts.push(build550Mode(mode));
-  parts.push(build550Density(density550Percent(density)));
+  const preambleParts: Uint8Array[] = [
+    build550JobHeader(jobId),
+    build550Mode(mode),
+    build550Density(density550Percent(density)),
+  ];
   if (options.speed !== undefined) {
-    parts.push(build550ContentType(options.speed));
+    preambleParts.push(build550ContentType(options.speed));
   }
 
+  // Every label ends with `ESC G` — the 550 footer the driver follows
+  // with the `ESC A` status handshake. (The 450 family uses `ESC G`
+  // only between copies and `ESC E` as the last copy's trailer; the
+  // 550 footers every label and feeds-to-tear once, in `finalize`.)
+  const labels: Uint8Array[] = [];
   for (let c = 0; c < copies; c++) {
-    parts.push(build550LabelIndex(c));
-    parts.push(build550LabelHeader(widthLines, headDots));
-    parts.push(rasterBlock);
-    parts.push(c < copies - 1 ? build550ShortFormFeed() : build550FormFeed());
+    labels.push(
+      concat(
+        build550LabelIndex(c),
+        build550LabelHeader(widthLines, headDots),
+        rasterBlock,
+        build550ShortFormFeed(),
+      ),
+    );
   }
 
-  parts.push(build550EndJob());
-  return concat(...parts);
+  return {
+    preamble: concat(...preambleParts),
+    labels,
+    finalize: concat(build550FormFeed(), build550EndJob()),
+  };
+}
+
+/**
+ * Encode a complete 550 print job as one contiguous byte array —
+ * `preamble` + every `labels` segment + `finalize` from
+ * `compose550Job`, with the inter-segment status handshakes omitted.
+ *
+ * This is the offline / test view of the job. **Real printing must go
+ * through `compose550Job` + the driver's interactive routine** —
+ * writing this blob in one shot hangs the 550 firmware (see
+ * `Composed550Job`).
+ */
+export function encode550Label(
+  device: DeviceEntry,
+  bitmap: LabelBitmap,
+  options: LabelWriterPrintOptions = {},
+  media?: MediaDescriptor,
+): Uint8Array {
+  const job = compose550Job(device, bitmap, options, media);
+  return concat(job.preamble, ...job.labels, job.finalize);
+}
+
+export interface Write550JobOptions {
+  /**
+   * Per-handshake read deadline, ms. Omit to delegate to the
+   * transport's own policy — WebUSB has no implicit timeout, so web
+   * callers should set a finite value.
+   */
+  handshakeReadTimeoutMs?: number;
+}
+
+/**
+ * Write a composed 550 job interactively. See the `lw5-raster`
+ * protocol doc — "Inter-label status handshake" — for the wire
+ * contract.
+ *
+ * Lock byte: `0` on the last label (final query + lock release), `2`
+ * between labels (host defers the read to the next iteration).
+ */
+export async function write550Job(
+  transport: Transport,
+  job: Composed550Job,
+  options: Write550JobOptions = {},
+): Promise<void> {
+  const timeout = options.handshakeReadTimeoutMs;
+  await transport.write(job.preamble);
+  // A deferred `ESC A 2` reply from the previous label, not yet drained.
+  let pendingHandshake = false;
+  for (const [i, segment] of job.labels.entries()) {
+    const isLast = i === job.labels.length - 1;
+    if (pendingHandshake) {
+      await transport.read(STATUS_BYTE_COUNT_550, timeout);
+      pendingHandshake = false;
+    }
+    await transport.write(segment);
+    await transport.write(build550StatusRequest(isLast ? 0 : 2));
+    if (isLast) {
+      // `ESC A 0` — final status query; wait for the reply.
+      await transport.read(STATUS_BYTE_COUNT_550, timeout);
+    } else {
+      // `ESC A 2` — host does not wait; drain on the next iteration.
+      pendingHandshake = true;
+    }
+  }
+  await transport.write(job.finalize);
 }
 
 // ─────────────────────────────────────────────────────────────────

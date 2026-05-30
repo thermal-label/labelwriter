@@ -8,6 +8,8 @@ import {
   build550GetVersion,
   build550Recovery,
   build550StatusRequest,
+  compose550Job,
+  write550Job,
   PRINT_STATUS_LOCK_NOT_GRANTED,
   STATUS_BYTE_COUNT_550,
   buildErrorRecovery,
@@ -74,6 +76,17 @@ const D1_STATUS_BYTE_COUNT = 1;
  * discrepancy. Out of scope for this fix.
  */
 const STATUS_READ_TIMEOUT_MS = 2000;
+
+/**
+ * Read deadline for the 550 print-footer status handshake — the
+ * `ESC A` reply the firmware expects the host to drain after every
+ * `ESC G` (see `write550Job`). Longer than `STATUS_READ_TIMEOUT_MS`
+ * because the firmware may answer only once the label has physically
+ * fed; a 300 dpi diagnostic label is a couple of seconds. The deadline
+ * still converts a wedged firmware into a thrown `TransportTimeoutError`
+ * the harness can surface, instead of an unbounded hang.
+ */
+const PRINT_HANDSHAKE_TIMEOUT_MS = 15000;
 
 export interface RequestOptions {
   filters?: USBDeviceFilter[];
@@ -221,10 +234,33 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
     // Force `engine` to this instance's role so the encoder dispatches
-    // on the right protocol (lw-raster / lw5-raster / d1-tape).
+    // on the right protocol (lw-raster / lw5-raster / d1-tape). When
+    // the caller authored a short bitmap (printable-canvas-sized — see
+    // `getPrintableCanvasDots` in labelwriter-core), auto-supply
+    // `labelLengthDots = media.lengthDots` so ESC L still describes the
+    // full label feed pitch. Explicit `options.labelLengthDots` always
+    // wins; tape media has no fixed lengthDots and falls back to
+    // bitmap.heightPx inside the encoder.
+    const mediaLengthDots = (resolvedMedia as { lengthDots?: number }).lengthDots;
     const encodeOptions: LabelWriterPrintOptions = { ...options, engine: this.engine.role };
+    if (encodeOptions.labelLengthDots === undefined) {
+      if (typeof mediaLengthDots === 'number' && mediaLengthDots > bitmap.heightPx) {
+        encodeOptions.labelLengthDots = mediaLengthDots;
+      }
+    }
+
+    // 550 dispatch — see `write550Job`. Web supplies a finite read
+    // deadline; WebUSB has no implicit timeout.
+    if (this.engine.protocol === 'lw5-raster') {
+      const job = compose550Job(this.device, bitmap, encodeOptions, resolvedMedia);
+      await write550Job(this.transport, job, {
+        handshakeReadTimeoutMs: PRINT_HANDSHAKE_TIMEOUT_MS,
+      });
+      return;
+    }
+
     // Duo tape engine: dispatch through the async encoder that
-    // lazy-loads d1-core. Raster engines stay on the sync path.
+    // lazy-loads d1-core. lw-raster (450 family) stays on the sync path.
     const bytes = isDuoTapeEngine(this.engine)
       ? await encodeDuoTapeLabel(this.device, bitmap, encodeOptions, resolvedMedia)
       : encodeLabel(this.device, bitmap, encodeOptions, resolvedMedia);
@@ -389,10 +425,6 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // needs. The timeout converts a non-responsive device into a thrown
     // failure the poll loop can absorb.
     const bytes = await this.transport.read(statusByteCount(this.device), STATUS_READ_TIMEOUT_MS);
-    // eslint-disable-next-line no-console
-    console.debug(
-      `[lw-web] getStatus read role=${this.engine.role} len=${bytes.length.toString()}`,
-    );
     const status = withRollDetails(parseStatus(this.device, bytes), this.rollDetails);
     if (this.lastStatus?.detectedMedia && !status.detectedMedia) {
       this.lastStatus = { ...status, detectedMedia: this.lastStatus.detectedMedia };
