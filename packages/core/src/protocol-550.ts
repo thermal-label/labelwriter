@@ -11,16 +11,6 @@ import type {
 import type { LabelWriterPrintOptions, Density } from './types.js';
 
 /**
- * Print-flow debug tracing — ships ONLY on the `debug/print-flow`
- * branch / `0.6.3-debug.x` prerelease line (npm dist-tag `debug`).
- * Delete this helper and its call sites before merging to main.
- */
-function dbg(msg: string): void {
-  // eslint-disable-next-line no-console
-  console.debug(`[lw-core] ${msg}`);
-}
-
-/**
  * Wire-protocol encoder for the LabelWriter 550 family
  * (LW 550 / 550 Turbo / 5XL).
  *
@@ -453,34 +443,25 @@ export async function write550Job(
 ): Promise<void> {
   const timeout = options.handshakeReadTimeoutMs;
   await transport.write(job.preamble);
-  dbg(`550 preamble written: ${String(job.preamble.length)}B`);
   // A deferred `ESC A 2` reply from the previous label, not yet drained.
   let pendingHandshake = false;
   for (const [i, segment] of job.labels.entries()) {
     const isLast = i === job.labels.length - 1;
     if (pendingHandshake) {
-      const prev = await transport.read(STATUS_BYTE_COUNT_550, timeout);
-      dbg(
-        `550 deferred handshake: status len=${String(prev.length)} byte0=${String(prev[0] ?? -1)}`,
-      );
+      await transport.read(STATUS_BYTE_COUNT_550, timeout);
       pendingHandshake = false;
     }
     await transport.write(segment);
-    dbg(`550 label ${String(i + 1)}/${String(job.labels.length)} written — footer handshake`);
     await transport.write(build550StatusRequest(isLast ? 0 : 2));
     if (isLast) {
       // `ESC A 0` — final status query; wait for the reply.
-      const status = await transport.read(STATUS_BYTE_COUNT_550, timeout);
-      dbg(
-        `550 final handshake: status len=${String(status.length)} byte0=${String(status[0] ?? -1)}`,
-      );
+      await transport.read(STATUS_BYTE_COUNT_550, timeout);
     } else {
       // `ESC A 2` — host does not wait; drain on the next iteration.
       pendingHandshake = true;
     }
   }
   await transport.write(job.finalize);
-  dbg('550 interactive print complete — finalize written');
 }
 
 // ─────────────────────────────────────────────────────────────────

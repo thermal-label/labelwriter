@@ -49,16 +49,6 @@ import {
   WriteSerializer,
 } from '@thermal-label/contracts';
 
-/**
- * Print-flow debug tracing — ships ONLY on the `debug/print-flow`
- * branch / `0.6.3-debug.x` prerelease line (npm dist-tag `debug`).
- * Delete this helper and its call sites before merging to main.
- */
-function dbg(msg: string): void {
-  // eslint-disable-next-line no-console
-  console.debug(`[lw-node] ${msg}`);
-}
-
 export interface LabelWriterPrinterOptions {
   /**
    * Per-engine transport overrides for multi-engine devices that need
@@ -181,12 +171,6 @@ export class LabelWriterPrinter implements PrinterAdapter {
     options?: LabelWriterPrintOptions,
   ): Promise<void> {
     const engine = resolveRequestedEngine(this.device, options?.engine);
-    dbg(
-      `print start: device=${this.device.key} engine=${engine.role} ` +
-        `protocol=${engine.protocol} image=${String(image.width)}x${String(image.height)} ` +
-        `media=${media ? 'explicit' : this.lastStatus?.detectedMedia ? 'cached' : 'unset'} ` +
-        `copies=${String(options?.copies ?? 1)}`,
-    );
     const transport = this.transports[engine.role];
     if (!transport) {
       throw new Error(
@@ -209,10 +193,6 @@ export class LabelWriterPrinter implements PrinterAdapter {
     // open conditions before we waste cycles encoding the bitmap).
     if (engine.protocol === 'lw5-raster') {
       await this.acquire550Lock(transport);
-      dbg(
-        `550 lock acquired: ready=${String(this.lastStatus?.ready)} ` +
-          `errors=${String(this.lastStatus?.errors.length ?? 0)}`,
-      );
     }
 
     let resolvedMedia = media ?? this.lastStatus?.detectedMedia;
@@ -228,18 +208,12 @@ export class LabelWriterPrinter implements PrinterAdapter {
     if (!resolvedMedia) {
       throw new MediaNotSpecifiedError();
     }
-    dbg(`media resolved: ${JSON.stringify(resolvedMedia)}`);
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
-    dbg(`rotate=${String(rotate)} bitmap=${String(bitmap.widthPx)}x${String(bitmap.heightPx)}`);
     // 550 dispatch — see `write550Job`. Node leaves the handshake
     // reads untimed (CLI-side timeout policy is a separate concern).
     if (engine.protocol === 'lw5-raster') {
       const job = compose550Job(this.device, bitmap, options, resolvedMedia);
-      dbg(
-        `composed 550 job: preamble=${String(job.preamble.length)}B ` +
-          `labels=${String(job.labels.length)} finalize=${String(job.finalize.length)}B`,
-      );
       await write550Job(transport, job);
       return;
     }
@@ -249,9 +223,7 @@ export class LabelWriterPrinter implements PrinterAdapter {
     const bytes = isDuoTapeEngine(engine)
       ? await encodeDuoTapeLabel(this.device, bitmap, options, resolvedMedia)
       : encodeLabel(this.device, bitmap, options, resolvedMedia);
-    dbg(`encoded ${String(bytes.length)} bytes — writing to transport`);
     await transport.write(bytes);
-    dbg(`print complete: ${String(bytes.length)} bytes written`);
   }
 
   /**

@@ -54,16 +54,6 @@ import {
 } from '@thermal-label/contracts';
 import { WebUsbTransport } from '@thermal-label/transport/web';
 
-/**
- * Print-flow debug tracing — ships ONLY on the `debug/print-flow`
- * branch / `0.6.3-debug.x` prerelease line (npm dist-tag `debug`).
- * Delete this helper and its call sites before merging to main.
- */
-function dbg(msg: string): void {
-  // eslint-disable-next-line no-console
-  console.debug(`[lw-web] ${msg}`);
-}
-
 const D1_STATUS_BYTE_COUNT = 1;
 
 /**
@@ -217,23 +207,11 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
       );
     }
 
-    dbg(
-      `print start: device=${this.device.key} engine=${effectiveEngine.role} ` +
-        `protocol=${effectiveEngine.protocol} ` +
-        `image=${String(image.width)}x${String(image.height)} ` +
-        `media=${media ? 'explicit' : this.lastStatus?.detectedMedia ? 'cached' : 'unset'} ` +
-        `copies=${String(options?.copies ?? 1)}`,
-    );
-
     // 550 family: acquire the print lock and check printer health
     // before sending the job. See the node driver for the full
     // contract. Released by `ESC Q` in the job trailer.
     if (this.engine.protocol === 'lw5-raster') {
       await this.doAcquire550Lock();
-      dbg(
-        `550 lock acquired: ready=${String(this.lastStatus?.ready)} ` +
-          `errors=${String(this.lastStatus?.errors.length ?? 0)}`,
-      );
     }
 
     let resolvedMedia = (media ?? this.lastStatus?.detectedMedia) as LabelWriterMedia | undefined;
@@ -253,10 +231,8 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     if (!resolvedMedia) {
       throw new MediaNotSpecifiedError();
     }
-    dbg(`media resolved: ${JSON.stringify(resolvedMedia)}`);
     const rotate = pickRotation(image, resolvedMedia, ROTATE_DIRECTION, options?.rotate);
     const bitmap = renderImage(image, { dither: true, rotate });
-    dbg(`rotate=${String(rotate)} bitmap=${String(bitmap.widthPx)}x${String(bitmap.heightPx)}`);
     // Force `engine` to this instance's role so the encoder dispatches
     // on the right protocol (lw-raster / lw5-raster / d1-tape). When
     // the caller authored a short bitmap (printable-canvas-sized — see
@@ -277,10 +253,6 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // deadline; WebUSB has no implicit timeout.
     if (this.engine.protocol === 'lw5-raster') {
       const job = compose550Job(this.device, bitmap, encodeOptions, resolvedMedia);
-      dbg(
-        `composed 550 job: preamble=${String(job.preamble.length)}B ` +
-          `labels=${String(job.labels.length)} finalize=${String(job.finalize.length)}B`,
-      );
       await write550Job(this.transport, job, {
         handshakeReadTimeoutMs: PRINT_HANDSHAKE_TIMEOUT_MS,
       });
@@ -292,9 +264,7 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     const bytes = isDuoTapeEngine(this.engine)
       ? await encodeDuoTapeLabel(this.device, bitmap, encodeOptions, resolvedMedia)
       : encodeLabel(this.device, bitmap, encodeOptions, resolvedMedia);
-    dbg(`encoded ${String(bytes.length)} bytes — writing to transport`);
     await this.transport.write(bytes);
-    dbg(`print complete: ${String(bytes.length)} bytes written`);
   }
 
   /**
@@ -455,10 +425,6 @@ export class WebLabelWriterPrinter implements PrinterAdapter {
     // needs. The timeout converts a non-responsive device into a thrown
     // failure the poll loop can absorb.
     const bytes = await this.transport.read(statusByteCount(this.device), STATUS_READ_TIMEOUT_MS);
-    // eslint-disable-next-line no-console
-    console.debug(
-      `[lw-web] getStatus read role=${this.engine.role} len=${bytes.length.toString()}`,
-    );
     const status = withRollDetails(parseStatus(this.device, bytes), this.rollDetails);
     if (this.lastStatus?.detectedMedia && !status.detectedMedia) {
       this.lastStatus = { ...status, detectedMedia: this.lastStatus.detectedMedia };
