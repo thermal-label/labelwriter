@@ -17,5 +17,9 @@
       printableArea: { leading: 6, trailing: 0, left: 0, right: 0 },
     },
   ],
-  support: { status: 'untested' },
+  support: { status: 'verified' },
+  verifications: {
+    // Maintainer's own bench — no external report/issue.
+    usb: { status: 'verified', lastReported: '2026-06-05' },
+  },
 }
