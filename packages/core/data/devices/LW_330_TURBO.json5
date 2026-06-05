@@ -37,5 +37,10 @@
   // gating 'verified' on them would leave the whole driver stuck at
   // 'partial'. The driver does drive this unit end-to-end, so call it
   // verified and track the margin work as its own plan.
-  support: { status: 'verified', transports: { usb: 'verified' } },
+  support: { status: 'verified' },
+  verifications: {
+    // Migrated from the legacy support block (see note above). USB printed
+    // end-to-end on real hardware; serial declared but untested.
+    usb: { status: 'verified', lastReported: '2026-05-08' },
+  },
 }
