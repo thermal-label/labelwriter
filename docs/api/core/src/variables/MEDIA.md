@@ -902,6 +902,50 @@
 
 > `readonly` **widthMm**: `57` = `57`
 
+### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE
+
+> `readonly` **MULTI\_PURPOSE\_MEDIUM\_REMOVABLE**: `object`
+
+#### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE.category
+
+> `readonly` **category**: `"multi-purpose"` = `"multi-purpose"`
+
+#### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE.cornerRadiusMm
+
+> `readonly` **cornerRadiusMm**: `3` = `3`
+
+#### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE.heightMm
+
+> `readonly` **heightMm**: `32` = `32`
+
+#### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE.id
+
+> `readonly` **id**: `"multi-purpose-medium-removable"` = `"multi-purpose-medium-removable"`
+
+#### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE.lengthDots
+
+> `readonly` **lengthDots**: `378` = `378`
+
+#### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE.name
+
+> `readonly` **name**: `"57×32mm Removable Multi-Purpose"` = `"57×32mm Removable Multi-Purpose"`
+
+#### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE.skus
+
+> `readonly` **skus**: readonly \[`"11354"`, `"S0722540"`\]
+
+#### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE.targetModels
+
+> `readonly` **targetModels**: readonly \[`"lw"`\]
+
+#### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE.type
+
+> `readonly` **type**: `"die-cut"` = `"die-cut"`
+
+#### MULTI\_PURPOSE\_MEDIUM\_REMOVABLE.widthMm
+
+> `readonly` **widthMm**: `57` = `57`
+
 ### MULTI\_PURPOSE\_SMALL
 
 > `readonly` **MULTI\_PURPOSE\_SMALL**: `object`
