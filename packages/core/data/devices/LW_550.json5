@@ -29,5 +29,10 @@
     },
   ],
   hardwareQuirks: 'NFC-based roll authentication: refuses non-genuine rolls outright. On genuine rolls, the NFC-defined length is authoritative — host claims to print at a different length are silently overridden, manifesting as a misprint at NFC dimensions. Apps that compare detected vs selected media should warn the user before sending.',
-  support: { status: 'untested' },
+  support: { status: 'verified' },
+  verifications: {
+    // Confirmed working on 0.6.3 (raster print fix) over webUSB — macOS,
+    // Chrome 149, S0722540 die-cut roll, two prints in a row clean.
+    usb: { status: 'verified', issues: [1], lastReported: '2026-06-02' },
+  },
 }
