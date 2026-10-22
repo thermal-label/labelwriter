@@ -37,9 +37,9 @@
   ],
   support: { status: 'verified' },
   verifications: {
-    // Maintainer's own bench — no external report/issue. Per-transport
-    // only; the verification grid has no engine axis yet, so this asserts
-    // the device over USB, not the label/tape engines individually.
-    usb: { status: 'verified', lastReported: '2026-06-05' },
+    // Maintainer bench (2026-06-05) plus #10 (label engine only). The grid
+    // has no engine axis yet, so this asserts the device over USB, not the
+    // label/tape engines individually.
+    usb: { status: 'verified', issues: [10], lastReported: '2026-09-14' },
   },
 }
