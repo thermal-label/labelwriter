@@ -91,18 +91,18 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 ## Supported hardware
 
 <!-- HARDWARE_TABLE:START -->
-**22 devices** — 4 verified · 0 partial · 13 expected · 0 unsupported · 5 unverified
+**22 devices** — 6 verified · 0 partial · 11 expected · 0 unsupported · 5 unverified
 
 | Model | Key | USB PID | Transports | Status |
 | --- | --- | --- | --- | --- |
-| [LabelWriter 4XL](https://thermal-label.github.io/hardware/labelwriter/lw-4xl) | `LW_4XL` | 0x001f | USB | 🔄 expected |
+| [LabelWriter 4XL](https://thermal-label.github.io/hardware/labelwriter/lw-4xl) | `LW_4XL` | 0x001f | USB | ✅ verified |
 | [LabelWriter 5XL](https://thermal-label.github.io/hardware/labelwriter/lw-5xl) | `LW_5XL` | 0x002a | USB, TCP | 🔄 expected |
 | [LabelWriter 300](https://thermal-label.github.io/hardware/labelwriter/lw-300) | `LW_300` | 0x0009 | USB, Serial | 🔄 expected |
 | [LabelWriter 310](https://thermal-label.github.io/hardware/labelwriter/lw-310) | `LW_310` | 0x0009 | USB, Serial | 🔄 expected |
 | [LabelWriter 330](https://thermal-label.github.io/hardware/labelwriter/lw-330) | `LW_330` | 0x0007 | USB, Serial | 🔄 expected |
 | [LabelWriter 330 Turbo](https://thermal-label.github.io/hardware/labelwriter/lw-330-turbo) | `LW_330_TURBO` | 0x0008 | USB, Serial | ✅ verified |
 | [LabelWriter 400](https://thermal-label.github.io/hardware/labelwriter/lw-400) | `LW_400` | 0x0019 | USB | ✅ verified |
-| [LabelWriter 400 Turbo](https://thermal-label.github.io/hardware/labelwriter/lw-400-turbo) | `LW_400_TURBO` | 0x001a | USB | 🔄 expected |
+| [LabelWriter 400 Turbo](https://thermal-label.github.io/hardware/labelwriter/lw-400-turbo) | `LW_400_TURBO` | 0x001a | USB | ✅ verified |
 | [LabelWriter 450](https://thermal-label.github.io/hardware/labelwriter/lw-450) | `LW_450` | 0x0020 | USB | 🔄 expected |
 | [LabelWriter 450 Duo](https://thermal-label.github.io/hardware/labelwriter/lw-450-duo) | `LW_450_DUO` | 0x0023 | USB | 🔄 expected |
 | [LabelWriter 450 Turbo](https://thermal-label.github.io/hardware/labelwriter/lw-450-turbo) | `LW_450_TURBO` | 0x0021 | USB | 🔄 expected |

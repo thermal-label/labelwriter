@@ -17,5 +17,8 @@
       printableArea: { leading: 6, trailing: 0, left: 0, right: 0 },
     },
   ],
-  support: { status: 'untested' },
+  support: { status: 'verified' },
+  verifications: {
+    usb: { status: 'verified', issues: [12], lastReported: '2026-10-18' },
+  },
 }
